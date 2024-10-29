@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { login } from '../services/api';
+import toast from 'react-hot-toast';
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -7,7 +9,7 @@ interface LoginFormProps {
 }
 
 interface LoginFormData {
-  emailOrPhone: string;
+  email: string;
   password: string;
   rememberMe: boolean;
 }
@@ -19,10 +21,11 @@ export default function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
   const [formData, setFormData] = useState<LoginFormData>({
-    emailOrPhone: '',
+    email: '',
     password: '',
     rememberMe: false,
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -36,8 +39,8 @@ export default function LoginForm({
   const validateForm = () => {
     const newErrors: Partial<LoginFormData> = {};
 
-    if (!formData.emailOrPhone) {
-      newErrors.emailOrPhone = 'Email or phone number is required';
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
     }
     if (!formData.password) {
       newErrors.password = 'Password is required';
@@ -47,13 +50,32 @@ export default function LoginForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log('Form submitted:', formData);
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+      
+      localStorage.setItem('token', response.token);
+      toast.success('Login successful!');
+      // Handle successful login (e.g., redirect to dashboard)
+    } catch (error: any) {
+      toast.error(error.response?.data?.msg || 'Login failed');
+      setErrors({
+        email: 'Invalid credentials',
+        password: 'Invalid credentials',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Rest of the component remains the same...
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -89,22 +111,20 @@ export default function LoginForm({
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Email or Phone*
+                    Email*
                   </label>
                   <input
-                    type="text"
-                    name="emailOrPhone"
-                    value={formData.emailOrPhone}
+                    type="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="Enter Your Phone Number or Email"
+                    placeholder="Enter Your Email"
                     className={`mt-1 block w-full rounded-lg border ${
-                      errors.emailOrPhone ? 'border-red-500' : 'border-gray-300'
+                      errors.email ? 'border-red-500' : 'border-gray-300'
                     } px-3 py-2 shadow-sm focus:border-[#FF5733] focus:outline-none focus:ring-1 focus:ring-[#FF5733]`}
                   />
-                  {errors.emailOrPhone && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.emailOrPhone}
-                    </p>
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
                   )}
                 </div>
 
@@ -170,9 +190,10 @@ export default function LoginForm({
 
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-[#FF5733] to-[#ff4520] hover:from-[#ff4520] hover:to-[#FF5733] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF5733]"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-[#FF5733] to-[#ff4520] hover:from-[#ff4520] hover:to-[#FF5733] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF5733] disabled:opacity-50"
                 >
-                  Sign in
+                  {isLoading ? 'Signing in...' : 'Sign in'}
                 </button>
 
                 <p className="text-center text-sm text-gray-600">
