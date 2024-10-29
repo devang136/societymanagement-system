@@ -12,27 +12,30 @@ interface LoginFormData {
   rememberMe: boolean;
 }
 
-export default function LoginForm({ onForgotPassword, onRegister }: LoginFormProps) {
+export default function LoginForm({
+  onForgotPassword,
+  onRegister,
+}: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
   const [formData, setFormData] = useState<LoginFormData>({
     emailOrPhone: '',
     password: '',
-    rememberMe: false
+    rememberMe: false,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const validateForm = () => {
     const newErrors: Partial<LoginFormData> = {};
-    
+
     if (!formData.emailOrPhone) {
       newErrors.emailOrPhone = 'Email or phone number is required';
     }
@@ -61,7 +64,7 @@ export default function LoginForm({ onForgotPassword, onRegister }: LoginFormPro
               <span className="text-[#FF5733] text-4xl font-bold">Dash</span>
               <span className="text-gray-900 text-4xl font-bold">Stack</span>
             </div>
-            
+
             <div className="relative">
               <img
                 src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80"
@@ -69,7 +72,10 @@ export default function LoginForm({ onForgotPassword, onRegister }: LoginFormPro
                 className="rounded-2xl shadow-2xl"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-8 rounded-b-2xl">
-                <h2 className="text-white text-2xl font-bold">Your Space, Your Place: <span className="text-[#FF5733]">Society Management</span></h2>
+                <h2 className="text-white text-2xl font-bold">
+                  Your Space, Your Place:{' '}
+                  <span className="text-[#FF5733]">Society Management</span>
+                </h2>
                 <p className="text-gray-200">Made Simple.</p>
               </div>
             </div>
@@ -79,10 +85,12 @@ export default function LoginForm({ onForgotPassword, onRegister }: LoginFormPro
           <div className="lg:w-1/2 w-full max-w-md">
             <div className="bg-white rounded-2xl shadow-xl p-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-8">Login</h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email or Phone*</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email or Phone*
+                  </label>
                   <input
                     type="text"
                     name="emailOrPhone"
@@ -94,12 +102,16 @@ export default function LoginForm({ onForgotPassword, onRegister }: LoginFormPro
                     } px-3 py-2 shadow-sm focus:border-[#FF5733] focus:outline-none focus:ring-1 focus:ring-[#FF5733]`}
                   />
                   {errors.emailOrPhone && (
-                    <p className="mt-1 text-sm text-red-500">{errors.emailOrPhone}</p>
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.emailOrPhone}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Password*</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Password*
+                  </label>
                   <div className="mt-1 relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
@@ -124,7 +136,9 @@ export default function LoginForm({ onForgotPassword, onRegister }: LoginFormPro
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.password}
+                    </p>
                   )}
                 </div>
 
@@ -138,7 +152,10 @@ export default function LoginForm({ onForgotPassword, onRegister }: LoginFormPro
                       onChange={handleInputChange}
                       className="h-4 w-4 text-[#FF5733] focus:ring-[#FF5733] border-gray-300 rounded"
                     />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                    <label
+                      htmlFor="remember-me"
+                      className="ml-2 block text-sm text-gray-700"
+                    >
                       Remember me
                     </label>
                   </div>

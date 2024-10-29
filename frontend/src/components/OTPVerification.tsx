@@ -4,7 +4,9 @@ interface OTPVerificationProps {
   onBackToLogin: () => void;
 }
 
-export default function OTPVerification({ onBackToLogin }: OTPVerificationProps) {
+export default function OTPVerification({
+  onBackToLogin,
+}: OTPVerificationProps) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [timeLeft, setTimeLeft] = useState(30);
@@ -19,7 +21,7 @@ export default function OTPVerification({ onBackToLogin }: OTPVerificationProps)
 
   const handleChange = (index: number, value: string) => {
     if (value.length > 1) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -31,7 +33,10 @@ export default function OTPVerification({ onBackToLogin }: OTPVerificationProps)
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -39,7 +44,7 @@ export default function OTPVerification({ onBackToLogin }: OTPVerificationProps)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp.some(digit => !digit)) {
+    if (otp.some((digit) => !digit)) {
       setError('Please enter all digits');
       return;
     }
@@ -62,7 +67,7 @@ export default function OTPVerification({ onBackToLogin }: OTPVerificationProps)
               <span className="text-[#FF5733] text-4xl font-bold">Dash</span>
               <span className="text-gray-900 text-4xl font-bold">Stack</span>
             </div>
-            
+
             <div className="relative">
               <img
                 src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80"
@@ -70,8 +75,12 @@ export default function OTPVerification({ onBackToLogin }: OTPVerificationProps)
                 className="rounded-2xl shadow-2xl"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-8 rounded-b-2xl">
-                <h2 className="text-white text-2xl font-bold">Verify Your Identity</h2>
-                <p className="text-gray-200">Enter the OTP sent to your device.</p>
+                <h2 className="text-white text-2xl font-bold">
+                  Verify Your Identity
+                </h2>
+                <p className="text-gray-200">
+                  Enter the OTP sent to your device.
+                </p>
               </div>
             </div>
           </div>
@@ -79,15 +88,19 @@ export default function OTPVerification({ onBackToLogin }: OTPVerificationProps)
           {/* Right side - OTP Form */}
           <div className="lg:w-1/2 w-full max-w-md">
             <div className="bg-white rounded-2xl shadow-xl p-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Enter OTP</h2>
-              <p className="text-gray-600 mb-8">Please enter the 6 digit code that sent to your phone number.</p>
-              
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Enter OTP
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Please enter the 6 digit code that sent to your phone number.
+              </p>
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex gap-2 justify-between">
                   {otp.map((digit, index) => (
                     <input
                       key={index}
-                      ref={el => inputRefs.current[index] = el}
+                      ref={(el) => (inputRefs.current[index] = el)}
                       type="text"
                       value={digit}
                       onChange={(e) => handleChange(index, e.target.value)}
@@ -103,7 +116,9 @@ export default function OTPVerification({ onBackToLogin }: OTPVerificationProps)
 
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center space-x-1">
-                    <span className="text-gray-500">{timeLeft > 0 ? `${timeLeft} sec` : ''}</span>
+                    <span className="text-gray-500">
+                      {timeLeft > 0 ? `${timeLeft} sec` : ''}
+                    </span>
                   </div>
                   <button
                     type="button"

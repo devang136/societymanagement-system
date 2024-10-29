@@ -14,19 +14,21 @@ interface SocietyFormData {
   zipCode: string;
 }
 
-export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps) {
+export default function CreateSocietyModal({
+  onClose,
+}: CreateSocietyModalProps) {
   const [formData, setFormData] = useState<SocietyFormData>({
     name: '',
     address: '',
     country: '',
     state: '',
     city: '',
-    zipCode: ''
+    zipCode: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -39,7 +41,9 @@ export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps)
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-bold text-gray-900">Create New Society</h3>
+          <h3 className="text-xl font-bold text-gray-900">
+            Create New Society
+          </h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-500"
@@ -50,7 +54,9 @@ export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps)
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Society Name*</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Society Name*
+            </label>
             <input
               type="text"
               name="name"
@@ -62,7 +68,9 @@ export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps)
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Society Address*</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Society Address*
+            </label>
             <input
               type="text"
               name="address"
@@ -75,7 +83,9 @@ export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps)
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Country*</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Country*
+              </label>
               <input
                 type="text"
                 name="country"
@@ -87,7 +97,9 @@ export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">State*</label>
+              <label className="block text-sm font-medium text-gray-700">
+                State*
+              </label>
               <input
                 type="text"
                 name="state"
@@ -101,7 +113,9 @@ export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps)
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">City*</label>
+              <label className="block text-sm font-medium text-gray-700">
+                City*
+              </label>
               <input
                 type="text"
                 name="city"
@@ -113,7 +127,9 @@ export default function CreateSocietyModal({ onClose }: CreateSocietyModalProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Zip Code*</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Zip Code*
+              </label>
               <input
                 type="text"
                 name="zipCode"
