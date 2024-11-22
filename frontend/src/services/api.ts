@@ -1,41 +1,56 @@
 import axios from 'axios';
+import { SecurityGuard, Resident } from '../types';
 
-const API_URL = 'http://localhost:5000/api';
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      REACT_APP_API_URL: string;
+    }
+  }
+}
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
-// Add token to requests if it exists
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers['x-auth-token'] = token;
-  }
-  return config;
-});
-
-export const register = async (userData: any) => {
-  const response = await api.post('/auth/register', userData);
+// Security Guard APIs
+export const getSecurityGuards = async (): Promise<SecurityGuard[]> => {
+  const response = await api.get('/security-guards');
   return response.data;
 };
 
-export const login = async (credentials: any) => {
-  const response = await api.post('/auth/login', credentials);
+export const createSecurityGuard = async (guardData: Omit<SecurityGuard, 'id'>): Promise<SecurityGuard> => {
+  const response = await api.post('/security-guards', guardData);
   return response.data;
 };
 
-export const createSociety = async (societyData: any) => {
-  const response = await api.post('/societies', societyData);
+export const updateSecurityGuard = async (id: string, guardData: Partial<SecurityGuard>): Promise<SecurityGuard> => {
+  const response = await api.put(`/security-guards/${id}`, guardData);
   return response.data;
 };
 
-export const getAllSocieties = async () => {
-  const response = await api.get('/societies');
+export const deleteSecurityGuard = async (id: string): Promise<void> => {
+  await api.delete(`/security-guards/${id}`);
+};
+
+// Resident APIs
+export const getResidents = async (): Promise<Resident[]> => {
+  const response = await api.get('/residents');
   return response.data;
 };
 
-export default api;
+export const createResident = async (residentData: Omit<Resident, 'id'>): Promise<Resident> => {
+  const response = await api.post('/residents', residentData);
+  return response.data;
+};
+
+export const updateResident = async (id: string, residentData: Partial<Resident>): Promise<Resident> => {
+  const response = await api.put(`/residents/${id}`, residentData);
+  return response.data;
+};
+
+export const deleteResident = async (id: string): Promise<void> => {
+  await api.delete(`/residents/${id}`);
+};
