@@ -3,7 +3,7 @@ import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { FiPlus, FiBell, FiSearch } from 'react-icons/fi';
 import { StatCard } from './StatCard';
 import { ComplaintRow } from './ComplaintRow';
-import { Sidebar } from './Sidebar';
+import { Sidebar } from '../layout/Sidebar';
 import { ImportantNumber } from './ImportantNumber';
 import { PendingMaintenance } from './PendingMaintenance';
 import { UpcomingActivity } from './UpcomingActivity';

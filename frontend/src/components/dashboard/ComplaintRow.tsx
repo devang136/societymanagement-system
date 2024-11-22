@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiTrash2, FiEdit2, FiEye } from 'react-icons/fi';
 import { ViewComplaint } from './modals/ViewComplaint';
 import { EditComplaint } from './modals/EditComplaint';
-import DeleteConfirmation from './modals/DeleteConfirmation';
+import { DeleteConfirmation } from './modals/DeleteConfirmation';
 
 interface Complaint {
   id: number;

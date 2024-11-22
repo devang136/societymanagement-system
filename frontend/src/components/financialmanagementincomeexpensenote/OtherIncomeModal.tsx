@@ -9,7 +9,7 @@ import { Input } from './financialmanagementexpenseui/input';
 import { Button } from './financialmanagementexpenseui/button';
 import { Income } from '@/types/expense';
 import { Popover, PopoverContent, PopoverTrigger } from './financialmanagementexpenseui/popover';
-import { Calendar } from './financialmanagementexpenseui/calendar';
+import Calendar from './financialmanagementexpenseui/calendar';
 import { cn, formatDate } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 

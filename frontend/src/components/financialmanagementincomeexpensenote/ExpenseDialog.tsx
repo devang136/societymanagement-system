@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './financialmanagementexpenseui/dialog';
 import { Input } from './financialmanagementexpenseui/input';
 import { Button } from './financialmanagementexpenseui/button';
-import { Calendar } from './financialmanagementexpenseui/calendar';
+import Calendar from './financialmanagementexpenseui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './financialmanagementexpenseui/popover';
 import { cn, formatDate } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';

@@ -32,121 +32,87 @@ const SecurityModal: React.FC<SecurityModalProps> = ({ guard, onClose, onSave })
   };
 
   return (
-    <Dialog open onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={true} onOpenChange={() => onClose()}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>{guard ? 'Edit Security Guard' : 'Add Security Guard'}</DialogTitle>
+          <DialogTitle>{guard ? 'Edit Security Guard' : 'Add New Security Guard'}</DialogTitle>
         </DialogHeader>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">Name</label>
-              <Input
-                id="name"
-                {...register('name', { required: 'Name is required' })}
-                className={errors.name ? 'border-red-500' : ''}
-              />
-              {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="employeeId" className="text-sm font-medium">Employee ID</label>
-              <Input
-                id="employeeId"
-                {...register('employeeId', { required: 'Employee ID is required' })}
-                className={errors.employeeId ? 'border-red-500' : ''}
-              />
-              {errors.employeeId && <p className="text-red-500 text-xs">{errors.employeeId.message}</p>}
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Name</label>
+            <Input {...register('name', { required: 'Name is required' })} />
+            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="status" className="text-sm font-medium">Status</label>
-              <Select {...register('status')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="On Duty">On Duty</SelectItem>
-                  <SelectItem value="Off Duty">Off Duty</SelectItem>
-                  <SelectItem value="On Leave">On Leave</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="shift" className="text-sm font-medium">Shift</label>
-              <Select {...register('shift')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select shift" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Morning">Morning</SelectItem>
-                  <SelectItem value="Afternoon">Afternoon</SelectItem>
-                  <SelectItem value="Night">Night</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Employee ID</label>
+            <Input {...register('employeeId', { required: 'Employee ID is required' })} />
+            {errors.employeeId && <p className="text-red-500 text-sm">{errors.employeeId.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="location" className="text-sm font-medium">Location</label>
-            <Input
-              id="location"
-              {...register('location', { required: 'Location is required' })}
-              className={errors.location ? 'border-red-500' : ''}
-            />
-            {errors.location && <p className="text-red-500 text-xs">{errors.location.message}</p>}
+          <div>
+            <label className="block text-sm font-medium mb-1">Status</label>
+            <Select onValueChange={(value) => register('status').onChange({ target: { value } })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="On Duty">On Duty</SelectItem>
+                <SelectItem value="Off Duty">Off Duty</SelectItem>
+                <SelectItem value="On Leave">On Leave</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="contactNumber" className="text-sm font-medium">Contact Number</label>
-              <Input
-                id="contactNumber"
-                {...register('contactNumber', { required: 'Contact number is required' })}
-                className={errors.contactNumber ? 'border-red-500' : ''}
-              />
-              {errors.contactNumber && <p className="text-red-500 text-xs">{errors.contactNumber.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">Email</label>
-              <Input
-                id="email"
-                type="email"
-                {...register('email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
-                  },
-                })}
-                className={errors.email ? 'border-red-500' : ''}
-              />
-              {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Shift</label>
+            <Select onValueChange={(value) => register('shift').onChange({ target: { value } })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select shift" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Morning">Morning</SelectItem>
+                <SelectItem value="Afternoon">Afternoon</SelectItem>
+                <SelectItem value="Night">Night</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="joiningDate" className="text-sm font-medium">Joining Date</label>
-              <Input
-                id="joiningDate"
-                type="date"
-                {...register('joiningDate', { required: 'Joining date is required' })}
-                className={errors.joiningDate ? 'border-red-500' : ''}
-              />
-              {errors.joiningDate && <p className="text-red-500 text-xs">{errors.joiningDate.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="nextShift" className="text-sm font-medium">Next Shift</label>
-              <Input
-                id="nextShift"
-                type="date"
-                {...register('nextShift', { required: 'Next shift is required' })}
-                className={errors.nextShift ? 'border-red-500' : ''}
-              />
-              {errors.nextShift && <p className="text-red-500 text-xs">{errors.nextShift.message}</p>}
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Location</label>
+            <Input {...register('location', { required: 'Location is required' })} />
+            {errors.location && <p className="text-red-500 text-sm">{errors.location.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Contact Number</label>
+            <Input {...register('contactNumber', { required: 'Contact number is required' })} />
+            {errors.contactNumber && <p className="text-red-500 text-sm">{errors.contactNumber.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <Input {...register('email', { 
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address'
+              }
+            })} />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Joining Date</label>
+            <Input type="date" {...register('joiningDate', { required: 'Joining date is required' })} />
+            {errors.joiningDate && <p className="text-red-500 text-sm">{errors.joiningDate.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Next Shift</label>
+            <Input type="date" {...register('nextShift', { required: 'Next shift is required' })} />
+            {errors.nextShift && <p className="text-red-500 text-sm">{errors.nextShift.message}</p>}
           </div>
 
           <div className="flex justify-end space-x-2">

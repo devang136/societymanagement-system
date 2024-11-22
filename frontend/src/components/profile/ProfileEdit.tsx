@@ -2,21 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { User } from '@/types/user';
 
 interface ProfileEditProps {
-  user: User;
-  onSave: (user: User) => void;
+  profile: User;
+  onSubmit: (updatedProfile: Partial<User>) => Promise<void>;
   onCancel: () => void;
+  isLoading: boolean;
 }
 
-const ProfileEdit: React.FC<ProfileEditProps> = ({ user, onSave, onCancel }) => {
-  const [formData, setFormData] = useState<User>(user);
+const ProfileEdit: React.FC<ProfileEditProps> = ({ profile, onSubmit, onCancel, isLoading }) => {
+  const [formData, setFormData] = useState<User>(profile);
 
   useEffect(() => {
-    setFormData(user);
-  }, [user]);
+    setFormData(profile);
+  }, [profile]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    onSubmit(formData);
   };
 
   return (

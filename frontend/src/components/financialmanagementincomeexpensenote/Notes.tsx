@@ -12,14 +12,7 @@ import {
 import { formatDate } from '@/lib/utils';
 import { mockNotes } from '@/data/mockData';
 import NoteModal from './NoteModal';
-
-export interface Note {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  priority: string;
-}
+import { Note } from '@/types/expense';
 
 interface NotesProps {
   notes?: Note[];

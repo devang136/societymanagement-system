@@ -3,15 +3,17 @@ import { getSecurityGuards, createSecurityGuard, updateSecurityGuard, deleteSecu
 import { SecurityGuard } from '../../types';
 import SecurityModal from './SecurityModal';
 import SecurityTable from './SecurityTable';
-import { Header } from './Header';
+import { Header } from '../common/Header';
+import DeleteConfirmationModal from '../common/DeleteConfirmationModal';
+import { Plus } from 'lucide-react';
 
 const SecurityGuardManagement: React.FC = () => {
   const [guards, setGuards] = useState<SecurityGuard[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedGuard, setSelectedGuard] = useState<SecurityGuard | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [guardToDelete, setGuardToDelete] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'On Duty' | 'Off Duty' | 'On Leave'>('all');
-  const [filterShift, setFilterShift] = useState<'all' | 'Morning' | 'Afternoon' | 'Night'>('all');
 
   useEffect(() => {
     fetchGuards();
@@ -22,49 +24,51 @@ const SecurityGuardManagement: React.FC = () => {
       const data = await getSecurityGuards();
       setGuards(data);
     } catch (error) {
-      console.error('Error fetching security guards:', error);
+      console.error('Error fetching guards:', error);
     }
   };
 
-  const handleAddGuard = async (guardData: Omit<SecurityGuard, 'id'>) => {
+  const handleCreate = async (guardData: Omit<SecurityGuard, 'id'>) => {
     try {
       await createSecurityGuard(guardData);
       fetchGuards();
       setShowModal(false);
     } catch (error) {
-      console.error('Error adding security guard:', error);
+      console.error('Error creating guard:', error);
     }
   };
 
-  const handleEditGuard = async (id: string, guardData: Partial<SecurityGuard>) => {
+  const handleUpdate = async (id: string, guardData: Partial<SecurityGuard>) => {
     try {
       await updateSecurityGuard(id, guardData);
       fetchGuards();
       setShowModal(false);
       setSelectedGuard(null);
     } catch (error) {
-      console.error('Error updating security guard:', error);
+      console.error('Error updating guard:', error);
     }
   };
 
-  const handleDeleteGuard = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this guard?')) {
-      try {
-        await deleteSecurityGuard(id);
-        fetchGuards();
-      } catch (error) {
-        console.error('Error deleting security guard:', error);
-      }
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteSecurityGuard(id);
+      fetchGuards();
+      setShowDeleteModal(false);
+      setGuardToDelete(null);
+    } catch (error) {
+      console.error('Error deleting guard:', error);
     }
   };
 
-  const filteredGuards = guards.filter(guard =>
-    (filterStatus === 'all' || guard.status === filterStatus) &&
-    (filterShift === 'all' || guard.shift === filterShift) &&
-    (guard.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     guard.employeeId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     guard.location.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const openEditModal = (guard: SecurityGuard) => {
+    setSelectedGuard(guard);
+    setShowModal(true);
+  };
+
+  const openDeleteModal = (guardId: string) => {
+    setGuardToDelete(guardId);
+    setShowDeleteModal(true);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -79,24 +83,34 @@ const SecurityGuardManagement: React.FC = () => {
     }
   };
 
+  const filteredGuards = guards.filter(guard => 
+    guard.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    guard.shift.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    guard.status.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="p-6">
+    <div className="container mx-auto px-4 py-8">
       <Header
-        onAddNew={() => {
-          setSelectedGuard(null);
-          setShowModal(true);
-        }}
+        title="Security Guard Management"
+        showSearch
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
+        actions={
+          <button
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            <Plus size={20} />
+            Add New Guard
+          </button>
+        }
       />
 
       <SecurityTable
         guards={filteredGuards}
-        onEdit={(guard) => {
-          setSelectedGuard(guard);
-          setShowModal(true);
-        }}
-        onDelete={handleDeleteGuard}
+        onEdit={openEditModal}
+        onDelete={openDeleteModal}
         getStatusColor={getStatusColor}
       />
 
@@ -107,10 +121,19 @@ const SecurityGuardManagement: React.FC = () => {
             setShowModal(false);
             setSelectedGuard(null);
           }}
-          onSave={selectedGuard ? 
-            (guardData) => handleEditGuard(selectedGuard.id, guardData) : 
-            handleAddGuard
-          }
+          onSave={selectedGuard ? (data) => handleUpdate(selectedGuard.id, data) : handleCreate}
+        />
+      )}
+
+      {showDeleteModal && guardToDelete && (
+        <DeleteConfirmationModal
+          title="Delete Security Guard"
+          message="Are you sure you want to delete this security guard? This action cannot be undone."
+          onClose={() => {
+            setShowDeleteModal(false);
+            setGuardToDelete(null);
+          }}
+          onConfirm={() => handleDelete(guardToDelete)}
         />
       )}
     </div>

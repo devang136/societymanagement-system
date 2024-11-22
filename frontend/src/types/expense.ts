@@ -17,9 +17,9 @@ export interface Income {
 export interface Note {
   id: number;
   title: string;
-  content: string;
-  date: Date;
-  priority: 'High' | 'Medium' | 'Low';
+  description: string;
+  date: string;
+  priority: string;
 }
 
 export interface Maintenance {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Facility } from '@/types/facility';
-import { Calendar, MapPin, Tool, Activity } from 'lucide-react';
+import { Calendar, MapPin, Settings, Activity } from 'lucide-react';
 
 interface FacilityCardProps {
   facility: Facility;
@@ -47,7 +47,7 @@ const FacilityCard: React.FC<FacilityCardProps> = ({ facility, onEdit }) => {
         </div>
 
         <div className="flex items-center text-gray-600">
-          <Tool className="w-5 h-5 mr-2" />
+          <Settings className="w-5 h-5 mr-2" />
           <span>Next Maintenance: {facility.nextMaintenance}</span>
         </div>
       </div>

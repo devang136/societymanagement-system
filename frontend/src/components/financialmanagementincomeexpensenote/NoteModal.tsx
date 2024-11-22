@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-interface Note {
-  id?: number;
-  title: string;
-  content: string;
-  date: string;
-  category: string;
-  priority: 'High' | 'Medium' | 'Low';
-}
+import { Note } from '@/types/expense';
 
 interface NoteModalProps {
   isOpen: boolean;
@@ -18,11 +10,11 @@ interface NoteModalProps {
 
 const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSave, editNote }) => {
   const [note, setNote] = useState<Note>({
+    id: 0,
     title: '',
-    content: '',
-    date: new Date().toISOString().split('T')[0],
-    category: '',
-    priority: 'Medium',
+    description: '',
+    date: new Date().toISOString(),
+    priority: 'Medium'
   });
 
   useEffect(() => {
@@ -68,23 +60,12 @@ const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSave, editNote
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Content</label>
+              <label className="block text-sm font-medium text-gray-700">Description</label>
               <textarea
-                value={note.content}
-                onChange={(e) => setNote({ ...note, content: e.target.value })}
+                value={note.description}
+                onChange={(e) => setNote({ ...note, description: e.target.value })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                 rows={4}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
-              <input
-                type="text"
-                value={note.category}
-                onChange={(e) => setNote({ ...note, category: e.target.value })}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                 required
               />
             </div>
@@ -93,8 +74,8 @@ const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSave, editNote
               <label className="block text-sm font-medium text-gray-700">Date</label>
               <input
                 type="date"
-                value={note.date}
-                onChange={(e) => setNote({ ...note, date: e.target.value })}
+                value={note.date.split('T')[0]}
+                onChange={(e) => setNote({ ...note, date: e.target.value + 'T00:00:00.000Z' })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                 required
               />
