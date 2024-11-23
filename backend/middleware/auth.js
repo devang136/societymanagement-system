@@ -1,17 +1,25 @@
-const jwt = require('jsonwebtoken');
-
-module.exports = function (req, res, next) {
-  const token = req.header('x-auth-token');
-
-  if (!token) {
-    return res.status(401).json({ msg: 'No token, authorization denied' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.user;
-    next();
-  } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
-  }
+const jwt = require("jsonwebtoken");
+// const { findUser } = require("../services/user.service");
+const secret = "MySecretKey";
+const createToken = (data) => {
+  const token = jwt.sign({ data }, secret);
+  return token;
 };
+
+const verifyToken = (login_token) => {
+  return jwt.verify(login_token, secret);
+};
+
+const authenticate = (req, res, next) => {
+  const login_token = req.cookies.login_token;
+  console.log(login_token);
+  if (!login_token) {
+  res.status(400).json({ message: "you are not login" });
+  }
+  const user = jwt.verify(login_token, secret);
+  req.user = user;
+  next();
+};
+
+
+module.exports = { createToken, verifyToken, authenticate };

@@ -44,6 +44,10 @@ exports.loginChairman = async (email, password) => {
   return chairman;
 };
 
+exports.findUser = (email) => {
+  return Chairman.findOne({ email: email });
+};
+
 exports.generateToken = (chairmanId) => {
   const payload = {
     user: {
@@ -63,3 +67,5 @@ exports.generateToken = (chairmanId) => {
     );
   });
 };
+
+
