@@ -3,63 +3,64 @@ import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { FiPlus, FiBell, FiSearch } from 'react-icons/fi';
 import { StatCard } from './StatCard';
 import { ComplaintRow } from './ComplaintRow';
-import { Sidebar } from '../layout/Sidebar';
 import { ImportantNumber } from './ImportantNumber';
 import { PendingMaintenance } from './PendingMaintenance';
 import { UpcomingActivity } from './UpcomingActivity';
-import { AddImportantNumber } from './modals/AddImportantNumber';
+import AddImportantNumber from '../dashboardmodals/AddImportantNumber';
 import { Notification } from './Notification';
+import ProfileView from '../editprofile/ProfileView';
+import ProfileEdit from '../editprofile/ProfileEdit';
 
-interface Complaint {
-  id: number;
-  name: string;
-  complaintName: string;
-  date: string;
-  priority: 'High' | 'Medium' | 'Low';
-  status: 'New' | 'In Progress' | 'Resolved';
-  avatar: string;
-  description: string;
-  wing: string;
-  unit: string;
+interface DashboardProps {
+  onLogout: () => void;
+  userRole: 'admin' | 'user' | 'security' | null;
 }
 
-interface ImportantNumberData {
-  id: number;
-  name: string;
-  phoneNumber: string;
-  work: string;
-}
+export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
+  const [activeMenuItem, setActiveMenuItem] = useState('dashboard');
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState({
+    firstName: "Moni",
+    lastName: "Roy",
+    phoneNumber: "+91 99130 44537",
+    email: "admin@example.com",
+    society: "Shantigram residency",
+    country: "India",
+    state: "Gujarat",
+    city: "Baroda"
+  });
 
-interface PendingMaintenanceData {
-  id: number;
-  name: string;
-  amount: number;
-  avatar: string;
-  date: string;
-}
+  const handleProfileClick = () => {
+    setIsProfileOpen(true);
+    setActiveMenuItem('profile');
+  };
 
-interface UpcomingActivityData {
-  id: number;
-  title: string;
-  type: 'society' | 'holi' | 'ganesh' | 'navratri';
-  timeRange: string;
-  date: string;
-}
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
 
-const data = [
-  { name: 'Jan', value: 10000 },
-  { name: 'Feb', value: 15000 },
-  { name: 'Mar', value: 20000 },
-  { name: 'Apr', value: 25000 },
-  { name: 'May', value: 30000 },
-  { name: 'Jun', value: 35000 },
-  { name: 'Jul', value: 55000 },
-];
+  const handleUpdateProfile = () => {
+    setIsEditing(false);
+  };
 
-export function Dashboard() {
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  const data = [
+    { name: 'Jan', value: 10000 },
+    { name: 'Feb', value: 15000 },
+    { name: 'Mar', value: 20000 },
+    { name: 'Apr', value: 25000 },
+    { name: 'May', value: 30000 },
+    { name: 'Jun', value: 35000 },
+    { name: 'Jul', value: 55000 },
+  ];
+
   const [isAddNumberOpen, setIsAddNumberOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [importantNumbers, setImportantNumbers] = useState<ImportantNumberData[]>([
+  const [importantNumbers] = useState([
     {
       id: 1,
       name: 'Hamna Darin',
@@ -80,7 +81,7 @@ export function Dashboard() {
     }
   ]);
 
-  const [pendingMaintenances] = useState<PendingMaintenanceData[]>([
+  const [pendingMaintenances] = useState([
     {
       id: 1,
       name: 'Roger Lubin',
@@ -104,7 +105,13 @@ export function Dashboard() {
     }
   ]);
 
-  const [upcomingActivities] = useState<UpcomingActivityData[]>([
+  const [upcomingActivities] = useState<Array<{
+    id: number;
+    title: string;
+    type: 'society' | 'holi' | 'ganesh' | 'navratri';
+    timeRange: string;
+    date: string;
+  }>>([
     {
       id: 1,
       title: 'Society Meeting',
@@ -135,64 +142,82 @@ export function Dashboard() {
     }
   ]);
 
-  const [complaints] = useState<Complaint[]>([
+  const [complaints] = useState([
     {
       id: 1,
       name: 'Evelyn Harper',
       complaintName: 'Unethical Behavior',
       date: '01/02/2024',
-      priority: 'Medium',
-      status: 'New',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-      description: 'Unethical behavior in common area',
-      wing: 'A',
-      unit: 'A101'
+      priority: 'Medium' as const,
+      status: 'Open' as const,
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1'
     },
     {
       id: 2,
       name: 'Evelyn Harper',
       complaintName: 'Unethical Behavior',
       date: '01/02/2024',
-      priority: 'Low',
-      status: 'In Progress',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
-      description: 'Unethical behavior in parking area',
-      wing: 'B',
-      unit: 'B202'
+      priority: 'Low' as const,
+      status: 'Pending' as const,
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2'
     },
     {
       id: 3,
       name: 'Evelyn Harper',
       complaintName: 'Unethical Behavior',
       date: '01/02/2024',
-      priority: 'High',
-      status: 'Resolved',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
-      description: 'Unethical behavior in garden area',
-      wing: 'C',
-      unit: 'C303'
+      priority: 'High' as const,
+      status: 'Solve' as const,
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3'
     }
   ]);
 
-  const handleAddNumber = (data: ImportantNumberData) => {
-    setImportantNumbers([...importantNumbers, { ...data, id: importantNumbers.length + 1 }]);
-    setIsAddNumberOpen(false);
+  const handleAddNumber = (data: any) => {
+    console.log('Adding number:', data);
   };
 
-  const handleEditComplaint = (id: number, data: Complaint) => {
-    // Implement complaint edit logic
-    console.log('Editing complaint:', id, data);
-  };
-
-  const handleDeleteComplaint = (id: number) => {
-    // Implement complaint delete logic
-    console.log('Deleting complaint:', id);
+  const handleSidebarMenuChange = (menuItem: string) => {
+    setActiveMenuItem(menuItem);
+    if (menuItem === 'dashboard') {
+      setIsProfileOpen(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar />
-      <div className="flex-1 ml-64">
+    <div className="flex-1">
+      <div className="flex items-center justify-between px-6 py-4 bg-white">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-gray-500">Home</span>
+          <span className="text-gray-500">/</span>
+          <span className="text-blue-600">{isProfileOpen ? 'Profile' : 'Dashboard'}</span>
+        </div>
+        <div 
+          className="flex items-center gap-3 cursor-pointer" 
+          onClick={handleProfileClick}
+        >
+          {/* <div className="w-8 h-8 rounded-full bg-gray-200"></div> */}
+          <div>
+            {/* <div className="text-sm font-medium">Moni Roy</div>
+            <div className="text-xs text-gray-500">Admin</div> */}
+          </div>
+        </div>
+      </div>
+
+      {isProfileOpen ? (
+        isEditing ? (
+          <ProfileEdit 
+            onCancel={handleCancelEdit}
+            onUpdate={handleUpdateProfile}
+            profileData={profileData}
+          />
+        ) : (
+          <ProfileView 
+            profileData={profileData}
+            onEditClick={handleEditClick}
+          />
+        )
+      ) : (
+        // Your existing dashboard content
         <div className="p-6">
           {/* Header */}
           <header className="flex justify-between items-center mb-8">
@@ -213,12 +238,8 @@ export function Dashboard() {
               >
                 <FiBell className="w-6 h-6" />
               </button>
-              <div className="flex items-center space-x-3">
-                <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin"
-                  alt="Admin"
-                  className="w-10 h-10 rounded-full"
-                />
+              <div className="flex items-center gap-3 cursor-pointer" onClick={handleProfileClick}>
+                <div className="w-8 h-8 rounded-full bg-gray-200"></div>
                 <div>
                   <div className="text-sm font-medium">Moni Roy</div>
                   <div className="text-xs text-gray-500">Admin</div>
@@ -255,51 +276,79 @@ export function Dashboard() {
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={data}>
-                    <defs>
-                      <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.1}/>
-                        <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Area
                       type="monotone"
                       dataKey="value"
                       stroke="#f97316"
-                      fillOpacity={1}
-                      fill="url(#colorValue)"
+                      fill="#fed7aa"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Recent Complaints */}
-            <div className="col-span-6 bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-lg font-semibold mb-6">Recent Complaints</h2>
-                <table className="min-w-full">
+            {/* Important Numbers */}
+            <div className="col-span-3 bg-white p-6 rounded-lg shadow-sm h-[400px] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Important Numbers</h2>
+                <button
+                  onClick={() => setIsAddNumberOpen(true)}
+                  className="p-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+                >
+                  <FiPlus />
+                </button>
+              </div>
+              <div className="space-y-4">
+                {importantNumbers.map((number) => (
+                  <ImportantNumber
+                    key={number.id}
+                    number={number}
+                    onEdit={(id, data) => console.log('Edit', id, data)}
+                    onDelete={(id) => console.log('Delete', id)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Pending Maintenances */}
+            <div className="col-span-3 bg-white p-6 rounded-lg shadow-sm h-[400px] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Pending Maintenances</h2>
+                <button className="text-sm text-blue-500 hover:text-blue-600">View all</button>
+              </div>
+              <div className="space-y-4">
+                {pendingMaintenances.map((maintenance) => (
+                  <PendingMaintenance
+                    key={maintenance.id}
+                    maintenance={maintenance}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section */}
+          <div className="grid grid-cols-12 gap-6 mt-6">
+            {/* Complaints */}
+            <div className="col-span-9 bg-white p-6 rounded-lg shadow-sm">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-lg font-semibold">Complaint List</h2>
+                <select className="border rounded-md px-3 py-1">
+                  <option>Month</option>
+                </select>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
                   <thead>
-                    <tr>
-                      <th scope="col" className="py-3.5 pl-4 pr-8 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8">
-                        Name
-                      </th>
-                      <th scope="col" className="hidden py-3.5 px-3 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                        Complaint
-                      </th>
-                      <th scope="col" className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">
-                        Priority
-                      </th>
-                      <th scope="col" className="hidden py-3.5 px-3 text-left text-sm font-semibold text-gray-900 md:table-cell">
-                        Date
-                      </th>
-                      <th scope="col" className="hidden py-3.5 px-3 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                        Status
-                      </th>
-                      <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8">
-                        <span className="sr-only">Actions</span>
-                      </th>
+                    <tr className="text-left text-gray-600">
+                      <th className="pb-4">Complainer Name</th>
+                      <th className="pb-4">Complaint Name</th>
+                      <th className="pb-4">Date</th>
+                      <th className="pb-4">Priority</th>
+                      <th className="pb-4">Complaint Status</th>
+                      <th className="pb-4">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -307,8 +356,8 @@ export function Dashboard() {
                       <ComplaintRow
                         key={complaint.id}
                         complaint={complaint}
-                        onEdit={handleEditComplaint}
-                        onDelete={handleDeleteComplaint}
+                        onEdit={(id, data) => console.log('Edit', id, data)}
+                        onDelete={(id) => console.log('Delete', id)}
                       />
                     ))}
                   </tbody>
@@ -316,47 +365,28 @@ export function Dashboard() {
               </div>
             </div>
 
-            {/* Important Numbers */}
-            <div className="col-span-4 bg-white p-6 rounded-lg shadow-sm">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-semibold">Important Numbers</h2>
-                <button
-                  onClick={() => setIsAddNumberOpen(true)}
-                  className="p-2 text-orange-500 hover:bg-orange-50 rounded-full"
-                >
-                  <FiPlus className="w-5 h-5" />
-                </button>
+            {/* Upcoming Activity */}
+            <div className="col-span-3 bg-white p-6 rounded-lg shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Upcoming Activity</h2>
+                <select className="border rounded-md px-3 py-1">
+                  <option>Month</option>
+                </select>
               </div>
-              <div className="space-y-4">
-                {importantNumbers.map((number) => (
-                  <ImportantNumber key={number.id} number={number} />
-                ))}
-              </div>
-            </div>
-
-            {/* Pending Maintenance */}
-            <div className="col-span-4 bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-lg font-semibold mb-6">Pending Maintenance</h2>
-              <div className="space-y-4">
-                {pendingMaintenances.map((maintenance) => (
-                  <PendingMaintenance key={maintenance.id} maintenance={maintenance} />
-                ))}
-              </div>
-            </div>
-
-            {/* Upcoming Activities */}
-            <div className="col-span-4 bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-lg font-semibold mb-6">Upcoming Activities</h2>
               <div className="space-y-4">
                 {upcomingActivities.map((activity) => (
-                  <UpcomingActivity key={activity.id} activity={activity} />
+                  <UpcomingActivity
+                    key={activity.id}
+                    activity={activity}
+                  />
                 ))}
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
+      {/* Modals */}
       <AddImportantNumber
         isOpen={isAddNumberOpen}
         onClose={() => setIsAddNumberOpen(false)}

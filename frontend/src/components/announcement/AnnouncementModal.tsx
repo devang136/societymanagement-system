@@ -1,49 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Announcement, AnnouncementFormData } from '../../types/announcement';
+import { Announcement, AnnouncementFormData } from './announcement';
 
 interface AnnouncementModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: AnnouncementFormData) => void;
+  onSave: (data: AnnouncementFormData) => void;
   announcement?: Announcement;
 }
 
 export default function AnnouncementModal({
   isOpen,
   onClose,
-  onSubmit,
+  onSave,
   announcement,
 }: AnnouncementModalProps) {
   const [formData, setFormData] = useState<AnnouncementFormData>({
     title: '',
-    content: '',
-    category: 'General',
-    priority: 'Medium',
-    status: 'Active',
-    validUntil: new Date().toISOString().split('T')[0],
-    targetAudience: ['All Residents']
+    description: '',
+    date: '',
+    time: '',
   });
 
   useEffect(() => {
     if (announcement) {
       setFormData({
         title: announcement.title,
-        content: announcement.content,
-        category: announcement.category,
-        priority: announcement.priority,
-        status: announcement.status,
-        validUntil: announcement.validUntil,
-        targetAudience: announcement.targetAudience
+        description: announcement.description,
+        date: announcement.date,
+        time: announcement.time,
       });
     }
   }, [announcement]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-    onClose();
-  };
 
   if (!isOpen) return null;
 
@@ -62,129 +50,88 @@ export default function AnnouncementModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Title
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSave(formData);
+          }}
+          className="space-y-4"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Announcement Title
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Content
-              </label>
-              <textarea
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                rows={4}
-                required
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              className="w-full p-2 border border-gray-300 rounded-md"
+              rows={3}
+              required
+            />
+          </div>
 
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              >
-                <option value="General">General</option>
-                <option value="Maintenance">Maintenance</option>
-                <option value="Security">Security</option>
-                <option value="Community">Community</option>
-                <option value="Emergency">Emergency</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Priority
-              </label>
-              <select
-                value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value as 'High' | 'Medium' | 'Low' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              >
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Status
-              </label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'Active' | 'Scheduled' | 'Expired' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              >
-                <option value="Active">Active</option>
-                <option value="Scheduled">Scheduled</option>
-                <option value="Expired">Expired</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Valid Until
+                Announcement Date
               </label>
               <input
                 type="date"
-                value={formData.validUntil}
-                onChange={(e) => setFormData({ ...formData, validUntil: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                value={formData.date}
+                onChange={(e) =>
+                  setFormData({ ...formData, date: e.target.value })
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
                 required
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Target Audience
+                Announcement Time
               </label>
-              <select
-                multiple
-                value={formData.targetAudience}
-                onChange={(e) => {
-                  const selected = Array.from(e.target.selectedOptions, option => option.value);
-                  setFormData({ ...formData, targetAudience: selected });
-                }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                size={4}
-              >
-                <option value="All Residents">All Residents</option>
-                <option value="Staff">Staff</option>
-                <option value="Security">Security</option>
-                <option value="Management">Management</option>
-              </select>
+              <input
+                type="time"
+                value={formData.time}
+                onChange={(e) =>
+                  setFormData({ ...formData, time: e.target.value })
+                }
+                className="w-full p-2 border border-gray-300 rounded-md"
+                required
+              />
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end space-x-3">
+          <div className="flex justify-end space-x-3 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
+              className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
             >
-              {announcement ? 'Save Changes' : 'Create Announcement'}
+              Save
             </button>
           </div>
         </form>

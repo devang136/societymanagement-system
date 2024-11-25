@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FiTrash2, FiEdit2 } from 'react-icons/fi';
-import { EditImportantNumber } from './modals/EditImportantNumber';
-import { DeleteConfirmation } from './modals/DeleteConfirmation';
+import { EditImportantNumber } from '../dashboardmodals/EditImportantNumber';
+import { DeleteConfirmation } from '../dashboardmodals/DeleteConfirmation';
 
 interface ImportantNumberProps {
   number: {
@@ -69,3 +69,4 @@ export function ImportantNumber({ number, onEdit, onDelete }: ImportantNumberPro
     </>
   );
 }
+// ImportantNumber dashboard file 

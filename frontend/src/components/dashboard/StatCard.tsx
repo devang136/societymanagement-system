@@ -27,3 +27,4 @@ export function StatCard({ title, value, color }: StatCardProps) {
     </div>
   );
 }
+// StatCard dashboard file  
