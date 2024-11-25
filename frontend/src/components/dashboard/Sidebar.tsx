@@ -88,7 +88,15 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
         { id: 'discussions', label: 'Community Discussions', path: '/community/discussions' }
       ]
     },
-    { id: 'payments', label: 'Payment Portal', icon: DollarSign, path: '/payments' },
+    { 
+      id: 'payments', 
+      label: 'Payment Portal', 
+      icon: DollarSign, 
+      subItems: [
+        { id: 'maintenance-invoices', label: 'Maintenance Invoices', path: '/payments/maintenance', icon: FileText },
+        { id: 'other-invoices', label: 'Other Income Invoices', path: '/payments/other', icon: FileText }
+      ]
+    },
     { id: 'security', label: 'Security Protocol', icon: Shield, path: '/security-protocol' },
   ];
 
