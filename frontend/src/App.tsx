@@ -18,6 +18,8 @@ import AnnouncementApp from './components/announcement/announcementapp';
 import CommunityForum from './components/community/forum/CommunityForum';
 import CommunityPolls from './components/community/polls/CommunityPolls';
 import CommunityDiscussions from './components/community/discussions/CommunityDiscussions';
+import { MaintenanceInvoices } from './components/financialman/payments/maintenance/MaintenanceInvoices';
+import { OtherInvoices } from './components/financialman/payments/other/OtherInvoices';
 
 interface LoginFormProps {
   onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
@@ -75,6 +77,8 @@ function App() {
             <Route path="polls" element={<CommunityPolls />} />
             <Route path="discussions" element={<CommunityDiscussions />} />
           </Route>
+          <Route path="/payments/maintenance" element={<MaintenanceInvoices />} />
+          <Route path="/payments/other" element={<OtherInvoices />} />
         </Routes>
       </AuthLayout>
     </Router>
