@@ -1,25 +1,22 @@
-import { useState } from 'react';
-import { FiTrash2, FiEdit2, FiEye } from 'react-icons/fi';
-import { ViewComplaint } from './modals/ViewComplaint';
-import { EditComplaint } from './modals/EditComplaint';
-import { DeleteConfirmation } from './modals/DeleteConfirmation';
-
-interface Complaint {
-  id: number;
-  name: string;
-  complaintName: string;
-  date: string;
-  priority: 'High' | 'Medium' | 'Low';
-  status: 'New' | 'In Progress' | 'Resolved';
-  avatar: string;
-  description: string;
-  wing: string;
-  unit: string;
-}
+import React, { useState } from 'react';
+import { ViewComplaint } from '../dashboardmodals/ViewComplaint';
+import { EditComplaint } from '../dashboardmodals/EditComplaint';
+import { DeleteConfirmation } from '../dashboardmodals/DeleteConfirmation';
 
 interface ComplaintRowProps {
-  complaint: Complaint;
-  onEdit?: (id: number, data: Complaint) => void;
+  complaint: {
+    id: number;
+    name: string;
+    complaintName: string;
+    date: string;
+    priority: 'High' | 'Medium' | 'Low';
+    status: 'Open' | 'Pending' | 'Solve';
+    avatar: string;
+    description?: string;
+    wing?: string;
+    unit?: string;
+  };
+  onEdit?: (id: number, data: any) => void;
   onDelete?: (id: number) => void;
 }
 
@@ -30,24 +27,18 @@ export function ComplaintRow({ complaint, onEdit, onDelete }: ComplaintRowProps)
 
   const priorityColors = {
     High: 'bg-red-100 text-red-800',
-    Medium: 'bg-yellow-100 text-yellow-800',
+    Medium: 'bg-blue-100 text-blue-800',
     Low: 'bg-green-100 text-green-800'
   };
 
   const statusColors = {
-    'New': 'text-blue-500',
-    'In Progress': 'text-yellow-500',
-    'Resolved': 'text-green-500'
+    Open: 'text-blue-500',
+    Pending: 'text-yellow-500',
+    Solve: 'text-green-500'
   };
 
-  const handleEdit = (formData: Omit<Complaint, 'id' | 'date' | 'avatar'>) => {
-    if (onEdit) {
-      onEdit(complaint.id, {
-        ...complaint,
-        ...formData
-      });
-    }
-    setIsEditOpen(false);
+  const handleEdit = (data: any) => {
+    onEdit?.(complaint.id, data);
   };
 
   const handleDelete = () => {
@@ -58,50 +49,54 @@ export function ComplaintRow({ complaint, onEdit, onDelete }: ComplaintRowProps)
   return (
     <>
       <tr className="border-t">
-        <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-          <div className="flex items-center gap-x-4">
-            <img src={complaint.avatar} alt="" className="h-8 w-8 rounded-full bg-gray-50" />
-            <div className="truncate text-sm font-medium leading-6 text-gray-900">{complaint.name}</div>
+        <td className="py-4">
+          <div className="flex items-center space-x-3">
+            <img
+              src={complaint.avatar}
+              alt={complaint.name}
+              className="w-8 h-8 rounded-full"
+            />
+            <span>{complaint.name}</span>
           </div>
         </td>
-        <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-          <div className="truncate text-sm leading-6 text-gray-900">{complaint.complaintName}</div>
+        <td className="py-4">{complaint.complaintName}</td>
+        <td className="py-4">{complaint.date}</td>
+        <td className="py-4">
+          <span className={`px-3 py-1 rounded-full text-sm ${priorityColors[complaint.priority]}`}>
+            {complaint.priority}
+          </span>
         </td>
-        <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
-          <div className="flex items-center justify-end gap-x-2 sm:justify-start">
-            <time className="text-gray-500 sm:hidden" dateTime={complaint.date}>
-              {complaint.date}
-            </time>
-            <div className={`flex-none rounded-full p-1 px-2 text-xs font-medium ring-1 ring-inset ${priorityColors[complaint.priority]}`}>
-              {complaint.priority}
-            </div>
-          </div>
+        <td className="py-4">
+          <span className={statusColors[complaint.status]}>
+            {complaint.status}
+          </span>
         </td>
-        <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-500 md:table-cell lg:pr-20">
-          {complaint.date}
-        </td>
-        <td className="hidden py-4 pl-0 pr-4 text-sm leading-6 text-gray-500 sm:table-cell sm:pr-8">
-          <div className={statusColors[complaint.status]}>{complaint.status}</div>
-        </td>
-        <td className="py-4 pl-0 pr-4 text-right text-sm leading-6 sm:pr-8 lg:pr-20">
-          <div className="flex justify-end gap-x-2">
-            <button
+        <td className="py-4">
+          <div className="flex space-x-2">
+            <button 
               onClick={() => setIsViewOpen(true)}
-              className="text-gray-500 hover:text-gray-600"
+              className="p-1 text-green-500 hover:bg-green-50 rounded"
             >
-              <FiEye className="h-4 w-4" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
             </button>
-            <button
+            <button 
               onClick={() => setIsEditOpen(true)}
-              className="text-gray-500 hover:text-gray-600"
+              className="p-1 text-blue-500 hover:bg-blue-50 rounded"
             >
-              <FiEdit2 className="h-4 w-4" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
             </button>
-            <button
+            <button 
               onClick={() => setIsDeleteOpen(true)}
-              className="text-red-500 hover:text-red-600"
+              className="p-1 text-red-500 hover:bg-red-50 rounded"
             >
-              <FiTrash2 className="h-4 w-4" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
             </button>
           </div>
         </td>
@@ -110,31 +105,34 @@ export function ComplaintRow({ complaint, onEdit, onDelete }: ComplaintRowProps)
       <ViewComplaint
         isOpen={isViewOpen}
         onClose={() => setIsViewOpen(false)}
-        complaint={complaint}
+        complaint={{
+          ...complaint,
+          description: complaint.description || 'No description provided',
+          wing: complaint.wing || 'A',
+          unit: complaint.unit || '1001',
+        }}
       />
 
       <EditComplaint
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        complaint={{
-          name: complaint.name,
-          complaintName: complaint.complaintName,
-          description: complaint.description,
-          wing: complaint.wing,
-          unit: complaint.unit,
-          priority: complaint.priority,
-          status: complaint.status
-        }}
         onSave={handleEdit}
+        complaint={{
+          ...complaint,
+          description: complaint.description || '',
+          wing: complaint.wing || 'A',
+          unit: complaint.unit || '1001',
+        }}
       />
 
       <DeleteConfirmation
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDelete}
-        title="Delete Complaint"
-        description="Are you sure you want to delete this complaint? This action cannot be undone."
+        title="Delete Complaint?"
+        message="Are you sure you want to delete this complaint?"
       />
     </>
   );
 }
+// ComplaintRow dashboard file 

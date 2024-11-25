@@ -1,132 +1,183 @@
+import { X, Upload } from 'lucide-react';
+import { useState } from 'react';
+import { SecurityGuard } from './types';
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../financialmanagementincomeexpensenote/financialmanagementexpenseui/dialog';
-import { Button } from '../financialmanagementincomeexpensenote/financialmanagementexpenseui/button';
-import { Input } from '../financialmanagementincomeexpensenote/financialmanagementexpenseui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../financialmanagementincomeexpensenote/financialmanagementexpenseui/select';
-import { useForm } from 'react-hook-form';
-import { SecurityGuard } from '../../types';
 
 interface SecurityModalProps {
-  guard: SecurityGuard | null;
+  isOpen: boolean;
   onClose: () => void;
-  onSave: (guard: Omit<SecurityGuard, 'id'>) => void;
+  onSubmit: (data: Omit<SecurityGuard, 'id'>) => void;
+  initialData?: SecurityGuard;
+  title: string;
 }
 
-const SecurityModal: React.FC<SecurityModalProps> = ({ guard, onClose, onSave }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<Omit<SecurityGuard, 'id'>>({
-    defaultValues: guard || {
-      name: '',
-      employeeId: '',
-      status: 'Off Duty',
-      shift: 'Morning',
-      location: '',
-      contactNumber: '',
-      email: '',
-      joiningDate: new Date().toISOString().split('T')[0],
-      nextShift: new Date().toISOString().split('T')[0],
-    },
+export function SecurityModal({ 
+  isOpen, 
+  onClose, 
+  onSubmit, 
+  initialData,
+  title 
+}: SecurityModalProps) {
+  const [formData, setFormData] = useState<Omit<SecurityGuard, 'id'>>(initialData || {
+    name: '',
+    phone: '',
+    shift: 'Day' as const,
+    date: '',
+    time: '',
+    gender: 'Male' as const,
+    avatar: ''
   });
 
-  const onSubmit = (data: Omit<SecurityGuard, 'id'>) => {
-    onSave(data);
-  };
+  if (!isOpen) return null;
 
   return (
-    <Dialog open={true} onOpenChange={() => onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{guard ? 'Edit Security Guard' : 'Add New Security Guard'}</DialogTitle>
-        </DialogHeader>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg w-[480px] p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold">{title}</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <X size={20} />
+          </button>
+        </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <Input {...register('name', { required: 'Name is required' })} />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(formData);
+        }}>
+          <div className="space-y-4">
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <img
+                  src={formData.avatar || 'https://via.placeholder.com/100'}
+                  alt="Profile"
+                  className="w-20 h-20 rounded-full"
+                />
+                <button
+                  type="button"
+                  className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-lg"
+                >
+                  <Upload size={16} className="text-blue-600" />
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name*
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number*
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Gender*
+                </label>
+                <select
+                  value={formData.gender}
+                  onChange={(e) => setFormData({ ...formData, gender: e.target.value as "Male" | "Female" })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Shift*
+                </label>
+                <select
+                  value={formData.shift}
+                  onChange={(e) => setFormData({ ...formData, shift: e.target.value as "Day" | "Night" })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="Day">Day</option>
+                  <option value="Night">Night</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Shift Date*
+                </label>
+                <input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Shift Time*
+                </label>
+                <input
+                  type="time"
+                  value={formData.time}
+                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Upload Aadhar Card*
+              </label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <Upload className="mx-auto text-gray-400 mb-2" />
+                <p className="text-sm text-gray-500">
+                  Upload a file or drag and drop
+                </p>
+                <p className="text-xs text-gray-400">
+                  PNG, JPG, PDF up to 5MB
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Employee ID</label>
-            <Input {...register('employeeId', { required: 'Employee ID is required' })} />
-            {errors.employeeId && <p className="text-red-500 text-sm">{errors.employeeId.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Status</label>
-            <Select onValueChange={(value) => register('status').onChange({ target: { value } })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="On Duty">On Duty</SelectItem>
-                <SelectItem value="Off Duty">Off Duty</SelectItem>
-                <SelectItem value="On Leave">On Leave</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Shift</label>
-            <Select onValueChange={(value) => register('shift').onChange({ target: { value } })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select shift" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Morning">Morning</SelectItem>
-                <SelectItem value="Afternoon">Afternoon</SelectItem>
-                <SelectItem value="Night">Night</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Location</label>
-            <Input {...register('location', { required: 'Location is required' })} />
-            {errors.location && <p className="text-red-500 text-sm">{errors.location.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Contact Number</label>
-            <Input {...register('contactNumber', { required: 'Contact number is required' })} />
-            {errors.contactNumber && <p className="text-red-500 text-sm">{errors.contactNumber.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <Input {...register('email', { 
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address'
-              }
-            })} />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Joining Date</label>
-            <Input type="date" {...register('joiningDate', { required: 'Joining date is required' })} />
-            {errors.joiningDate && <p className="text-red-500 text-sm">{errors.joiningDate.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Next Shift</label>
-            <Input type="date" {...register('nextShift', { required: 'Next shift is required' })} />
-            {errors.nextShift && <p className="text-red-500 text-sm">{errors.nextShift.message}</p>}
-          </div>
-
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md"
+            >
               Cancel
-            </Button>
-            <Button type="submit">
-              {guard ? 'Update' : 'Create'}
-            </Button>
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 rounded-md"
+            >
+              {initialData ? 'Update' : 'Create'}
+            </button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
-};
-
-export default SecurityModal;
+}

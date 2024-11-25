@@ -1,82 +1,107 @@
+import { Edit2, Trash2, MessageCircle, Eye } from 'lucide-react';
+import { SecurityGuard } from './types';
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../financialmanagementincomeexpensenote/financialmanagementexpenseui/table';
-import { Button } from '../financialmanagementincomeexpensenote/financialmanagementexpenseui/button';
-import { formatDate } from '../../lib/utils';
-import { Edit, Trash2 } from 'lucide-react';
-import { SecurityGuard } from '../../types';
-
 interface SecurityTableProps {
   guards: SecurityGuard[];
   onEdit: (guard: SecurityGuard) => void;
-  onDelete: (id: string) => void;
-  getStatusColor: (status: string) => string;
+  onDelete: (guard: SecurityGuard) => void;
+  onView: (guard: SecurityGuard) => void;
 }
 
-const SecurityTable: React.FC<SecurityTableProps> = ({ guards, onEdit, onDelete, getStatusColor }) => {
+export function SecurityTable({ guards, onEdit, onDelete, onView }: SecurityTableProps) {
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Employee ID</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Shift</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Joining Date</TableHead>
-            <TableHead>Next Shift</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {guards.map((guard) => (
-            <TableRow key={guard.id}>
-              <TableCell>{guard.name}</TableCell>
-              <TableCell>{guard.employeeId}</TableCell>
-              <TableCell>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(guard.status)}`}>
-                  {guard.status}
-                </span>
-              </TableCell>
-              <TableCell>{guard.shift}</TableCell>
-              <TableCell>{guard.location}</TableCell>
-              <TableCell>{guard.contactNumber}</TableCell>
-              <TableCell>{guard.email}</TableCell>
-              <TableCell>{formatDate(new Date(guard.joiningDate))}</TableCell>
-              <TableCell>{guard.nextShift}</TableCell>
-              <TableCell className="text-right space-x-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onEdit(guard)}
-                  className="h-8 w-8 p-0"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onDelete(guard.id)}
-                  className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-          {guards.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={10} className="text-center py-4 text-gray-500">
-                No security guards found
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+    <div className="bg-white rounded-lg shadow">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Security Guard Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Phone Number
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Select Shift
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Shift Date
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Shift Time
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Gender
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {guards.map((guard) => (
+              <tr key={guard.id}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <img
+                      src={guard.avatar}
+                      alt={guard.name}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span className="ml-2">{guard.name}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">{guard.phone}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    guard.shift === 'Day' 
+                      ? 'bg-yellow-100 text-yellow-800' 
+                      : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {guard.shift}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">{guard.date}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{guard.time}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    guard.gender === 'Male'
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'bg-pink-100 text-pink-800'
+                  }`}>
+                    {guard.gender}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => onView(guard)}
+                      className="p-1 text-gray-600 hover:bg-gray-50 rounded"
+                    >
+                      <Eye size={16} />
+                    </button>
+                    <button
+                      onClick={() => onEdit(guard)}
+                      className="p-1 text-green-600 hover:bg-green-50 rounded"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button className="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                      <MessageCircle size={16} />
+                    </button>
+                    <button
+                      onClick={() => onDelete(guard)}
+                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
-};
-
-export default SecurityTable;
+}

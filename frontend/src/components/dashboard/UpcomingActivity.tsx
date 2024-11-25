@@ -11,7 +11,7 @@ interface ActivityProps {
 }
 
 export function UpcomingActivity({ activity }: ActivityProps) {
-  const getActivityIcon = (type: 'society' | 'holi' | 'ganesh' | 'navratri') => {
+  const getActivityIcon = (type: string) => {
     switch (type) {
       case 'society':
         return 'S';
@@ -26,7 +26,7 @@ export function UpcomingActivity({ activity }: ActivityProps) {
     }
   };
 
-  const getActivityColor = (type: 'society' | 'holi' | 'ganesh' | 'navratri') => {
+  const getActivityColor = (type: string) => {
     switch (type) {
       case 'society':
         return 'bg-orange-100 text-orange-600';
@@ -50,7 +50,8 @@ export function UpcomingActivity({ activity }: ActivityProps) {
         <p className="text-sm font-medium">{activity.title}</p>
         <p className="text-xs text-gray-500">{activity.timeRange}</p>
       </div>
-      <p className="text-xs text-gray-500">{activity.date}</p>
+      <div className="text-xs text-gray-500">{activity.date}</div>
     </div>
   );
 }
+// UpcomingActivity dashboard file 

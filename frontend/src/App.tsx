@@ -1,256 +1,107 @@
-import { FC, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { Toaster } from 'react-hot-toast';
-
-// Layout Components
-import { Sidebar } from './components/common/Sidebar';
-import { Header } from './components/common/Header';
-
-// Dashboard
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import { Dashboard } from './components/dashboard/Dashboard';
-
-// Auth Components
-import LoginForm from './components/registerloginforgetscreen/LoginForm';
-import RegistrationForm from './components/registerloginforgetscreen/RegistrationForm';
-import ForgotPassword from './components/registerloginforgetscreen/ForgotPassword';
-import ResetPassword from './components/registerloginforgetscreen/ResetPassword';
-
-// Facility Management
-import FacilityList from './components/facility/FacilityList';
-import ResidentTable from './components/resident/ResidentTable';
-import FacilityManagement from './components/facilitymanagement/FacilityManagement';
 import ResidentManagement from './components/residentmanagement/ResidentManagement';
+import { FinancialIncome } from './components/financialman/income/FinancialIncome';
+import { FinancialExpense } from './components/financialman/expense/FinancialExpense';
+import { FinancialNote } from './components/financialman/note/FinancialNote';
+import FacilityManagement from './components/facility/components/FacilityManagement';
+import LoginForm from './components/LoginForm';
+import { AuthLayout } from './components/layout/AuthLayout';
+import { ComplaintTracking } from './components/complaintracking/createcomplain/ComplaintTracking';
+import { RequestTracking } from './components/requesttracking/RequestTracking';
+import VisitorApp from './components/securitymanagement/vistor/visitorapp';
+import SecurityGuardApp from './components/securityguard/securityguardapp';
+import AnnouncementApp from './components/announcement/announcementapp';
+import CommunityForum from './components/community/forum/CommunityForum';
+import CommunityPolls from './components/community/polls/CommunityPolls';
+import CommunityDiscussions from './components/community/discussions/CommunityDiscussions';
+import { MaintenanceInvoices } from './components/financialman/payments/maintenance/MaintenanceInvoices';
+import { OtherInvoices } from './components/financialman/payments/other/OtherInvoices';
+import EmergencyApp from './components/emergency/EmergencyApp';
+import SecurityProtocol from './components/securitymanagement/protocol/SecurityProtocol';
+import RegistrationForm from './components/RegistrationForm';
+import ForgotPassword from './components/ForgotPassword';
 
-// Security Management
-import SecurityProtocolTable from './components/securitymanagementvisitorandsecurityprotocol/SecurityProtocolTable';
-import VisitorRow from './components/securitymanagementvisitorandsecurityprotocol/VisitorRow';
-import SecurityTable from './components/security/SecurityTable';
-import VisitorLogs from './components/securitymanagementvisitorandsecurityprotocol/VisitorLogs';
-import SecurityProtocols from './components/securitymanagementvisitorandsecurityprotocol/SecurityProtocols';
-import SecurityGuardManagement from './components/securityguard/SecurityGuard';
+interface LoginFormProps {
+  onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
+  onForgotPassword: () => void;
+  onRegister: () => void;
+}
 
-// Financial Management
-import ExpenseList from './components/financialmanagementincomeexpensenote/ExpenseList';
-import IncomeList from './components/financialmanagementincomeexpensenote/IncomeList';
-import { Notes } from './components/financialmanagementincomeexpensenote/Notes';
-import Income from './components/financialmanagementincomeexpensenote/Income';
-import Expense from './components/financialmanagementincomeexpensenote/Expense';
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<'admin' | 'user' | 'security' | null>(null);
+  const [currentView, setCurrentView] = useState<'login' | 'register' | 'forgot-password'>('login');
 
-// Request Management
-import RequestTable from './components/complainandrequesttracking/RequestTable';
-import RequestForm from './components/complainandrequesttracking/RequestForm';
-import CreateComplain from './components/complainandrequesttracking/CreateComplain';
-import RequestTracking from './components/complainandrequesttracking/RequestTracking';
+  const handleLogin = (role: 'admin' | 'user' | 'security') => {
+    setIsAuthenticated(true);
+    setUserRole(role);
+  };
 
-// Profile Management
-import Profile from './components/profile/Profile';
-import EditProfile from './components/profile/EditProfile';
-import MainEditProfile from './components/editprofile/EditProfile';
-
-// Announcement
-import AnnouncementCard from './components/announcement/AnnouncementCard';
-import Announcement from './components/announcement/Announcement';
-
-// Public Route Component
-const PublicRoute: FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-
-  if (isAuthenticated) {
-    return <Navigate to="/" />;
-  }
-
-  return <>{children}</>;
-};
-
-// Protected Route Component
-const ProtectedRoute: FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-  }
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUserRole(null);
+  };
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    if (currentView === 'login') {
+      return (
+        <LoginForm 
+          onLoginSuccess={handleLogin}
+          onForgotPassword={() => setCurrentView('forgot-password')}
+          onRegister={() => setCurrentView('register')}
+        />
+      );
+    } else if (currentView === 'register') {
+      return (
+        <RegistrationForm 
+          onBackToLogin={() => setCurrentView('login')}
+        />
+      );
+    } else {
+      return (
+        <ForgotPassword 
+          onBackToLogin={() => setCurrentView('login')}
+        />
+      );
+    }
   }
 
-  return <>{children}</>;
-};
-
-const App: FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const navigate = useNavigate();
-
   return (
-    <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-gray-100">
-          <Toaster position="top-right" />
-          
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={
-              <PublicRoute>
-                <LoginForm 
-                  onForgotPassword={() => navigate('/forgot-password')}
-                  onRegister={() => navigate('/register')}
-                />
-              </PublicRoute>
-            } />
-            <Route path="/register" element={
-              <PublicRoute>
-                <RegistrationForm onBackToLogin={() => navigate('/login')} />
-              </PublicRoute>
-            } />
-            <Route path="/forgot-password" element={
-              <PublicRoute>
-                <ForgotPassword onBackToLogin={() => navigate('/login')} />
-              </PublicRoute>
-            } />
-            <Route path="/reset-password" element={
-              <PublicRoute>
-                <ResetPassword onBackToLogin={() => navigate('/login')} />
-              </PublicRoute>
-            } />
-            
-            {/* Protected Routes */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <div className="flex h-screen overflow-hidden">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <Header title="Dashboard" onMenuClick={() => setSidebarOpen(true)} />
-                    <main className="p-6">
-                      <Dashboard />
-                    </main>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
-
-            <Route path="/facility/*" element={
-              <ProtectedRoute>
-                <div className="flex h-screen overflow-hidden">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <Header title="Facilities" onMenuClick={() => setSidebarOpen(true)} />
-                    <main className="p-6">
-                      <Routes>
-                        <Route path="/" element={<FacilityList facilities={[]} onEditFacility={() => {}} />} />
-                        <Route path="/residents" element={<ResidentTable onStatusClick={() => {}} onDeleteClick={() => {}} onViewDetails={() => {}} />} />
-                        <Route path="/facility-management" element={<FacilityManagement />} />
-                        <Route path="/resident-management" element={<ResidentManagement />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
-
-            <Route path="/security/*" element={
-              <ProtectedRoute>
-                <div className="flex h-screen overflow-hidden">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <Header title="Security" onMenuClick={() => setSidebarOpen(true)} />
-                    <main className="p-6">
-                      <Routes>
-                        <Route path="/" element={<SecurityProtocolTable protocols={[]} onEdit={() => {}} onDelete={() => {}} onView={() => {}} />} />
-                        <Route path="/visitors" element={<VisitorRow visitor={{ name: '', phone: '', date: '', unit: '', time: '', avatarUrl: '/placeholder-avatar.png' }} />} />
-                        <Route path="/security" element={<SecurityTable />} />
-                        <Route path="/visitor-logs" element={<VisitorLogs />} />
-                        <Route path="/security-protocols" element={<SecurityProtocols />} />
-                        <Route path="/security-guard" element={<SecurityGuardManagement />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
-
-            <Route path="/financial/*" element={
-              <ProtectedRoute>
-                <div className="flex h-screen overflow-hidden">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <Header title="Financial Management" onMenuClick={() => setSidebarOpen(true)} />
-                    <main className="p-6">
-                      <Routes>
-                        <Route path="/" element={<ExpenseList />} />
-                        <Route path="/income" element={<IncomeList />} />
-                        <Route path="/notes" element={<Notes />} />
-                        <Route path="/financial-income" element={<Income />} />
-                        <Route path="/financial-expense" element={<Expense />} />
-                        <Route path="/financial-notes" element={<Notes />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
-
-            <Route path="/requests/*" element={
-              <ProtectedRoute>
-                <div className="flex h-screen overflow-hidden">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <Header title="Complaints" onMenuClick={() => setSidebarOpen(true)} />
-                    <main className="p-6">
-                      <Routes>
-                        <Route path="/" element={<RequestTable requests={[]} onView={() => {}} onEdit={() => {}} onDelete={() => {}} />} />
-                        <Route path="/create-request" element={<RequestForm onClose={() => {}} onSubmit={() => {}} />} />
-                        <Route path="/create-complain" element={<CreateComplain />} />
-                        <Route path="/request-tracking" element={<RequestTracking />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
-
-            <Route path="/profile/*" element={
-              <ProtectedRoute>
-                <div className="flex h-screen overflow-hidden">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <Header title="Settings" onMenuClick={() => setSidebarOpen(true)} />
-                    <main className="p-6">
-                      <Routes>
-                        <Route path="/" element={<Profile />} />
-                        <Route path="/edit-profile" element={<EditProfile />} />
-                        <Route path="/main-edit-profile" element={<MainEditProfile />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
-
-            <Route path="/announcements/*" element={
-              <ProtectedRoute>
-                <div className="flex h-screen overflow-hidden">
-                  <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                  <div className="flex-1 overflow-x-hidden overflow-y-auto">
-                    <Header title="Announcements" onMenuClick={() => setSidebarOpen(true)} />
-                    <main className="p-6">
-                      <Routes>
-                        <Route path="/" element={<AnnouncementCard announcement={{ id: '', title: '', content: '', category: '', priority: 'Low', status: 'Active', createdAt: new Date().toISOString(), validUntil: new Date().toISOString(), createdBy: '', targetAudience: [] }} onEdit={() => {}} onView={() => {}} />} />
-                        <Route path="/announcement" element={<Announcement />} />
-                      </Routes>
-                    </main>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
-
-            {/* Catch all route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
+    <Router>
+      <AuthLayout onLogout={handleLogout} userRole={userRole}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} userRole={userRole} />} />
+          <Route path="/residents" element={<ResidentManagement />} />
+          <Route path="/complaints/create" element={<ComplaintTracking />} />
+          <Route path="/complaints/requests" element={<RequestTracking />} />
+          <Route path="/financial">
+            <Route path="income" element={<FinancialIncome />} />
+            <Route path="expense" element={<FinancialExpense />} />
+            <Route path="note" element={<FinancialNote />} />
+          </Route>
+          <Route path="/facility" element={<FacilityManagement />} />
+          <Route path="/security-guard" element={<SecurityGuardApp />} />
+          <Route path="/security">
+            <Route path="visitors" element={<VisitorApp />} />
+            <Route path="emergency" element={<EmergencyApp />} />
+            <Route path="protocol" element={<SecurityProtocol />} />
+          </Route>
+          <Route path="/announcement" element={<AnnouncementApp />} />
+          <Route path="/community">
+            <Route path="forum" element={<CommunityForum />} />
+            <Route path="polls" element={<CommunityPolls />} />
+            <Route path="discussions" element={<CommunityDiscussions />} />
+          </Route>
+          <Route path="/payments/maintenance" element={<MaintenanceInvoices />} />
+          <Route path="/payments/other" element={<OtherInvoices />} />
+        </Routes>
+      </AuthLayout>
+    </Router>
   );
-};
+}
 
 export default App;
