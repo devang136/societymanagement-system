@@ -66,7 +66,8 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
       label: 'Security Management',
       subItems: [
         { id: 'visitors', label: 'Visitor Logs', path: '/security/visitors' },
-        { id: 'protocols', label: 'Security Protocols', path: '/security/protocols' },
+        { id: 'protocols', label: 'Security Protocols', path: '/security/protocol' },
+       
       ]
     },
     { id: 'security-guard', label: 'Security Guard', icon: Shield, path: '/security-guard' },

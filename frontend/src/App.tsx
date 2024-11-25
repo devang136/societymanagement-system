@@ -12,7 +12,6 @@ import { AuthLayout } from './components/layout/AuthLayout';
 import { ComplaintTracking } from './components/complaintracking/createcomplain/ComplaintTracking';
 import { RequestTracking } from './components/requesttracking/RequestTracking';
 import VisitorApp from './components/securitymanagement/vistor/visitorapp';
-import ProtocolApp from './components/securitymanagement/protocol/protocolapp';
 import SecurityGuardApp from './components/securityguard/securityguardapp';
 import AnnouncementApp from './components/announcement/announcementapp';
 import CommunityForum from './components/community/forum/CommunityForum';
@@ -21,6 +20,7 @@ import CommunityDiscussions from './components/community/discussions/CommunityDi
 import { MaintenanceInvoices } from './components/financialman/payments/maintenance/MaintenanceInvoices';
 import { OtherInvoices } from './components/financialman/payments/other/OtherInvoices';
 import EmergencyApp from './components/emergency/EmergencyApp';
+import SecurityProtocol from './components/securitymanagement/protocol/SecurityProtocol';
 
 interface LoginFormProps {
   onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
@@ -71,6 +71,7 @@ function App() {
           <Route path="/security">
             <Route path="visitors" element={<VisitorApp />} />
             <Route path="emergency" element={<EmergencyApp />} />
+            <Route path="protocol" element={<SecurityProtocol />} />
           </Route>
           <Route path="/announcement" element={<AnnouncementApp />} />
           <Route path="/community">
