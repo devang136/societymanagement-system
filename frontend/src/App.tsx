@@ -2,13 +2,19 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Dashboard } from './components/dashboard/Dashboard';
-import  ResidentManagement  from './components/residentmanagement/ResidentManagement';
+import ResidentManagement from './components/residentmanagement/ResidentManagement';
 import { FinancialIncome } from './components/financialman/income/FinancialIncome';
 import { FinancialExpense } from './components/financialman/expense/FinancialExpense';
 import { FinancialNote } from './components/financialman/note/FinancialNote';
-import  FacilityManagement  from './components/facility/components/FacilityManagement';
-import  LoginForm  from './components/LoginForm';
+import FacilityManagement from './components/facility/components/FacilityManagement';
+import LoginForm from './components/LoginForm';
 import { AuthLayout } from './components/layout/AuthLayout';
+import { ComplaintTracking } from './components/complaintracking/createcomplain/ComplaintTracking';
+import { RequestTracking } from './components/requesttracking/RequestTracking';
+import VisitorApp from './components/securitymanagement/vistor/visitorapp';
+import ProtocolApp from './components/securitymanagement/protocol/protocolapp';
+import SecurityGuardApp from './components/securityguard/securityguardapp';
+import AnnouncementApp from './components/announcement/announcementapp';
 
 interface LoginFormProps {
   onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
@@ -45,22 +51,22 @@ function App() {
       <AuthLayout onLogout={handleLogout} userRole={userRole}>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route 
-            path="/dashboard" 
-            element={
-              <Dashboard 
-                onLogout={handleLogout} 
-                userRole={userRole} 
-              />
-            } 
-          />
+          <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} userRole={userRole} />} />
           <Route path="/residents" element={<ResidentManagement />} />
+          <Route path="/complaints/create" element={<ComplaintTracking />} />
+          <Route path="/complaints/requests" element={<RequestTracking />} />
           <Route path="/financial">
             <Route path="income" element={<FinancialIncome />} />
             <Route path="expense" element={<FinancialExpense />} />
             <Route path="note" element={<FinancialNote />} />
           </Route>
           <Route path="/facility" element={<FacilityManagement />} />
+          <Route path="/security-guard" element={<SecurityGuardApp />} />
+          <Route path="/security">
+            <Route path="visitors" element={<VisitorApp />} />
+            <Route path="protocols" element={<ProtocolApp />} />
+          </Route>
+          <Route path="/announcement" element={<AnnouncementApp />} />
         </Routes>
       </AuthLayout>
     </Router>

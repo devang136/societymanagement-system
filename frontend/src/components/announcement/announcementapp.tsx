@@ -80,27 +80,23 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      
-      <div className="flex-1">
-        <Header onCreateClick={() => setIsModalOpen(true)} />
-        
-        <main className="p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold text-gray-900">Announcement</h1>
-          </div>
+    <div className="p-6">
+      <Header onCreateClick={() => setIsModalOpen(true)} />
+      <main>
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-900">Announcement</h1>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {announcements.map((announcement) => (
-              <AnnouncementCard
-                key={announcement.id}
-                announcement={announcement}
-                onEdit={handleEdit}
-                onView={handleView}
-              />
-            ))}
-          </div>
-        </main>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {announcements.map((announcement) => (
+            <AnnouncementCard
+              key={announcement.id}
+              announcement={announcement}
+              onEdit={handleEdit}
+              onView={handleView}
+            />
+          ))}
+        </div>
 
         <AnnouncementModal
           isOpen={isModalOpen}
@@ -114,7 +110,7 @@ function App() {
           onClose={handleCloseViewModal}
           announcement={viewingAnnouncement}
         />
-      </div>
+      </main>
     </div>
   );
 }

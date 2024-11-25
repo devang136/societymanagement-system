@@ -47,10 +47,9 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="p-6">
       <Header />
-      
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow">
           <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
             <div className="flex items-center justify-between">
@@ -86,7 +85,7 @@ function App() {
             ))}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

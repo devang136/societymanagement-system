@@ -32,6 +32,8 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
 
   const adminMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+   
+    
     { id: 'residents', label: 'Resident Management', icon: Users, path: '/residents' },
     { id: 'financial', label: 'Financial Management', icon: DollarSign, subItems: [
       { id: 'income', label: 'Income', path: '/financial/income' },
@@ -52,7 +54,7 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
         { id: 'protocols', label: 'Security Protocols', path: '/security/protocols' },
       ]
     },
-    { id: 'security-guard', label: 'Security Guard', icon: UserCheck, path: '/security-guard' },
+    { id: 'security-guard', label: 'Security Guard', icon: Shield, path: '/security-guard' },
     { id: 'announcement', label: 'Announcement', icon: Bell, path: '/announcement' },
   ];
 
@@ -74,6 +76,7 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
       label: 'Security',
       subItems: [
         { id: 'visitor-tracking', label: 'Visitor Tracking', path: '/security/visitors' },
+        { id: 'security-protocols', label: 'Security Protocols', path: '/security/protocols' },
         { id: 'emergency', label: 'Emergency Management', path: '/security/emergency' },
       ]
     },

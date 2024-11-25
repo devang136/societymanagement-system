@@ -69,73 +69,68 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
- 
-      
-      <div className="flex-1">
-        <Header user={MOCK_USER} />
-        
-        <main className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold">Security Guard Details</h1>
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 flex items-center space-x-2"
-            >
-              <span>Add Security</span>
-            </button>
-          </div>
+    <div className="p-6">
+      <Header user={MOCK_USER} />
+      <main>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold">Security Guard Details</h1>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 flex items-center space-x-2"
+          >
+            <span>Add Security</span>
+          </button>
+        </div>
 
-          <SecurityTable
-            guards={guards}
-            onEdit={(guard) => {
-              setSelectedGuard(guard);
-              setIsEditModalOpen(true);
-            }}
-            onDelete={(guard) => {
-              setSelectedGuard(guard);
-              setIsDeleteModalOpen(true);
-            }}
-            onView={handleView}
-          />
+        <SecurityTable
+          guards={guards}
+          onEdit={(guard) => {
+            setSelectedGuard(guard);
+            setIsEditModalOpen(true);
+          }}
+          onDelete={(guard) => {
+            setSelectedGuard(guard);
+            setIsDeleteModalOpen(true);
+          }}
+          onView={handleView}
+        />
 
-          <SecurityModal
-            isOpen={isAddModalOpen}
-            onClose={() => setIsAddModalOpen(false)}
-            onSubmit={handleAdd}
-            title="Add Security"
-          />
+        <SecurityModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onSubmit={handleAdd}
+          title="Add Security"
+        />
 
-          <SecurityModal
-            isOpen={isEditModalOpen}
-            onClose={() => {
-              setIsEditModalOpen(false);
-              setSelectedGuard(null);
-            }}
-            onSubmit={handleEdit}
-            initialData={selectedGuard || undefined}
-            title="Edit Security"
-          />
+        <SecurityModal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setSelectedGuard(null);
+          }}
+          onSubmit={handleEdit}
+          initialData={selectedGuard || undefined}
+          title="Edit Security"
+        />
 
-          <DeleteModal
-            isOpen={isDeleteModalOpen}
-            onClose={() => {
-              setIsDeleteModalOpen(false);
-              setSelectedGuard(null);
-            }}
-            onConfirm={handleDelete}
-          />
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setSelectedGuard(null);
+          }}
+          onConfirm={handleDelete}
+        />
 
-          <ViewModal
-            isOpen={isViewModalOpen}
-            onClose={() => {
-              setIsViewModalOpen(false);
-              setSelectedGuard(null);
-            }}
-            guard={selectedGuard}
-          />
-        </main>
-      </div>
+        <ViewModal
+          isOpen={isViewModalOpen}
+          onClose={() => {
+            setIsViewModalOpen(false);
+            setSelectedGuard(null);
+          }}
+          guard={selectedGuard}
+        />
+      </main>
     </div>
   );
 }
