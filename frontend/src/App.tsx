@@ -21,6 +21,8 @@ import { MaintenanceInvoices } from './components/financialman/payments/maintena
 import { OtherInvoices } from './components/financialman/payments/other/OtherInvoices';
 import EmergencyApp from './components/emergency/EmergencyApp';
 import SecurityProtocol from './components/securitymanagement/protocol/SecurityProtocol';
+import RegistrationForm from './components/RegistrationForm';
+import ForgotPassword from './components/ForgotPassword';
 
 interface LoginFormProps {
   onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
@@ -31,6 +33,7 @@ interface LoginFormProps {
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<'admin' | 'user' | 'security' | null>(null);
+  const [currentView, setCurrentView] = useState<'login' | 'register' | 'forgot-password'>('login');
 
   const handleLogin = (role: 'admin' | 'user' | 'security') => {
     setIsAuthenticated(true);
@@ -43,13 +46,27 @@ function App() {
   };
 
   if (!isAuthenticated) {
-    return (
-      <LoginForm 
-        onLoginSuccess={handleLogin}
-        onForgotPassword={() => {}}
-        onRegister={() => {}}
-      />
-    );
+    if (currentView === 'login') {
+      return (
+        <LoginForm 
+          onLoginSuccess={handleLogin}
+          onForgotPassword={() => setCurrentView('forgot-password')}
+          onRegister={() => setCurrentView('register')}
+        />
+      );
+    } else if (currentView === 'register') {
+      return (
+        <RegistrationForm 
+          onBackToLogin={() => setCurrentView('login')}
+        />
+      );
+    } else {
+      return (
+        <ForgotPassword 
+          onBackToLogin={() => setCurrentView('login')}
+        />
+      );
+    }
   }
 
   return (
