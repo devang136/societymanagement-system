@@ -63,13 +63,10 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-    
-      
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header user={MOCK_USER} />
-        
-        <main className="flex-1 overflow-y-auto p-6">
+    <div className="p-6">
+      <Header user={MOCK_USER} />
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-white rounded-lg shadow">
           <div className="mb-6 flex justify-between items-center">
             <h1 className="text-2xl font-semibold text-gray-900">
               Security Protocols
@@ -97,7 +94,7 @@ export default function App() {
               setIsViewModalOpen(true);
             }}
           />
-        </main>
+        </div>
       </div>
 
       <ProtocolModal
