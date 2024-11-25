@@ -20,6 +20,7 @@ import CommunityPolls from './components/community/polls/CommunityPolls';
 import CommunityDiscussions from './components/community/discussions/CommunityDiscussions';
 import { MaintenanceInvoices } from './components/financialman/payments/maintenance/MaintenanceInvoices';
 import { OtherInvoices } from './components/financialman/payments/other/OtherInvoices';
+import EmergencyApp from './components/emergency/EmergencyApp';
 
 interface LoginFormProps {
   onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
@@ -69,7 +70,7 @@ function App() {
           <Route path="/security-guard" element={<SecurityGuardApp />} />
           <Route path="/security">
             <Route path="visitors" element={<VisitorApp />} />
-            <Route path="protocols" element={<ProtocolApp />} />
+            <Route path="emergency" element={<EmergencyApp />} />
           </Route>
           <Route path="/announcement" element={<AnnouncementApp />} />
           <Route path="/community">
