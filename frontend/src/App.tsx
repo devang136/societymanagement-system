@@ -15,6 +15,9 @@ import VisitorApp from './components/securitymanagement/vistor/visitorapp';
 import ProtocolApp from './components/securitymanagement/protocol/protocolapp';
 import SecurityGuardApp from './components/securityguard/securityguardapp';
 import AnnouncementApp from './components/announcement/announcementapp';
+import CommunityForum from './components/community/forum/CommunityForum';
+import CommunityPolls from './components/community/polls/CommunityPolls';
+import CommunityDiscussions from './components/community/discussions/CommunityDiscussions';
 
 interface LoginFormProps {
   onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
@@ -67,6 +70,11 @@ function App() {
             <Route path="protocols" element={<ProtocolApp />} />
           </Route>
           <Route path="/announcement" element={<AnnouncementApp />} />
+          <Route path="/community">
+            <Route path="forum" element={<CommunityForum />} />
+            <Route path="polls" element={<CommunityPolls />} />
+            <Route path="discussions" element={<CommunityDiscussions />} />
+          </Route>
         </Routes>
       </AuthLayout>
     </Router>

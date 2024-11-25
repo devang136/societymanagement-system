@@ -19,6 +19,21 @@ import {
   Shield
 } from 'lucide-react';
 
+interface MenuItem {
+  id: string;
+  label: string;
+  icon?: any; // or LucideIcon if you want to be more specific
+  path?: string;
+  subItems?: SubMenuItem[];
+}
+
+interface SubMenuItem {
+  id: string;
+  label: string;
+  path: string;
+  icon?: any; // Made icon optional with '?'
+}
+
 interface SidebarProps {
   onLogout: () => void;
   userRole: 'admin' | 'user' | 'security' | null;
@@ -36,9 +51,9 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
     
     { id: 'residents', label: 'Resident Management', icon: Users, path: '/residents' },
     { id: 'financial', label: 'Financial Management', icon: DollarSign, subItems: [
-      { id: 'income', label: 'Income', path: '/financial/income' },
-      { id: 'expense', label: 'Expense', path: '/financial/expense' },
-      { id: 'note', label: 'Note', path: '/financial/note' },
+      { id: 'income', label: 'Income', path: '/financial/income', icon: DollarSign },
+      { id: 'expense', label: 'Expense', path: '/financial/expense', icon: DollarSign },
+      { id: 'note', label: 'Note', path: '/financial/note', icon: FileText },
     ]},
     { id: 'facility', label: 'Facility Management', icon: Building2, path: '/facility' },
     { id: 'complaints', label: 'Complaint Tracking', icon: FileText, subItems: [
@@ -63,7 +78,16 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
     { id: 'personal', label: 'Personal Details', icon: UserCircle, path: '/personal' },
     { id: 'services', label: 'Services & Complaints', icon: Wrench, path: '/services' },
     { id: 'events', label: 'Event Participation', icon: Calendar, path: '/events' },
-    { id: 'community', label: 'Community', icon: Users2, path: '/community' },
+    { 
+      id: 'community',
+      label: 'Community',
+      icon: Users2,
+      subItems: [
+        { id: 'access-forum', label: 'Access Forum', path: '/community/forum' },
+        { id: 'polls', label: 'Polls', path: '/community/polls' },
+        { id: 'discussions', label: 'Community Discussions', path: '/community/discussions' }
+      ]
+    },
     { id: 'payments', label: 'Payment Portal', icon: DollarSign, path: '/payments' },
     { id: 'security', label: 'Security Protocol', icon: Shield, path: '/security-protocol' },
   ];
@@ -143,7 +167,7 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                       >
-                        {subItem.icon && <subItem.icon className="w-4 h-4 mr-2" />}
+                        {subItem.icon ? <subItem.icon className="w-4 h-4 mr-2" /> : null}
                         {subItem.label}
                       </button>
                     </li>
