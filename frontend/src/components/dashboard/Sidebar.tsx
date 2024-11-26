@@ -102,13 +102,12 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
   ];
 
   const securityMenuItems = [
-    
     { 
       id: 'security',
       icon: Shield, 
       label: 'Security',
       subItems: [
-        { id: 'visitor-tracking', label: 'Visitor Tracking', path: '/security/visitors', icon: Users },
+        { id: 'visitor-tracking', label: 'Visitor Tracking', path: '/security/visitor-tracking', icon: Users },
         { id: 'emergency', label: 'Emergency Management', path: '/security/emergency', icon: Bell }
       ]
     }

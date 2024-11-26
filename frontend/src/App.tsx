@@ -23,6 +23,9 @@ import SecurityProtocol from './components/securitymanagement/protocol/SecurityP
 import RegistrationForm from './components/RegistrationForm';
 import ForgotPassword from './components/ForgotPassword';
 import SecuritySideLogicApp from './components/securitysidelogic/securitysidelogicApp';
+import VisitorTrackingApp from './components/securitysidelogic/visitortracking/src/visitortrackingApp';
+import { SecurityProtocolRoute } from './components/usersidelogic/securityprotocol/SecurityProtocolRoute';
+import { EventParticipationRoute } from './components/usersidelogic/eventparticipation/EventParticipationRoute';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -87,6 +90,7 @@ function App() {
               <SecuritySideLogicApp /> : 
               <Navigate to="/dashboard" />
             } />
+            <Route path="visitor-tracking" element={<VisitorTrackingApp />} />
           </Route>
           <Route path="/announcement" element={<AnnouncementApp />} />
           <Route path="/community">
@@ -96,6 +100,22 @@ function App() {
           </Route>
           <Route path="/payments/maintenance" element={<MaintenanceInvoices />} />
           <Route path="/payments/other" element={<OtherInvoices />} />
+          <Route 
+            path="/security-protocol" 
+            element={
+              userRole === 'user' ? 
+              <SecurityProtocolRoute /> : 
+              <Navigate to="/dashboard" />
+            } 
+          />
+          <Route 
+            path="/events" 
+            element={
+              userRole === 'user' ? 
+              <EventParticipationRoute /> : 
+              <Navigate to="/dashboard" />
+            } 
+          />
         </Routes>
       </AuthLayout>
     </Router>
