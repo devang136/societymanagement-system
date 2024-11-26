@@ -22,6 +22,7 @@ const alertTypes = [
 const AlertForm = () => {
   const [description, setDescription] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +34,7 @@ const AlertForm = () => {
     toast.success("Alert sent successfully");
     setDescription("");
     setSelectedType("");
+    setIsOpen(false);
   };
 
   return (
@@ -44,18 +46,25 @@ const AlertForm = () => {
           <label className="text-sm font-medium">
             Alert Type<span className="text-red-500">*</span>
           </label>
-          <DropdownMenu>
+          <DropdownMenu onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full justify-between">
+              <Button 
+                type="button"
+                variant="outline" 
+                className="w-full justify-between"
+              >
                 {selectedType || "Select Alert Type"}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-full min-w-[200px]">
+            <DropdownMenuContent className="w-full min-w-[200px]" isOpen={isOpen}>
               {alertTypes.map((type) => (
                 <DropdownMenuItem
                   key={type}
-                  onClick={() => setSelectedType(type)}
+                  onClick={() => {
+                    setSelectedType(type);
+                    setIsOpen(false);
+                  }}
                 >
                   {type}
                 </DropdownMenuItem>
@@ -78,7 +87,7 @@ const AlertForm = () => {
 
         <Button
           type="submit"
-          className="w-full bg-primary hover:bg-primary-hover text-white"
+          className="w-full bg-primary text-black hover:bg-primary/90 py-2 rounded-md"
         >
           Send
         </Button>

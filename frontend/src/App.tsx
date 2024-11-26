@@ -19,16 +19,14 @@ import CommunityPolls from './components/community/polls/CommunityPolls';
 import CommunityDiscussions from './components/community/discussions/CommunityDiscussions';
 import { MaintenanceInvoices } from './components/financialman/payments/maintenance/MaintenanceInvoices';
 import { OtherInvoices } from './components/financialman/payments/other/OtherInvoices';
-import EmergencyApp from './components/emergency/EmergencyApp';
 import SecurityProtocol from './components/securitymanagement/protocol/SecurityProtocol';
 import RegistrationForm from './components/RegistrationForm';
 import ForgotPassword from './components/ForgotPassword';
-
-interface LoginFormProps {
-  onLoginSuccess: (role: 'admin' | 'user' | 'security') => void;
-  onForgotPassword: () => void;
-  onRegister: () => void;
-}
+import SecuritySideLogicApp from './components/securitysidelogic/securitysidelogicApp';
+import VisitorTrackingApp from './components/securitysidelogic/visitortracking/src/visitortrackingApp';
+import { SecurityProtocolRoute } from './components/usersidelogic/securityprotocol/SecurityProtocolRoute';
+import { EventParticipationRoute } from './components/usersidelogic/eventparticipation/EventParticipationRoute';
+import { ServiceComplaintRoute } from './components/usersidelogic/servicecomplaint/ServiceComplaintRoute';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -87,8 +85,13 @@ function App() {
           <Route path="/security-guard" element={<SecurityGuardApp />} />
           <Route path="/security">
             <Route path="visitors" element={<VisitorApp />} />
-            <Route path="emergency" element={<EmergencyApp />} />
             <Route path="protocol" element={<SecurityProtocol />} />
+            <Route path="emergency" element={
+              userRole === 'security' ? 
+              <SecuritySideLogicApp /> : 
+              <Navigate to="/dashboard" />
+            } />
+            <Route path="visitor-tracking" element={<VisitorTrackingApp />} />
           </Route>
           <Route path="/announcement" element={<AnnouncementApp />} />
           <Route path="/community">
@@ -98,6 +101,30 @@ function App() {
           </Route>
           <Route path="/payments/maintenance" element={<MaintenanceInvoices />} />
           <Route path="/payments/other" element={<OtherInvoices />} />
+          <Route 
+            path="/security-protocol" 
+            element={
+              userRole === 'user' ? 
+              <SecurityProtocolRoute /> : 
+              <Navigate to="/dashboard" />
+            } 
+          />
+          <Route 
+            path="/events" 
+            element={
+              userRole === 'user' ? 
+              <EventParticipationRoute /> : 
+              <Navigate to="/dashboard" />
+            } 
+          />
+          <Route 
+            path="/service-complaint" 
+            element={
+              userRole === 'user' ? 
+              <ServiceComplaintRoute /> : 
+              <Navigate to="/dashboard" />
+            } 
+          />
         </Routes>
       </AuthLayout>
     </Router>

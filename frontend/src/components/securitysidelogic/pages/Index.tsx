@@ -6,7 +6,6 @@ import React from "react";
 const Index = () => {
   return (
     <div className="flex min-h-screen bg-dashboard-bg">
-      <Sidebar />
       
       <div className="flex-1">
         <Header />
