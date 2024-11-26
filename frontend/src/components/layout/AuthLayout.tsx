@@ -5,6 +5,7 @@ import { Routes } from 'react-router-dom';
 import { VisitorTrackingRoute } from '../securitysidelogic/visitortracking/VisitorTrackingRoute';
 import { SecurityProtocolRoute } from '../usersidelogic/securityprotocol/SecurityProtocolRoute';
 import { EventParticipationRoute } from '../usersidelogic/eventparticipation/EventParticipationRoute';
+import { ServiceComplaintRoute } from '../usersidelogic/servicecomplaint/ServiceComplaintRoute';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ export function AuthLayout({ children, onLogout, userRole }: AuthLayoutProps) {
           <Route path="/security/visitor-tracking" element={<VisitorTrackingRoute />} />
           <Route path="/security-protocol" element={<SecurityProtocolRoute />} />
           <Route path="/events" element={<EventParticipationRoute />} />
+          <Route path="/services" element={<ServiceComplaintRoute />} />
           <Route path="/*" element={children} />
         </Routes>
       </div>

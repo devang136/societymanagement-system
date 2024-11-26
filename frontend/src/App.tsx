@@ -26,6 +26,7 @@ import SecuritySideLogicApp from './components/securitysidelogic/securitysidelog
 import VisitorTrackingApp from './components/securitysidelogic/visitortracking/src/visitortrackingApp';
 import { SecurityProtocolRoute } from './components/usersidelogic/securityprotocol/SecurityProtocolRoute';
 import { EventParticipationRoute } from './components/usersidelogic/eventparticipation/EventParticipationRoute';
+import { ServiceComplaintRoute } from './components/usersidelogic/servicecomplaint/ServiceComplaintRoute';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -113,6 +114,14 @@ function App() {
             element={
               userRole === 'user' ? 
               <EventParticipationRoute /> : 
+              <Navigate to="/dashboard" />
+            } 
+          />
+          <Route 
+            path="/service-complaint" 
+            element={
+              userRole === 'user' ? 
+              <ServiceComplaintRoute /> : 
               <Navigate to="/dashboard" />
             } 
           />

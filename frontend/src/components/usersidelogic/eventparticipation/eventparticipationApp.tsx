@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
 import EventsTabs from './components/events/EventsTabs';
 import EventsTable from './components/events/EventsTable';
@@ -34,19 +33,27 @@ function App() {
   const [activeTab, setActiveTab] = useState('events');
 
   return (
-    <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Events Participation</h1>
-      </div>
+    <div className="flex min-h-screen bg-gray-50">
+ 
       
-      <EventsTabs
-        tabs={TABS}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
-      
-      <div className="mt-6">
-        <EventsTable events={MOCK_EVENTS} />
+      <div className="flex-1">
+        <Header user={MOCK_USER} />
+        
+        <main className="p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-semibold text-gray-900">Events Participation</h1>
+          </div>
+          
+          <EventsTabs
+            tabs={TABS}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+          
+          <div className="mt-6">
+            <EventsTable events={MOCK_EVENTS} />
+          </div>
+        </main>
       </div>
     </div>
   );
