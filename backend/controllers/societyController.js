@@ -1,5 +1,4 @@
 const societyService = require('../services/societyService');
-
 exports.createSociety = async (req, res) => {
   try {
     const society = await societyService.createSociety(req.body);
