@@ -9,6 +9,7 @@ import { ServiceComplaintRoute } from '../usersidelogic/servicecomplaint/Service
 import { OtherIncomeInvoicesApp } from '../usersidelogic/otherincomeinvoices/otherincomeinvoicesApp';
 import { PaymentPortalApp } from '../usersidelogic/paymentportal/paymentportalApp';
 import { PersonalDetailsApp } from '../usersidelogic/personaldetails/personaldetailsApp';
+import  PollingDashboard  from '../usersidelogic/userpolls/page';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -29,6 +30,7 @@ export function AuthLayout({ children, onLogout, userRole }: AuthLayoutProps) {
           <Route path="/payment-portal" element={<PaymentPortalApp />} />
           <Route path="/payments/other" element={<OtherIncomeInvoicesApp />} />
           <Route path="/personal" element={<PersonalDetailsApp />} />
+          <Route path="/community/polls" element={<PollingDashboard />} />
           <Route path="/*" element={children} />
         </Routes>
       </div>
