@@ -1,13 +1,12 @@
 import React from 'react';
 
-const DeleteComplaintModal = ({ onDelete, onCancel }) => {
+const DeleteRequestModal = ({ onDelete, onCancel }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-sm w-full p-6">
-        <h2 className="text-lg font-semibold mb-4 text-[#202224] font-poppins">Delete Complaint?</h2>
+        <h2 className="text-lg font-semibold mb-4 text-[#202224] font-poppins">Delete Request?</h2>
         <hr className="border-[#F4F4F4] mb-4 mt-4" />
-        <p className="text-[#A7A7A7] text-sm mb-6">Are you sure you want to delete this Complaint?</p>
-
+        <p className="text-[#A7A7A7] text-sm mb-6">Are you sure you want to delete this Request?</p>
         <div className=" flex space-x-2 ">
               <button
                 type="button"
@@ -29,4 +28,4 @@ const DeleteComplaintModal = ({ onDelete, onCancel }) => {
   );
 };
 
-export default DeleteComplaintModal;
+export default DeleteRequestModal;
