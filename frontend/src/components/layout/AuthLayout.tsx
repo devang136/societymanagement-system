@@ -8,6 +8,7 @@ import { EventParticipationRoute } from '../usersidelogic/eventparticipation/Eve
 import { ServiceComplaintRoute } from '../usersidelogic/servicecomplaint/ServiceComplaintRoute';
 import { OtherIncomeInvoicesApp } from '../usersidelogic/otherincomeinvoices/otherincomeinvoicesApp';
 import { PaymentPortalApp } from '../usersidelogic/paymentportal/paymentportalApp';
+import { PersonalDetailsApp } from '../usersidelogic/personaldetails/personaldetailsApp';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -27,6 +28,7 @@ export function AuthLayout({ children, onLogout, userRole }: AuthLayoutProps) {
           <Route path="/services" element={<ServiceComplaintRoute />} />
           <Route path="/payment-portal" element={<PaymentPortalApp />} />
           <Route path="/payments/other" element={<OtherIncomeInvoicesApp />} />
+          <Route path="/personal" element={<PersonalDetailsApp />} />
           <Route path="/*" element={children} />
         </Routes>
       </div>

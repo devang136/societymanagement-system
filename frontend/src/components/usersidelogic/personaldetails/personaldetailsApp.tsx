@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Sidebar } from './components/layout/Sidebar';
 import { PersonalInfo } from './components/profile/PersonalInfo';
 import { MemberCard } from './components/members/MemberCard';
 import { MaintenanceCard } from './components/maintenance/MaintenanceCard';
 import { VehicleCard } from './components/vehicles/VehicleCard';
 import { MaintenanceOverview } from './components/maintenance/MaintenanceOverview';
 
-function App() {
+export function PersonalDetailsApp() {
   const [isOwner, setIsOwner] = useState(true);
 
   const personalInfo = isOwner ? {
@@ -31,7 +30,7 @@ function App() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+   
       
       <main className="flex-1 p-8">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -181,4 +180,4 @@ function App() {
   );
 }
 
-export default App;
+export default PersonalDetailsApp;
