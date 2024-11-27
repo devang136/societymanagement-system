@@ -30,6 +30,8 @@ import { ServiceComplaintRoute } from './components/usersidelogic/servicecomplai
 import { PaymentPortalApp } from './components/usersidelogic/paymentportal/paymentportalApp';
 import ReqTrackingAdminApp from './components/reqtrackingadmin/reqtrackingadminApp';
 import PollingDashboard from './components/usersidelogic/userpolls/page';
+import Page from './components/usersidelogic/community-chat/app/page';
+import ChatPage from './components/usersidelogic/access-forum/pages/ChatPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -108,13 +110,13 @@ function App() {
                   </Route>
                   <Route path="/announcement" element={<AnnouncementApp />} />
                   <Route path="/community">
-                    <Route path="forum" element={<CommunityForum />} />
-                    <Route path="polls" element={
+                    <Route path="forum" element={
                       userRole === 'user' ? 
-                      <PollingDashboard /> : 
+                      <ChatPage /> : 
                       <Navigate to="/dashboard" />
                     } />
-                    <Route path="discussions" element={<CommunityDiscussions />} />
+                    <Route path="polls" element={<PollingDashboard />} />
+                    <Route path="discussions" element={<Page />} />
                   </Route>
                   <Route path="/payments/maintenance" element={<MaintenanceInvoices />} />
                   <Route path="/payments/other" element={<OtherInvoices />} />

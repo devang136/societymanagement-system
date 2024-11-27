@@ -10,6 +10,8 @@ import { OtherIncomeInvoicesApp } from '../usersidelogic/otherincomeinvoices/oth
 import { PaymentPortalApp } from '../usersidelogic/paymentportal/paymentportalApp';
 import { PersonalDetailsApp } from '../usersidelogic/personaldetails/personaldetailsApp';
 import  PollingDashboard  from '../usersidelogic/userpolls/page';
+import Page from '../usersidelogic/community-chat/app/page';
+import ChatPage from '../usersidelogic/access-forum/pages/ChatPage';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -31,6 +33,8 @@ export function AuthLayout({ children, onLogout, userRole }: AuthLayoutProps) {
           <Route path="/payments/other" element={<OtherIncomeInvoicesApp />} />
           <Route path="/personal" element={<PersonalDetailsApp />} />
           <Route path="/community/polls" element={<PollingDashboard />} />
+          <Route path="/community/discussions" element={<Page />} />
+          <Route path="/community/forum" element={<ChatPage />} />
           <Route path="/*" element={children} />
         </Routes>
       </div>
