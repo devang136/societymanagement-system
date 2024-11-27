@@ -15,8 +15,10 @@ const facilityRoutes = require('./routes/facilityRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 // const securityRoutes = require('./routes/securityRoutes');
 const securityGuardRoutes = require('./routes/securityGuard');
-const reservationRoutes = require('./routes/reservationRoutes');
+// const reservationRoutes = require('./routes/reservationRoutes');
 const societyRoutes = require("./routes/societyRoutes");
+const expenseRoutes = require('./routes/expenses');
+const noteRoutes = require("./routes/noteRoutes");
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server
@@ -41,7 +43,9 @@ app.use('/api/facilities', facilityRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/security', securityGuardRoutes);
 app.use('/api/guards', securityGuardRoutes);
-app.use('/api/reservations', reservationRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use("/api/notes", noteRoutes);
+// app.use('/api/reservations', reservationRoutes);
 
 // Chat-related in-memory storage (Replace with a database like MongoDB in production)
 let messages = [];
