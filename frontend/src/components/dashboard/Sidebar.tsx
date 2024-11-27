@@ -59,7 +59,7 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
     { id: 'facility', label: 'Facility Management', icon: Building2, path: '/facility' },
     { id: 'complaints', label: 'Complaint Tracking', icon: FileText, subItems: [
       { id: 'create-complaint', label: 'Create Complaint', path: '/complaints/create' },
-      { id: 'request-tracking', label: 'Request Tracking', path: '/complaints/requests' },
+      { id: 'request-tracking', label: 'Request Tracking', path: '/complaints/admin-requests' },
     ]},
     { 
       id: 'security',

@@ -28,6 +28,7 @@ import { SecurityProtocolRoute } from './components/usersidelogic/securityprotoc
 import { EventParticipationRoute } from './components/usersidelogic/eventparticipation/EventParticipationRoute';
 import { ServiceComplaintRoute } from './components/usersidelogic/servicecomplaint/ServiceComplaintRoute';
 import { PaymentPortalApp } from './components/usersidelogic/paymentportal/paymentportalApp';
+import ReqTrackingAdminApp from './components/reqtrackingadmin/reqtrackingadminApp';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -82,6 +83,11 @@ function App() {
                   <Route path="/residents" element={<ResidentManagement />} />
                   <Route path="/complaints/create" element={<ComplaintTracking />} />
                   <Route path="/complaints/requests" element={<RequestTracking />} />
+                  <Route path="/complaints/admin-requests" element={
+                    userRole === 'admin' ? 
+                    <ReqTrackingAdminApp /> : 
+                    <Navigate to="/dashboard" />
+                  } />
                   <Route path="/financial">
                     <Route path="income" element={<FinancialIncome />} />
                     <Route path="expense" element={<FinancialExpense />} />
