@@ -63,32 +63,6 @@ export default function ComplaintManagement() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedComplaint, setSelectedComplaint] = useState(null);
 
-    const getPriorityColor = (priority) => {
-        switch (priority) {
-            case "High":
-                return "bg-red-100 text-red-600";
-            case "Medium":
-                return "bg-blue-100 text-blue-600";
-            case "Low":
-                return "bg-green-100 text-green-600";
-            default:
-                return "bg-gray-100 text-gray-600";
-        }
-    };
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Solve":
-                return "text-green-600";
-            case "Pending":
-                return "text-yellow-600";
-            case "Open":
-                return "text-blue-600";
-            default:
-                return "text-gray-600";
-        }
-    };
-
     const handleAddComplaint = (newComplaint) => {
         setComplaints([
             ...complaints,
