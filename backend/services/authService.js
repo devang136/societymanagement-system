@@ -1,13 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const Chairman = require('../models/Chairman');
+const Chairman = require('../models/user');
 
 exports.registerChairman = async (chairmanData) => {
   const { firstName, lastName, email, phoneNumber, country, state, city, society, password } = chairmanData;
 
   let chairman = await Chairman.findOne({ email });
   if (chairman) {
-    throw new Error('Chairman already exists');
+    throw new Error('User already exists');
   }
 
   chairman = new Chairman({
