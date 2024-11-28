@@ -9,39 +9,41 @@ interface MemberCardProps {
   relation: string;
 }
 
-export function MemberCard({
-  name,
-  email,
-  phoneNumber,
-  age,
-  gender,
-  relation,
-}: MemberCardProps) {
+interface MemberCardProps {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  age: number;
+  gender: string;
+  relation: string;
+}
+
+export const MemberCard: React.FC<MemberCardProps> = (props) => {
   return (
-    <div className="bg-blue-100 p-4 rounded-lg">
-      <h3 className="text-blue-600 font-medium mb-3">{name}</h3>
+    <div className="bg-white p-4 rounded-lg shadow-sm space-y-3">
+      <h3 className="font-medium">{props.name}</h3>
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-gray-600">Email</span>
-          <span>{email}</span>
+          <span className="text-gray-500">Email</span>
+          <span>{props.email}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600">Phone Number</span>
-          <span>{phoneNumber}</span>
+          <span className="text-gray-500">Phone</span>
+          <span>{props.phoneNumber}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600">Age</span>
-          <span>{age}</span>
+          <span className="text-gray-500">Age</span>
+          <span>{props.age}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600">Gender</span>
-          <span>{gender}</span>
+          <span className="text-gray-500">Gender</span>
+          <span>{props.gender}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600">Relation</span>
-          <span>{relation}</span>
+          <span className="text-gray-500">Relation</span>
+          <span>{props.relation}</span>
         </div>
       </div>
     </div>
   );
-}
+};
