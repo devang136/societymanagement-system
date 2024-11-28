@@ -8,6 +8,8 @@ const complaintRoutes = require('./routes/complaintRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const financialRoutes = require('./routes/financialRoutes')
 const securityGuardRoutes = require('./routes/securityGuard')
+const residentRoutes = require('./routes/residentRoutes')
+
 const app = express();
 
 // Connect to MongoDB
@@ -24,7 +26,7 @@ app.use('/api/complaints', complaintRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/financial', financialRoutes);
 app.use('/api/guards', securityGuardRoutes);
-
+app.use('/api/residents', residentRoutes);  
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
