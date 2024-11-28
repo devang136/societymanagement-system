@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -58,7 +59,7 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
     { id: 'facility', label: 'Facility Management', icon: Building2, path: '/facility' },
     { id: 'complaints', label: 'Complaint Tracking', icon: FileText, subItems: [
       { id: 'create-complaint', label: 'Create Complaint', path: '/complaints/create' },
-      { id: 'request-tracking', label: 'Request Tracking', path: '/complaints/requests' },
+      { id: 'request-tracking', label: 'Request Tracking', path: '/complaints/admin-requests' },
     ]},
     { 
       id: 'security',
@@ -94,7 +95,7 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
       label: 'Payment Portal', 
       icon: DollarSign, 
       subItems: [
-        { id: 'maintenance-invoices', label: 'Maintenance Invoices', path: '/payments/maintenance', icon: FileText },
+        { id: 'maintenance-invoices', label: 'Maintenance Invoices', path: '/payment-portal', icon: FileText },
         { id: 'other-invoices', label: 'Other Income Invoices', path: '/payments/other', icon: FileText }
       ]
     },
@@ -142,41 +143,56 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
         <ul className="space-y-2">
           {menuItems.map((item) => (
             <li key={item.id}>
-              <button
-                onClick={() => handleItemClick(item)}
-                className={`w-full flex items-center justify-between px-6 py-3 text-sm ${
-                  (item.path && currentPath.startsWith(item.path)) || 
-                  (item.subItems?.some(sub => currentPath.startsWith(sub.path)))
-                    ? 'text-orange-600'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <div className="flex items-center">
-                  <item.icon className="w-5 h-5 mr-3" />
-                  {item.label}
-                </div>
-                {item.subItems && (
-                  expandedItem === item.id ? 
-                    <ChevronDown className="w-4 h-4" /> : 
-                    <ChevronRight className="w-4 h-4" />
-                )}
-              </button>
+              {item.path ? (
+                <Link
+                  to={item.path}
+                  className={`w-full flex items-center justify-between px-6 py-3 text-sm ${
+                    currentPath.startsWith(item.path)
+                      ? 'text-orange-600'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <item.icon className="w-5 h-5 mr-3" />
+                    {item.label}
+                  </div>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => handleItemClick(item)}
+                  className={`w-full flex items-center justify-between px-6 py-3 text-sm ${
+                    item.subItems?.some(sub => currentPath.startsWith(sub.path))
+                      ? 'text-orange-600'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <item.icon className="w-5 h-5 mr-3" />
+                    {item.label}
+                  </div>
+                  {item.subItems && (
+                    expandedItem === item.id ? 
+                      <ChevronDown className="w-4 h-4" /> : 
+                      <ChevronRight className="w-4 h-4" />
+                  )}
+                </button>
+              )}
               
               {item.subItems && expandedItem === item.id && (
                 <ul className="ml-12 space-y-2 mt-2">
                   {item.subItems.map((subItem) => (
                     <li key={subItem.id}>
-                      <button
-                        onClick={() => navigate(subItem.path)}
+                      <Link
+                        to={subItem.path}
                         className={`w-full text-left px-4 py-2 text-sm flex items-center ${
                           currentPath === subItem.path
                             ? 'text-orange-600'
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                       >
-                        {subItem.icon ? <subItem.icon className="w-4 h-4 mr-2" /> : null}
+                        {subItem.icon && <subItem.icon className="w-4 h-4 mr-2" />}
                         {subItem.label}
-                      </button>
+                      </Link>
                     </li>
                   ))}
                 </ul>

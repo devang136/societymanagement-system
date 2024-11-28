@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { authService } from '../services/authService';
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -49,19 +50,20 @@ export default function LoginForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Check for admin and user credentials
-      if (formData.emailOrPhone === 'admin@gmail.com' && formData.password === 'asdasd') {
-        // Admin login
-        onLoginSuccess('admin');
-      } else if (formData.emailOrPhone === 'user@gmail.com' && formData.password === 'asdasd') {
-        // User login
-        onLoginSuccess('user');
-      } else if (formData.emailOrPhone === 'security@gmail.com' && formData.password === 'asdasd') {
-        onLoginSuccess('security');
-      } else {
+      try {
+        const userData = await authService.login(formData.emailOrPhone, formData.password);
+        if (userData.role === 'user') {
+          onLoginSuccess('user');
+        } else {
+          setErrors({
+            emailOrPhone: 'Invalid user credentials',
+            password: 'Invalid user credentials',
+          });
+        }
+      } catch (error) {
         setErrors({
           emailOrPhone: 'Invalid credentials',
           password: 'Invalid credentials',

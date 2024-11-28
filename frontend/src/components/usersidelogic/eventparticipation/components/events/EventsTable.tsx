@@ -15,9 +15,10 @@ interface Event {
 
 interface EventsTableProps {
   events: Event[];
+  onParticipate: (eventId: string) => void;
 }
 
-const EventsTable = ({ events }: EventsTableProps) => {
+const EventsTable = ({ events, onParticipate }: EventsTableProps) => {
   return (
     <div className="bg-white rounded-lg shadow">
       <table className="w-full">
@@ -28,6 +29,7 @@ const EventsTable = ({ events }: EventsTableProps) => {
             <th className="px-6 py-3 text-sm font-medium text-gray-500">Activity Time</th>
             <th className="px-6 py-3 text-sm font-medium text-gray-500">Activity Date</th>
             <th className="px-6 py-3 text-sm font-medium text-gray-500">Activity Name</th>
+            <th className="px-6 py-3 text-sm font-medium text-gray-500">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +51,14 @@ const EventsTable = ({ events }: EventsTableProps) => {
                 {format(new Date(event.activityDate), 'dd/MM/yyyy')}
               </td>
               <td className="px-6 py-4 text-sm text-gray-600">{event.activityName}</td>
+              <td className="px-6 py-4">
+                <button
+                  onClick={() => onParticipate(event.id)}
+                  className="px-4 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600"
+                >
+                  Participate
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
