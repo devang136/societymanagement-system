@@ -3,36 +3,38 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const complaintRoutes = require('./routes/complaintRoutes');
+const { errorHandler } = require('./middleware/errorMiddleware');
 
+// Create Express app
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect('mongodb://127.0.0.1:27017/society-manager')
-  .then(() => console.log('MongoDB Connected: 127.0.0.1'))
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/complaints', complaintRoutes);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: err.message 
-  });
-});
+app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+// Start server
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Promise Rejection:', err);
+  // Close server & exit process
+  server.close(() => process.exit(1));
+});
+
+module.exports = app;
   

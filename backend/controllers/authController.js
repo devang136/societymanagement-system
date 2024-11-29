@@ -178,9 +178,6 @@ const sendEmail = async (email, otp) => {
     `
 };
 
-
-
-
   await transporter.sendMail(mailOptions);
 };
 
