@@ -2,7 +2,7 @@ export type Status = 'Open' | 'Pending' | 'Solve';
 export type Priority = 'High' | 'Medium' | 'Low';
 
 export interface Complaint {
-  id: string;
+  id?: string;
   complainerName: string;
   complaintName: string;
   description: string;
@@ -10,7 +10,7 @@ export interface Complaint {
   unit: string;
   priority: Priority;
   status: Status;
-  requestDate: string;
+  requestDate?: string;
 }
 
 export interface Request {
