@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Complaint } from '../components/usersidelogic/servicecomplaint/types';
+import { Complaint, Status } from '../components/usersidelogic/servicecomplaint/types';
 
 const API_URL = 'http://localhost:8000/api/complaints';
 
@@ -33,6 +33,16 @@ export const complaintService = {
       return response.data;
     } catch (error: any) {
       console.error('Error creating complaint:', error.response?.data);
+      throw error;
+    }
+  },
+
+  async deleteComplaint(id: string): Promise<void> {
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      console.log('Deleted complaint:', id);
+    } catch (error: any) {
+      console.error('Error deleting complaint:', error.response?.data);
       throw error;
     }
   }
