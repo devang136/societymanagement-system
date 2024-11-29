@@ -76,7 +76,7 @@ exports.sendOTP = async (req, res) => {
 
       otpMap.set(email, { otp, expiresIn: Date.now() + 15 * 60 * 1000 });
 
-      await sendEmail(user.email, otp); 
+      await sendEmail(user.email, otp);
 
       res.status(200).json({ message: 'OTP sent successfully' });
   } catch (error) {
@@ -97,84 +97,91 @@ const sendEmail = async (email, otp) => {
     to: email,  // Recipient's email
     subject: 'Password Reset OTP - Society Management System',  // Email subject
     html: `
-    <html>
-    <head>
-        <style>
-            body {
-                font-family: 'Arial', sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f4f7fb;
-                color: #333;
-                line-height: 1.6;
-            }
-            .container {
-                width: 100%;
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #ffffff;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-                text-align: center;
-                background-color: #0061f2;
-                color: #ffffff;
-                padding: 15px;
-                border-radius: 8px 8px 0 0;
-                font-size: 24px;
-            }
-            .content {
-                padding: 20px;
-                font-size: 16px;
-                color: #555;
-            }
-            .otp-box {
-                background-color: #f4f4f4;
-                padding: 15px;
-                font-size: 24px;
-                font-weight: bold;
-                color: #0061f2;
-                text-align: center;
-                border-radius: 5px;
-                margin: 30px 0;
-            }
-            .footer {
-                font-size: 14px;
-                color: #888;
-                text-align: center;
-                margin-top: 20px;
-                border-top: 1px solid #ddd;
-                padding-top: 10px;
-            }
-            .footer a {
-                color: #0061f2;
-                text-decoration: none;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                Society Management System
-            </div>
-            <div class="content">
-                <p>Hello,</p>
-                <p>We received a request to reset your password. Please use the following One-Time Password (OTP) to complete the process:</p>
-                <div class="otp-box">
-                    ${otp}
-                </div>
-                <p><strong>Note:</strong> This OTP will expire in 10 minutes. If you did not request a password reset, please ignore this email.</p>
-                <p>If you need assistance, feel free to reach out to our support team.</p>
-            </div>
-            <div class="footer">
-                <p>Thank you for using the Society Management System!</p>
-                <p><a href="mailto:support@yourdomain.com">Contact Support</a></p>
-            </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset OTP</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fb;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            background-color: #0061f2;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        .otp-box {
+            background-color: #f4f4f4;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0061f2;
+            text-align: center;
+            border-radius: 5px;
+            margin: 30px 0;
+        }
+        .footer {
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .footer a {
+            color: #0061f2;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Society Management System
         </div>
-    </body>
-    </html>
+        <div class="content">
+            <p>Hello,</p>
+            <p>We received a request to reset your password. Please use the following One-Time Password (OTP) to complete the process:</p>
+            <div class="otp-box">
+                ${otp}
+            </div>
+            <p><strong>Note:</strong> This OTP will expire in 10 minutes. If you did not request a password reset, please ignore this email.</p>
+            <p>If you need assistance, feel free to reach out to our support team.</p>
+        </div>
+        <div class="footer">
+            <p>Thank you for using the Society Management System!</p>
+            <p><a href="mailto:support@yourdomain.com">Contact Support</a></p>
+        </div>
+    </div>
+</body>
+</html>
     `
 };
 
@@ -196,7 +203,7 @@ exports.verifyOTP = async (req, res) => {
 
   // Log both stored and received OTP for debugging
   console.log('Stored OTP:', storedOTP);  
-  console.log('Received OTP:', otp);  
+  console.log('Received OTP:', otp);
 
   if (!storedOTP) {
     return res.status(400).json({ message: 'OTP not found or expired.' });
