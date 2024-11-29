@@ -3,6 +3,7 @@ export type Priority = 'High' | 'Medium' | 'Low';
 
 export interface Complaint {
   id?: string;
+  _id?: string;
   complainerName: string;
   complaintName: string;
   description: string;
