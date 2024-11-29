@@ -1,21 +1,31 @@
-const multer = require("multer");
+const express = require('express');
+const multer = require('multer');
+const app = express();
 
-const fs = require("fs");
-const path = require("path");
+// Middleware for JSON parsing
+app.use(express.json());
 
-// for storage
+// Example custom middleware
+const protect = (req, res, next) => {
+    console.log('Protect middleware triggered');
+    next(); // Pass control to the next middleware
+};
 
+app.use(protect);
+
+// Multer setup
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    fs.mkdirSync(path.join(__dirname, "../public/images"), { recursive: true }),
-      cb(null, path.join(__dirname, "../public/images"));
-  },
-  filename: function (req, file, cb) {
-    cb(null,file.originalname);
-  },
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Define upload folder
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    },
 });
 
-// for upload
-
 const upload = multer({ storage: storage });
-module.exports = { upload };
+
+// Route using multer middleware
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.send('File uploaded successfully');
+});

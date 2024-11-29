@@ -11,7 +11,7 @@ exports.verifyToken = (req, res, next) => {
     });
 };
 // authMiddleware.js
-const User = require('../models/User');
+// const User = require('../models/User');
 const AppError = require('../utils/errorHelper').AppError;
 
 // Protect middleware to check if the user is authenticated

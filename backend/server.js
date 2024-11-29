@@ -4,6 +4,8 @@ const http = require('http'); // For creating the server
 const { Server } = require('socket.io'); // For WebSocket functionality
 const cors = require('cors');
 const connectDB = require('./config/database');
+
+const app = express();
 const { errorHandler } = require('./middleware/errorMiddleware');
 const logger = require('./utils/logger');
 
@@ -20,7 +22,6 @@ const societyRoutes = require("./routes/societyRoutes");
 const expenseRoutes = require('./routes/expenses');
 const noteRoutes = require("./routes/noteRoutes");
 
-const app = express();
 const server = http.createServer(app); // Create an HTTP server
 const io = new Server(server, {
   cors: {
@@ -43,6 +44,7 @@ app.use('/api/facilities', facilityRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/security', securityGuardRoutes);
 app.use('/api/guards', securityGuardRoutes);
+app.use('/api/residents', residentRoutes);  
 app.use('/api/expenses', expenseRoutes);
 app.use("/api/notes", noteRoutes);
 // app.use('/api/reservations', reservationRoutes);
@@ -100,7 +102,7 @@ io.on('connection', (socket) => {
 });
 
 // Error handling
-app.use(errorHandler);
+// app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
