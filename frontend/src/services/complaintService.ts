@@ -1,56 +1,77 @@
 import axios from 'axios';
-import { Complaint } from '../components/usersidelogic/servicecomplaint/types';
+import { toast } from 'react-hot-toast';
 
-const API_URL = 'http://localhost:8000/api/complaints';
+const API_URL = 'http://localhost:8001/api';
 
-axios.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('API Error:', error.response?.data || error.message);
-    throw error;
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
   }
-);
+  return {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+};
 
 export const complaintService = {
-  async getComplaints(): Promise<Complaint[]> {
+  async createComplaint(complaintData: any) {
     try {
-      const response = await axios.get<(Complaint & { _id: string })[]>(API_URL);
-      return response.data.map(complaint => ({
-        ...complaint,
-        id: complaint._id
-      }));
+      console.log('Creating complaint:', complaintData);
+      const response = await axios.post(`${API_URL}/complaints/create`, complaintData, {
+        headers: getAuthHeaders()
+      });
+      return response.data;
     } catch (error: any) {
-      console.error('Error fetching complaints:', error);
-      throw new Error(error.response?.data?.message || 'Failed to fetch complaints');
-    }
-  },
-
-  async createComplaint(complaintData: Omit<Complaint, 'id' | '_id'>): Promise<Complaint> {
-    try {
-      const formattedData = {
-        ...complaintData,
-        status: 'Open',
-        requestDate: new Date().toISOString().split('T')[0]
-      };
-      const response = await axios.post<Complaint & { _id: string }>(`${API_URL}/add`, formattedData);
-      return {
-        ...response.data,
-        id: response.data._id
-      };
-    } catch (error: any) {
-      console.error('Error creating complaint:', error);
+      console.error('Create complaint error:', error.response?.data || error);
+      if (error.response?.status === 401) {
+        toast.error('Please log in again');
+      }
       throw new Error(error.response?.data?.message || 'Failed to create complaint');
     }
   },
 
-  async deleteComplaint(id: string): Promise<void> {
+  async getComplaints() {
     try {
-      if (!id) {
-        throw new Error('Invalid complaint ID');
-      }
-      await axios.delete(`${API_URL}/${id}`);
+      const response = await axios.get(`${API_URL}/complaints/all`, {
+        headers: getAuthHeaders()
+      });
+      return response.data;
     } catch (error: any) {
-      console.error('Error deleting complaint:', error);
+      console.error('Get complaints error:', error.response?.data || error);
+      if (error.response?.status === 401) {
+        toast.error('Please log in again');
+      }
+      throw new Error(error.response?.data?.message || 'Failed to fetch complaints');
+    }
+  },
+
+  async updateComplaint(id: string, updates: any) {
+    try {
+      const response = await axios.put(`${API_URL}/complaints/${id}`, updates, {
+        headers: getAuthHeaders()
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('Update complaint error:', error.response?.data || error);
+      if (error.response?.status === 401) {
+        toast.error('Please log in again');
+      }
+      throw new Error(error.response?.data?.message || 'Failed to update complaint');
+    }
+  },
+
+  async deleteComplaint(id: string) {
+    try {
+      const response = await axios.delete(`${API_URL}/complaints/${id}`, {
+        headers: getAuthHeaders()
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('Delete complaint error:', error.response?.data || error);
+      if (error.response?.status === 401) {
+        toast.error('Please log in again');
+      }
       throw new Error(error.response?.data?.message || 'Failed to delete complaint');
     }
   }

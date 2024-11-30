@@ -1,62 +1,122 @@
 const authService = require('../services/authService');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 exports.register = async (req, res) => {
   try {
-    const chairman = await authService.registerChairman(req.body);
-    const token = await authService.generateToken(chairman.id);
-    res.json({ token });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    const { 
+      firstName, 
+      lastName, 
+      email, 
+      password, 
+      society, 
+      wing, 
+      unit, 
+      phone, 
+      country, 
+      state, 
+      city 
+    } = req.body;
+
+    // Check if user exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Create new user
+    user = new User({
+      name: `${firstName} ${lastName}`,
+      email,
+      password,
+      society,
+      wing,
+      unit,
+      contactNumber: phone,
+      address: `${city}, ${state}, ${country}`,
+      role: 'user'
+    });
+
+    await user.save();
+
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        society: user.society,
+        wing: user.wing,
+        unit: user.unit
+      }
+    });
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Error registering user' });
   }
 };
 
 exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
-  console.log(req.body);
-
   try {
-    // Find the user from the database based on email
-    const findUser = await authService.findUser(email);
+    const { email, password } = req.body;
+    console.log('Login attempt for:', email);
 
-    console.log(findUser);
+    // Find user
+    const user = await User.findOne({ 
+      email: email.toLowerCase().trim(),
+      isActive: true 
+    }).populate('society');
 
-    if (!findUser) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+    if (!user) {
+      console.log('User not found:', email);
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Compare the entered password with the hashed password from the database
-    const isPasswordValid = await bcrypt.compare(password, findUser.password);
-
-    if (isPasswordValid) {
-      let data = {
-        _id: findUser._id,
-        email: findUser.email,
-        contactNumber: findUser.contactNumber,
-        role: findUser.role,
-      };
-
-      const token = createToken(data);
-
-      // Set the token in a cookie
-      res.cookie("login_token", token);
-
-      return res.status(200).json({
-        message: "Login successful",
-      });
-    } else {
-      return res.status(400).json({
-        message: "Invalid password",
-      });
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      console.log('Invalid password for user:', email);
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "An error occurred while logging in",
+
+    // Update last login
+    user.lastLogin = new Date();
+    await user.save();
+
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Send response
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        society: user.society.name,
+        wing: user.wing,
+        unit: user.unit
+      }
     });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error during login' });
   }
 };
 

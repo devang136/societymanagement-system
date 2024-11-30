@@ -1,37 +1,59 @@
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8001/api';
+
 interface UserData {
   role: 'admin' | 'user' | 'security';
   token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    society: string;
+    wing: string;
+    unit: string;
+  };
 }
 
 export const authService = {
-  async login(emailOrPhone: string, password: string): Promise<UserData> {
-    // Mock implementation
-    // Accept both test credentials
-    const validCredentials = [
-      { email: 'user@example.com', password: 'password' },
-      { email: 'user@gmail.com', password: 'asdasd' }
-    ];
-
-    const isValid = validCredentials.some(
-      cred => cred.email === emailOrPhone && cred.password === password
-    );
-
-    if (isValid) {
-      const userData = {
-        role: 'user' as const,
-        token: 'mock_token_12345'
+  async login(email: string, password: string): Promise<UserData> {
+    try {
+      console.log('Attempting login with:', { email, password });
+      
+      const response = await axios.post(`${API_URL}/auth/login`, {
+        email,
+        password
+      });
+      
+      const { token, user } = response.data;
+      
+      // Store auth data
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      return {
+        role: user.role as 'admin' | 'user' | 'security',
+        token,
+        user
       };
-      localStorage.setItem('user_token', userData.token);
-      return userData;
+    } catch (error: any) {
+      console.error('Login error:', error.response?.data || error);
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
-    throw new Error('Invalid credentials');
   },
 
   logout(): void {
-    localStorage.removeItem('user_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   },
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('user_token');
+    return !!localStorage.getItem('token');
+  },
+
+  getCurrentUser() {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
   }
 };

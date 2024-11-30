@@ -3,6 +3,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const complaintRoutes = require('./routes/complaintRoutes');
+const pollRoutes = require('./routes/pollRoutes');
+const authRoutes = require('./routes/authRoutes');
+const initializeDb = require('./utils/initDb');
+
+// Import models
+require('./models');
 
 const app = express();
 
@@ -12,30 +18,57 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// MongoDB connection with debug logging
-mongoose.set('debug', true);
-mongoose.connect('mongodb://127.0.0.1:27017/society-management', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => {
-  console.log('Connected to MongoDB successfully');
-})
-.catch(err => {
-  console.error('MongoDB connection error:', err);
-  process.exit(1);
-});
+// MongoDB connection
+mongoose.connect('mongodb://127.0.0.1:27017/society-management')
+  .then(async () => {
+    console.log('Connected to MongoDB successfully');
+    await initializeDb();
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
 
+// Mount routes
+app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
+app.use('/api/polls', pollRoutes);
 
-const PORT = 8000;
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
+
+const PORT = process.env.PORT || 8001;
+
+const startServer = async () => {
+  try {
+    const server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.log(`Port ${PORT} is busy, trying ${PORT + 1}`);
+        server.close();
+        startServer(PORT + 1);
+      } else {
+        console.error('Server error:', error);
+      }
+    });
+
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Rejection:', err);
-  server.close(() => process.exit(1));
+  process.exit(1);
 });
 
 module.exports = app;

@@ -1,25 +1,39 @@
-const jwt = require("jsonwebtoken");
-// const { findUser } = require("../services/user.service");
-const secret = "MySecretKey";
-const createToken = (data) => {
-  const token = jwt.sign({ data }, secret);
-  return token;
-};
+const jwt = require('jsonwebtoken');
+const { User } = require('../models');
 
-const verifyToken = (login_token) => {
-  return jwt.verify(login_token, secret);
-};
+const auth = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({ message: 'No auth token found' });
+    }
 
-const authenticate = (req, res, next) => {
-  const login_token = req.cookies.login_token;
-  console.log(login_token);
-  if (!login_token) {
-  res.status(400).json({ message: "you are not login" });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id)
+      .populate('society');
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (!user.isActive) {
+      throw new Error('User account is inactive');
+    }
+
+    if (!user.society) {
+      throw new Error('User society not found');
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ 
+      message: 'Please authenticate',
+      error: error.message 
+    });
   }
-  const user = jwt.verify(login_token, secret);
-  req.user = user;
-  next();
 };
 
-
-module.exports = { createToken, verifyToken, authenticate };
+module.exports = auth;

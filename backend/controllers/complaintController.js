@@ -1,49 +1,87 @@
-const complaintService = require('../services/complaintService');
+const { Complaint } = require('../models');
 
 exports.createComplaint = async (req, res) => {
   try {
-    console.log('Received complaint data:', req.body);
-    
-    const complaintData = {
-      ...req.body,
-      status: req.body.status || 'Open',
-      requestDate: new Date().toISOString().split('T')[0],
-      priority: req.body.priority || 'Medium'
-    };
-    
-    console.log('Formatted complaint data:', complaintData);
-    const complaint = await complaintService.createComplaint(complaintData);
-    
-    console.log('Created complaint:', complaint);
-    res.status(201).json(complaint);
+    const { title, description, priority, category } = req.body;
+
+    if (!req.user || !req.user.society) {
+      return res.status(401).json({ message: 'User or society not found' });
+    }
+
+    const complaint = new Complaint({
+      title,
+      description,
+      priority,
+      category,
+      createdBy: req.user._id,
+      society: req.user.society._id,
+      status: 'Open'
+    });
+
+    await complaint.save();
+
+    const populatedComplaint = await Complaint.findById(complaint._id)
+      .populate('createdBy', 'name')
+      .populate('society', 'name');
+
+    res.status(201).json(populatedComplaint);
   } catch (error) {
-    console.error('Controller error:', error);
-    res.status(500).json({ 
-      message: 'Failed to create complaint',
-      error: error.message 
+    console.error('Create complaint error:', error);
+    res.status(500).json({
+      message: 'Error creating complaint',
+      error: error.message
     });
   }
 };
 
-exports.getComplaint = async (req, res) => {
+exports.getComplaints = async (req, res) => {
   try {
-    const complaint = await complaintService.getComplaintById(req.params.id);
-    if (!complaint) return res.status(404).json({ message: "Complaint not found" });
-    res.status(200).json(complaint);
+    if (!req.user || !req.user.society) {
+      return res.status(401).json({ message: 'User or society not found' });
+    }
+
+    const complaints = await Complaint.find({
+      society: req.user.society._id
+    })
+    .populate('createdBy', 'name')
+    .populate('society', 'name')
+    .populate('assignedTo', 'name')
+    .sort({ createdAt: -1 });
+
+    res.json(complaints);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Get complaints error:', error);
+    res.status(500).json({
+      message: 'Error fetching complaints',
+      error: error.message
+    });
   }
 };
 
-exports.getAllComplaints = async (req, res) => {
+exports.updateComplaint = async (req, res) => {
   try {
-    const complaints = await complaintService.getAllComplaints();
-    res.status(200).json(complaints);
+    const { id } = req.params;
+    const updates = req.body;
+
+    const complaint = await Complaint.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true }
+    )
+    .populate('createdBy', 'name')
+    .populate('society', 'name')
+    .populate('assignedTo', 'name');
+
+    if (!complaint) {
+      return res.status(404).json({ message: 'Complaint not found' });
+    }
+
+    res.json(complaint);
   } catch (error) {
-    console.error('Error fetching complaints:', error);
-    res.status(500).json({ 
-      message: 'Failed to fetch complaints',
-      error: error.message 
+    console.error('Update complaint error:', error);
+    res.status(500).json({
+      message: 'Error updating complaint',
+      error: error.message
     });
   }
 };
@@ -51,28 +89,21 @@ exports.getAllComplaints = async (req, res) => {
 exports.deleteComplaint = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!id) {
-      return res.status(400).json({ message: "Complaint ID is required" });
+    const complaint = await Complaint.findOneAndDelete({
+      _id: id,
+      society: req.user.society._id
+    });
+
+    if (!complaint) {
+      return res.status(404).json({ message: 'Complaint not found' });
     }
 
-    console.log('Deleting complaint with ID:', id);
-    const complaint = await complaintService.deleteComplaint(id);
-    
-    if (!complaint) {
-      console.log('Complaint not found');
-      return res.status(404).json({ message: "Complaint not found" });
-    }
-    
-    console.log('Complaint deleted successfully:', complaint);
-    res.status(200).json({ message: "Complaint deleted successfully" });
+    res.json({ message: 'Complaint deleted successfully' });
   } catch (error) {
-    console.error('Error deleting complaint:', error);
-    if (error.message.includes('Invalid complaint ID')) {
-      return res.status(400).json({ message: error.message });
-    }
-    res.status(500).json({ 
-      message: 'Failed to delete complaint',
-      error: error.message 
+    console.error('Delete complaint error:', error);
+    res.status(500).json({
+      message: 'Error deleting complaint',
+      error: error.message
     });
   }
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { authService } from '../services/authService';
+import { toast } from 'react-hot-toast';
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -54,20 +55,21 @@ export default function LoginForm({
     e.preventDefault();
     if (validateForm()) {
       try {
-        const userData = await authService.login(formData.emailOrPhone, formData.password);
-        if (userData.role === 'user') {
-          onLoginSuccess('user');
+        const response = await authService.login(formData.emailOrPhone, formData.password);
+        console.log('Login successful:', response);
+        
+        if (response.user && response.token) {
+          onLoginSuccess(response.user.role as 'admin' | 'user' | 'security');
         } else {
-          setErrors({
-            emailOrPhone: 'Invalid user credentials',
-            password: 'Invalid user credentials',
-          });
+          throw new Error('Invalid response from server');
         }
-      } catch (error) {
+      } catch (error: any) {
+        console.error('Login error:', error);
         setErrors({
-          emailOrPhone: 'Invalid credentials',
-          password: 'Invalid credentials',
+          emailOrPhone: error.message || 'Invalid credentials',
+          password: error.message || 'Invalid credentials',
         });
+        toast.error(error.message || 'Login failed');
       }
     }
   };
