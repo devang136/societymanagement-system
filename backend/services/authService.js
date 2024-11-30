@@ -2,6 +2,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+exports.getChairman = () => {
+  return User.find({ role: 'admin' });
+};
+
 exports.registerChairman = async (chairmanData) => {
   const { firstName, lastName, email, phoneNumber, country, state, city, society, password } = chairmanData;
 
@@ -20,6 +24,7 @@ exports.registerChairman = async (chairmanData) => {
     city,
     society,
     password,
+    role: 'admin'
   });
 
   const salt = await bcrypt.genSalt(10);
@@ -31,7 +36,7 @@ exports.registerChairman = async (chairmanData) => {
 };
 
 exports.loginChairman = async (email, password) => {
-  const chairman = await User.findOne({ email });
+  const chairman = await User.findOne({ email, role: 'admin' });
   if (!chairman) {
     throw new Error('Invalid credentials');
   }
@@ -48,10 +53,14 @@ exports.findUser = (email) => {
   return User.findOne({ email: email });
 };
 
-exports.generateToken = (chairmanId) => {
+exports.getUserByEmail = (email) => {
+  return User.findOne({ email });
+};
+
+exports.generateToken = (userId) => {
   const payload = {
     user: {
-      id: chairmanId,
+      id: userId,
     },
   };
 
