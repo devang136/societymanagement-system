@@ -1,5 +1,17 @@
 const authService = require('../services/authService');
 
+
+// get user 
+exports.getUser = async (req, res) => {
+  const user = await authService.getChairman();
+
+
+  res.status(200).json({
+    message: "User get success",
+    data: user,
+  });
+};
+
 exports.register = async (req, res) => {
   try {
     const chairman = await authService.registerChairman(req.body);

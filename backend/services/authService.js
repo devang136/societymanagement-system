@@ -1,6 +1,26 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const Chairman = require('../models/user');
+const Chairman = require('../models/Chairman');
+
+// exports.getChairman = async (id) => {
+
+//   try {
+//     const chairman = await Chairman.findById(id).select("-password"); // Exclude the password field
+//     if (!chairman) {
+//       throw new Error("User not found");
+//     }
+//     return chairman;
+//   } catch (error) {
+//     throw new Error(error.message || "An error occurred while fetching the user");
+//   }
+// };
+
+// get chairman
+
+exports.getChairman = () => {
+  return Chairman.find();
+};
+
 
 exports.registerChairman = async (chairmanData) => {
   const { firstName, lastName, email, phoneNumber, country, state, city, society, password } = chairmanData;
@@ -47,7 +67,9 @@ exports.loginChairman = async (email, password) => {
 exports.findUser = (email) => {
   return Chairman.findOne({ email: email });
 };
-
+exports.getUserByEmail = (email) => {
+  return Chairman.findOne({ email });
+};
 exports.generateToken = (chairmanId) => {
   const payload = {
     user: {

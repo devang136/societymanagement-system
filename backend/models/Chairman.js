@@ -38,4 +38,6 @@ const ChairmanSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
-module.exports = mongoose.model("Chairman", ChairmanSchema);
+const Chairman = mongoose.model("Chairman", ChairmanSchema);
+
+module.exports = Chairman
