@@ -5,14 +5,29 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  eventDate: {
+  description: {
+    type: String,
+    required: true
+  },
+  activityTime: {
+    type: String,
+    required: true
+  },
+  activityDate: {
     type: Date,
     required: true
   },
-  amount: {
-    type: Number,
-    required: true
+  participator: {
+    name: {
+      type: String,
+      required: true
+    },
+    avatar: String
   },
+  participants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   society: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Society',
@@ -20,8 +35,8 @@ const eventSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'paid'],
-    default: 'pending'
+    enum: ['upcoming', 'ongoing', 'completed'],
+    default: 'upcoming'
   }
 }, {
   timestamps: true

@@ -1,4 +1,4 @@
-const { Society, User, Poll, SecurityProtocol } = require('../models');
+const { Society, User, Poll, SecurityProtocol, Event, Member, Vehicle } = require('../models');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -164,64 +164,137 @@ const createTestProtocols = async (user) => {
 
 const createTestEvents = async (user) => {
   try {
-    // Wait for models to be registered
-    const Event = mongoose.model('Event');
-    const Invoice = mongoose.model('Invoice');
-
     const testEvents = [
       {
-        eventName: 'Navratri Festival',
-        eventDate: new Date('2024-01-11'),
-        amount: 1000,
+        eventName: 'Annual Society Meeting',
+        description: 'Yearly meeting to discuss society matters',
+        activityTime: '10:00 AM',
+        activityDate: new Date('2024-03-15'),
+        participator: {
+          name: 'John Doe',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1'
+        },
         society: user.society._id,
-        status: 'pending'
+        status: 'upcoming'
       },
       {
-        eventName: 'Diwali Celebration',
-        eventDate: new Date('2024-02-15'),
-        amount: 1500,
+        eventName: 'Holi Celebration',
+        description: 'Festival of colors celebration',
+        activityTime: '9:00 AM',
+        activityDate: new Date('2024-03-25'),
+        participator: {
+          name: 'Jane Smith',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2'
+        },
         society: user.society._id,
-        status: 'pending'
-      },
-      {
-        eventName: 'Holi Festival',
-        eventDate: new Date('2024-03-20'),
-        amount: 800,
-        society: user.society._id,
-        status: 'pending'
+        status: 'upcoming'
       }
     ];
 
     for (const eventData of testEvents) {
-      // Check if event exists
       const existingEvent = await Event.findOne({
         eventName: eventData.eventName,
         society: user.society._id
       });
 
       if (!existingEvent) {
-        // Create event
-        const event = await Event.create(eventData);
-        console.log(`Test event created: ${event.eventName}`);
-
-        // Create invoice
-        await Invoice.create({
-          invoiceId: `INV-${Math.floor(Math.random() * 10000)}`,
-          event: event._id,
-          user: user._id,
-          society: user.society._id,
-          billDate: new Date(),
-          maintenanceAmount: event.amount * 0.1,
-          grandTotal: event.amount * 1.1,
-          status: 'pending'
-        });
-        console.log(`Test invoice created for: ${event.eventName}`);
-      } else {
-        console.log(`Test event already exists: ${eventData.eventName}`);
+        await Event.create(eventData);
+        console.log(`Test event created: ${eventData.eventName}`);
       }
     }
   } catch (error) {
-    console.error('Error creating test events and invoices:', error);
+    console.error('Error creating test events:', error);
+  }
+};
+
+const createTestMembersAndVehicles = async (user) => {
+  try {
+    // Create test members
+    const testMembers = [
+      {
+        name: 'Arlene McCoy',
+        email: 'ArleneMcCoy@gmail.com',
+        phoneNumber: '+91 99130 52231',
+        age: 22,
+        gender: 'Male',
+        relation: 'Brother',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        name: 'Jane Cooper',
+        email: 'jane.cooper@gmail.com',
+        phoneNumber: '+91 98765 43210',
+        age: 28,
+        gender: 'Female',
+        relation: 'Sister',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        name: 'Robert Fox',
+        email: 'robert.fox@gmail.com',
+        phoneNumber: '+91 95555 66666',
+        age: 45,
+        gender: 'Male',
+        relation: 'Father',
+        user: user._id,
+        society: user.society._id
+      }
+    ];
+
+    for (const memberData of testMembers) {
+      const existingMember = await Member.findOne({
+        email: memberData.email,
+        user: user._id
+      });
+
+      if (!existingMember) {
+        await Member.create(memberData);
+        console.log(`Test member created: ${memberData.name}`);
+      }
+    }
+
+    // Create test vehicles
+    const testVehicles = [
+      {
+        type: 'Two Wheelers',
+        vehicleName: 'Splendor',
+        vehicleNumber: 'GJ-5316',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        type: 'Four Wheelers',
+        vehicleName: 'Fortuner',
+        vehicleNumber: 'GJ-1234',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        type: 'Two Wheelers',
+        vehicleName: 'Honda Activa',
+        vehicleNumber: 'GJ-9876',
+        user: user._id,
+        society: user.society._id
+      }
+    ];
+
+    for (const vehicleData of testVehicles) {
+      const existingVehicle = await Vehicle.findOne({
+        vehicleNumber: vehicleData.vehicleNumber,
+        user: user._id
+      });
+
+      if (!existingVehicle) {
+        await Vehicle.create(vehicleData);
+        console.log(`Test vehicle created: ${vehicleData.vehicleName}`);
+      }
+    }
+
+    console.log('Test members and vehicles created successfully');
+  } catch (error) {
+    console.error('Error creating test members and vehicles:', error);
   }
 };
 
@@ -259,6 +332,7 @@ const initializeDb = async () => {
     await createTestPoll(user);
     await createTestProtocols(user);
     await createTestEvents(user);
+    await createTestMembersAndVehicles(user);
     
     console.log('Database initialization completed');
   } catch (error) {

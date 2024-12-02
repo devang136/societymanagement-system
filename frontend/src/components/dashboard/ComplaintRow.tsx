@@ -5,19 +5,19 @@ import { DeleteConfirmation } from '../dashboardmodals/DeleteConfirmation';
 
 interface ComplaintRowProps {
   complaint: {
-    id: number;
+    id: string;
     name: string;
     complaintName: string;
     date: string;
     priority: 'High' | 'Medium' | 'Low';
     status: 'Open' | 'Pending' | 'Solve';
-    avatar: string;
     description?: string;
     wing?: string;
     unit?: string;
+    avatar: string;
   };
-  onEdit?: (id: number, data: any) => void;
-  onDelete?: (id: number) => void;
+  onEdit?: (id: string, data: any) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function ComplaintRow({ complaint, onEdit, onDelete }: ComplaintRowProps) {

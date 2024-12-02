@@ -1,33 +1,32 @@
 const mongoose = require('mongoose');
 
-const complaintSchema = new mongoose.Schema({
-  title: {
+const memberSchema = new mongoose.Schema({
+  name: {
     type: String,
     required: true
   },
-  description: {
+  email: {
     type: String,
     required: true
   },
-  priority: {
-    type: String,
-    enum: ['High', 'Medium', 'Low'],
-    default: 'Medium'
-  },
-  status: {
-    type: String,
-    enum: ['Open', 'Pending', 'Solve'],
-    default: 'Open'
-  },
-  wing: {
+  phoneNumber: {
     type: String,
     required: true
   },
-  unit: {
+  age: {
+    type: Number,
+    required: true
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Other'],
+    required: true
+  },
+  relation: {
     type: String,
     required: true
   },
-  createdBy: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -36,13 +35,9 @@ const complaintSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Society',
     required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model('Complaint', complaintSchema);
+module.exports = mongoose.model('Member', memberSchema); 

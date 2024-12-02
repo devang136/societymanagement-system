@@ -1,95 +1,68 @@
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
-const API_URL = 'http://localhost:3000/api/user';
+const API_URL = 'http://localhost:8001/api';
 
-const getAuthHeader = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem('user_token')}` }
-});
-
-const MOCK_EVENTS = [
-  {
-    id: '1',
-    participator: {
-      name: 'Cody Fisher',
-      avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    description: 'Event and recreational activities.',
-    activityTime: '2:45 PM',
-    activityDate: '2024-02-11',
-    activityName: 'Society Meeting',
-  },
-  {
-    id: '2',
-    participator: {
-      name: 'Jenny Wilson',
-      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    description: 'Cultural celebration and performances.',
-    activityTime: '4:00 PM',
-    activityDate: '2024-02-15',
-    activityName: 'Annual Cultural Fest',
-  },
-  {
-    id: '3',
-    participator: {
-      name: 'Robert Fox',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    description: 'Sports tournament and games.',
-    activityTime: '3:30 PM',
-    activityDate: '2024-02-20',
-    activityName: 'Sports Day',
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
   }
-];
+  return {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+};
 
 export interface Event {
-  id: string;
+  _id: string;
+  eventName: string;
+  description: string;
+  activityTime: string;
+  activityDate: string;
   participator: {
     name: string;
     avatar: string;
   };
-  description: string;
-  activityTime: string;
-  activityDate: string;
-  activityName: string;
-}
-
-export interface Activity extends Event {
-  type: 'sports' | 'cultural' | 'social';
-  status: 'upcoming' | 'ongoing' | 'completed';
+  status: string;
 }
 
 export const eventsService = {
-  async getEvents(): Promise<Event[]> {
+  async getEvents() {
     try {
-      const response = await axios.get(`${API_URL}/events`, getAuthHeader());
+      const response = await axios.get(`${API_URL}/events/events`, {
+        headers: getAuthHeaders()
+      });
       return response.data;
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      return MOCK_EVENTS; // Fallback to mock data
+    } catch (error: any) {
+      console.error('Get events error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to fetch events');
     }
   },
 
-  async getActivities(): Promise<Activity[]> {
+  async getActivities() {
     try {
-      const response = await axios.get(`${API_URL}/activities`, getAuthHeader());
+      const response = await axios.get(`${API_URL}/events/activities`, {
+        headers: getAuthHeaders()
+      });
       return response.data;
-    } catch (error) {
-      console.error('Error fetching activities:', error);
-      return []; // Fallback to empty array
+    } catch (error: any) {
+      console.error('Get activities error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to fetch activities');
     }
   },
 
-  async participateInEvent(eventId: string): Promise<void> {
+  async participateInEvent(eventId: string) {
     try {
-      await axios.post(
+      const response = await axios.post(
         `${API_URL}/events/${eventId}/participate`,
         {},
-        getAuthHeader()
+        { headers: getAuthHeaders() }
       );
-    } catch (error) {
-      console.error('Error participating in event:', error);
-      throw error;
+      return response.data;
+    } catch (error: any) {
+      console.error('Participate in event error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to participate in event');
     }
   }
 }; 

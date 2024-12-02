@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/layout/Header';
 import EventsTabs from './components/events/EventsTabs';
 import EventsTable from './components/events/EventsTable';
-import { eventsService, Event, Activity } from '../../../services/eventsService';
-import toast from 'react-hot-toast';
+import { eventsService } from '../../../services/eventsService';
+import { toast } from 'react-hot-toast';
 
 const MOCK_USER = {
   name: 'Moni Roy',
@@ -13,8 +13,7 @@ const MOCK_USER = {
 
 function App() {
   const [activeTab, setActiveTab] = useState('events');
-  const [events, setEvents] = useState<Event[]>([]);
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,13 +22,16 @@ function App() {
         setLoading(true);
         if (activeTab === 'events') {
           const eventsData = await eventsService.getEvents();
+          console.log('Fetched events:', eventsData);
           setEvents(eventsData);
         } else {
           const activitiesData = await eventsService.getActivities();
-          setActivities(activitiesData);
+          console.log('Fetched activities:', activitiesData);
+          setEvents(activitiesData);
         }
-      } catch (error) {
-        toast.error('Failed to load events data');
+      } catch (error: any) {
+        console.error('Failed to load events:', error);
+        toast.error(error.message || 'Failed to load events data');
       } finally {
         setLoading(false);
       }
@@ -37,15 +39,6 @@ function App() {
 
     fetchData();
   }, [activeTab]);
-
-  const handleParticipate = async (eventId: string) => {
-    try {
-      await eventsService.participateInEvent(eventId);
-      toast.success('Successfully registered for the event!');
-    } catch (error) {
-      toast.error('Failed to register for the event');
-    }
-  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -68,12 +61,11 @@ function App() {
           
           <div className="mt-6">
             {loading ? (
-              <div>Loading...</div>
+              <div className="flex justify-center items-center h-64">
+                <div className="text-gray-500">Loading...</div>
+              </div>
             ) : (
-              <EventsTable 
-                events={activeTab === 'events' ? events : activities}
-                onParticipate={handleParticipate}
-              />
+              <EventsTable events={events} />
             )}
           </div>
         </main>
