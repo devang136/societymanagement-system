@@ -17,6 +17,11 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  amount: {
+    type: Number,
+    required: true,
+    default: 0
+  },
   participator: {
     name: {
       type: String,

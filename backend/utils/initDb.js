@@ -1,36 +1,33 @@
-const { Society, User, Poll, SecurityProtocol, Event, Member, Vehicle } = require('../models');
+const { Society, User, Poll, SecurityProtocol, Event, Member, Vehicle, Invoice } = require('../models');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const createTestSociety = async () => {
   try {
-    // Delete any existing test society and wait for it to complete
-    await Society.deleteMany({ name: 'Test Society' });
+    // First, try to find the test society
+    let society = await Society.findOne({ name: 'Test Society' });
     
-    // Wait a bit to ensure deletion is complete
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (!society) {
+      // Only create if it doesn't exist
+      society = await Society.create({
+        name: 'Test Society',
+        address: 'Test Address, Test City',
+        wings: ['A', 'B', 'C'],
+        totalUnits: 100
+      });
+      console.log('Test society created successfully');
+    } else {
+      console.log('Using existing test society');
+    }
     
-    // Create new test society
-    const society = await Society.create({
-      name: 'Test Society',
-      address: 'Test Address, Test City',
-      wings: ['A', 'B', 'C'],
-      totalUnits: 100
-    });
-    
-    console.log('Test society created successfully');
     return society;
   } catch (error) {
     console.error('Error with test society:', error);
-    // Try to recover
-    try {
-      const existingSociety = await Society.findOne({ name: 'Test Society' });
-      if (existingSociety) {
-        console.log('Using existing society');
-        return existingSociety;
-      }
-    } catch (e) {
-      console.error('Recovery failed:', e);
+    // Try to recover by finding existing society
+    const existingSociety = await Society.findOne({ name: 'Test Society' });
+    if (existingSociety) {
+      console.log('Recovered using existing society');
+      return existingSociety;
     }
     throw error;
   }
@@ -170,6 +167,7 @@ const createTestEvents = async (user) => {
         description: 'Yearly meeting to discuss society matters',
         activityTime: '10:00 AM',
         activityDate: new Date('2024-03-15'),
+        amount: 1000,
         participator: {
           name: 'John Doe',
           avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1'
@@ -182,6 +180,7 @@ const createTestEvents = async (user) => {
         description: 'Festival of colors celebration',
         activityTime: '9:00 AM',
         activityDate: new Date('2024-03-25'),
+        amount: 1500,
         participator: {
           name: 'Jane Smith',
           avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2'
@@ -204,6 +203,40 @@ const createTestEvents = async (user) => {
     }
   } catch (error) {
     console.error('Error creating test events:', error);
+  }
+};
+
+const createTestInvoices = async (user) => {
+  try {
+    const events = await Event.find({ society: user.society._id });
+    
+    for (const event of events) {
+      const existingInvoice = await Invoice.findOne({
+        event: event._id,
+        user: user._id
+      });
+
+      if (!existingInvoice) {
+        // Ensure event.amount exists and is a number
+        const eventAmount = Number(event.amount) || 1000; // Default to 1000 if amount is missing
+        const maintenanceAmount = eventAmount * 0.1; // 10% maintenance fee
+        const grandTotal = eventAmount + maintenanceAmount;
+
+        const invoice = await Invoice.create({
+          invoiceId: `INV-${Math.floor(Math.random() * 10000)}`,
+          event: event._id,
+          user: user._id,
+          society: user.society._id,
+          billDate: new Date(),
+          maintenanceAmount: maintenanceAmount,
+          grandTotal: grandTotal,
+          status: 'pending'
+        });
+        console.log(`Test invoice created for event: ${event.eventName}`);
+      }
+    }
+  } catch (error) {
+    console.error('Error creating test invoices:', error);
   }
 };
 
@@ -315,9 +348,6 @@ const initializeDb = async () => {
     }
     console.log('Database cleanup completed');
 
-    // Wait a bit before creating new data
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
     // Create test data
     const society = await createTestSociety();
     if (!society) {
@@ -326,18 +356,19 @@ const initializeDb = async () => {
 
     const user = await createTestUser(society);
     if (!user) {
-      throw new Error('Failed to create or find user');
+      throw new Error('Failed to create user');
     }
 
     await createTestPoll(user);
     await createTestProtocols(user);
     await createTestEvents(user);
+    await createTestInvoices(user);
     await createTestMembersAndVehicles(user);
     
     console.log('Database initialization completed');
   } catch (error) {
     console.error('Database initialization error:', error);
-    process.exit(1); // Exit if initialization fails
+    process.exit(1);
   }
 };
 

@@ -27,13 +27,7 @@ app.use(express.json());
 mongoose.connect('mongodb://127.0.0.1:27017/society-management')
   .then(async () => {
     console.log('Connected to MongoDB successfully');
-    try {
-      await initializeDb();
-      console.log('Database initialized successfully');
-    } catch (error) {
-      console.error('Database initialization failed:', error);
-      process.exit(1);
-    }
+    await initializeDb();
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);
