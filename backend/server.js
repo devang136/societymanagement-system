@@ -7,6 +7,7 @@ const pollRoutes = require('./routes/pollRoutes');
 const authRoutes = require('./routes/authRoutes');
 const initializeDb = require('./utils/initDb');
 const securityProtocolRoutes = require('./routes/securityProtocolRoutes');
+const invoiceRoutes = require('./routes/invoiceRoutes');
 
 // Import models
 require('./models');
@@ -23,7 +24,13 @@ app.use(express.json());
 mongoose.connect('mongodb://127.0.0.1:27017/society-management')
   .then(async () => {
     console.log('Connected to MongoDB successfully');
-    await initializeDb();
+    try {
+      await initializeDb();
+      console.log('Database initialized successfully');
+    } catch (error) {
+      console.error('Database initialization failed:', error);
+      process.exit(1);
+    }
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);
@@ -35,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/polls', pollRoutes);
 app.use('/api/security-protocols', securityProtocolRoutes);
+app.use('/api/invoices', invoiceRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

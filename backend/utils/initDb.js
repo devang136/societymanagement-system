@@ -1,33 +1,36 @@
 const { Society, User, Poll, SecurityProtocol } = require('../models');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const createTestSociety = async () => {
   try {
-    // First, try to find the test society
-    let society = await Society.findOne({ name: 'Test Society' });
+    // Delete any existing test society and wait for it to complete
+    await Society.deleteMany({ name: 'Test Society' });
     
-    if (!society) {
-      // Only create if it doesn't exist
-      society = await Society.create({
-        name: 'Test Society',
-        address: 'Test Address, Test City',
-        wings: ['A', 'B', 'C'],
-        totalUnits: 100
-      });
-      console.log('Test society created successfully');
-    } else {
-      console.log('Using existing test society');
-    }
+    // Wait a bit to ensure deletion is complete
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Create new test society
+    const society = await Society.create({
+      name: 'Test Society',
+      address: 'Test Address, Test City',
+      wings: ['A', 'B', 'C'],
+      totalUnits: 100
+    });
+    
+    console.log('Test society created successfully');
     return society;
   } catch (error) {
-    // Log error but don't throw it to prevent server crash
     console.error('Error with test society:', error);
-    // Try to recover by finding existing society
-    const existingSociety = await Society.findOne({ name: 'Test Society' });
-    if (existingSociety) {
-      console.log('Recovered using existing society');
-      return existingSociety;
+    // Try to recover
+    try {
+      const existingSociety = await Society.findOne({ name: 'Test Society' });
+      if (existingSociety) {
+        console.log('Using existing society');
+        return existingSociety;
+      }
+    } catch (e) {
+      console.error('Recovery failed:', e);
     }
     throw error;
   }
@@ -159,27 +162,108 @@ const createTestProtocols = async (user) => {
   }
 };
 
+const createTestEvents = async (user) => {
+  try {
+    // Wait for models to be registered
+    const Event = mongoose.model('Event');
+    const Invoice = mongoose.model('Invoice');
+
+    const testEvents = [
+      {
+        eventName: 'Navratri Festival',
+        eventDate: new Date('2024-01-11'),
+        amount: 1000,
+        society: user.society._id,
+        status: 'pending'
+      },
+      {
+        eventName: 'Diwali Celebration',
+        eventDate: new Date('2024-02-15'),
+        amount: 1500,
+        society: user.society._id,
+        status: 'pending'
+      },
+      {
+        eventName: 'Holi Festival',
+        eventDate: new Date('2024-03-20'),
+        amount: 800,
+        society: user.society._id,
+        status: 'pending'
+      }
+    ];
+
+    for (const eventData of testEvents) {
+      // Check if event exists
+      const existingEvent = await Event.findOne({
+        eventName: eventData.eventName,
+        society: user.society._id
+      });
+
+      if (!existingEvent) {
+        // Create event
+        const event = await Event.create(eventData);
+        console.log(`Test event created: ${event.eventName}`);
+
+        // Create invoice
+        await Invoice.create({
+          invoiceId: `INV-${Math.floor(Math.random() * 10000)}`,
+          event: event._id,
+          user: user._id,
+          society: user.society._id,
+          billDate: new Date(),
+          maintenanceAmount: event.amount * 0.1,
+          grandTotal: event.amount * 1.1,
+          status: 'pending'
+        });
+        console.log(`Test invoice created for: ${event.eventName}`);
+      } else {
+        console.log(`Test event already exists: ${eventData.eventName}`);
+      }
+    }
+  } catch (error) {
+    console.error('Error creating test events and invoices:', error);
+  }
+};
+
 const initializeDb = async () => {
   try {
+    // Drop all collections first
+    const collections = await mongoose.connection.db.collections();
+    for (let collection of collections) {
+      try {
+        await collection.drop();
+      } catch (error) {
+        if (error.code === 26) {
+          console.log(`Collection ${collection.collectionName} already dropped`);
+        } else {
+          throw error;
+        }
+      }
+    }
+    console.log('Database cleanup completed');
+
+    // Wait a bit before creating new data
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Create test data
     const society = await createTestSociety();
     if (!society) {
-      console.error('Failed to get or create test society');
-      return;
+      throw new Error('Failed to create or find society');
     }
 
     const user = await createTestUser(society);
     if (!user) {
-      console.error('Failed to get or create test user');
-      return;
+      throw new Error('Failed to create or find user');
     }
 
     await createTestPoll(user);
     await createTestProtocols(user);
+    await createTestEvents(user);
     
     console.log('Database initialization completed');
   } catch (error) {
     console.error('Database initialization error:', error);
-    // Don't throw here to prevent server crash
+    process.exit(1); // Exit if initialization fails
   }
 };
 

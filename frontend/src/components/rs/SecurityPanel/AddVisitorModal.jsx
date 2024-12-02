@@ -11,7 +11,7 @@ const AddVisitorModal = ({ isOpen, onClose }) => {
                     <span className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
                     <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:align-middle">
                         <div className="bg-white px-4 pt-5 sm:p-4 sm:pb-4">
-                            <h3 className="text-lg font-semibold font-poppins leading-6 text-[#202224]">Add Visitor Details.</h3>
+                            <h3 className="text-lg font-semibold font-poppins leading-6 text-[#202224] text-left">Add Visitor Details.</h3>
                             <hr className="border-[#F4F4F4] mb-4 mt-4" />
                             <div className="mt-2">
                                 <div className="mb-4">
