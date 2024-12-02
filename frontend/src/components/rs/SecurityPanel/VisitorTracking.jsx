@@ -94,7 +94,7 @@ export default function VisitorTracking() {
                             <img className="h-10 w-10 rounded-full" src={Avatar} alt="" />
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900"> {visitor.name}</div>
+                            <div className="text-sm font-medium text-gray-900 text-center"> {visitor.name}</div>
                           </div>
                         </div>
                         </td>
@@ -113,7 +113,7 @@ export default function VisitorTracking() {
                         </div>
                       </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-end">
-                          <span className='bg-[#f8f6fb] rounded-xl px-3 py-1'>{visitor.time}</span>
+                          <span className='bg-[#f8f6fb] rounded-xl px-3 py-1 text-center'>{visitor.time}</span>
                         </td>
                       </tr>
                     ))}
