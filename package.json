@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
+    "jsonwebtoken": "^9.0.2",
+    "pdfkit": "^0.15.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1"
+  }
+}

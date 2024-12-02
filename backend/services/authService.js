@@ -1,16 +1,20 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const Chairman = require('../models/user');
+const User = require('../models/User');
+
+exports.getChairman = () => {
+  return User.find({ role: 'admin' });
+};
 
 exports.registerChairman = async (chairmanData) => {
   const { firstName, lastName, email, phoneNumber, country, state, city, society, password } = chairmanData;
 
-  let chairman = await Chairman.findOne({ email });
+  let chairman = await User.findOne({ email });
   if (chairman) {
     throw new Error('User already exists');
   }
 
-  chairman = new Chairman({
+  chairman = new User({
     firstName,
     lastName,
     email,
@@ -20,6 +24,7 @@ exports.registerChairman = async (chairmanData) => {
     city,
     society,
     password,
+    role: 'admin'
   });
 
   const salt = await bcrypt.genSalt(10);
@@ -31,7 +36,7 @@ exports.registerChairman = async (chairmanData) => {
 };
 
 exports.loginChairman = async (email, password) => {
-  const chairman = await Chairman.findOne({ email });
+  const chairman = await User.findOne({ email, role: 'admin' });
   if (!chairman) {
     throw new Error('Invalid credentials');
   }
@@ -45,13 +50,17 @@ exports.loginChairman = async (email, password) => {
 };
 
 exports.findUser = (email) => {
-  return Chairman.findOne({ email: email });
+  return User.findOne({ email: email });
 };
 
-exports.generateToken = (chairmanId) => {
+exports.getUserByEmail = (email) => {
+  return User.findOne({ email });
+};
+
+exports.generateToken = (userId) => {
   const payload = {
     user: {
-      id: chairmanId,
+      id: userId,
     },
   };
 

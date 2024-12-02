@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
-import { Complaint, Priority, Status } from '../../types';
+import { Complaint, Priority } from '../../types';
 
 interface ComplaintFormProps {
-  onSubmit: (complaint: Omit<Complaint, 'id'>) => void;
+  onSubmit: (complaint: Partial<Complaint>) => void;
   onCancel: () => void;
 }
 
 export function ComplaintForm({ onSubmit, onCancel }: ComplaintFormProps) {
   const [formData, setFormData] = useState({
-    complainerName: '',
-    complaintName: '',
+    title: '',
     description: '',
-    wing: '',
-    unit: '',
-    priority: 'Medium' as Priority,
-    status: 'Open' as Status,
-    requestDate: new Date().toISOString().split('T')[0]
+    category: '',
+    priority: 'Medium' as Priority
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -30,28 +26,34 @@ export function ComplaintForm({ onSubmit, onCancel }: ComplaintFormProps) {
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Complainer Name*
+            Title*
           </label>
           <input
             type="text"
             required
-            value={formData.complainerName}
-            onChange={(e) => setFormData(prev => ({ ...prev, complainerName: e.target.value }))}
+            value={formData.title}
+            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Complaint Name*
+            Category*
           </label>
-          <input
-            type="text"
+          <select
             required
-            value={formData.complaintName}
-            onChange={(e) => setFormData(prev => ({ ...prev, complaintName: e.target.value }))}
+            value={formData.category}
+            onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
-          />
+          >
+            <option value="">Select Category</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Security">Security</option>
+            <option value="Cleanliness">Cleanliness</option>
+            <option value="Noise">Noise</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
 
         <div>
@@ -65,33 +67,6 @@ export function ComplaintForm({ onSubmit, onCancel }: ComplaintFormProps) {
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
             rows={3}
           />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Wing*
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.wing}
-              onChange={(e) => setFormData(prev => ({ ...prev, wing: e.target.value }))}
-              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Unit*
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.unit}
-              onChange={(e) => setFormData(prev => ({ ...prev, unit: e.target.value }))}
-              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
         </div>
 
         <div className="space-y-2">
@@ -110,27 +85,6 @@ export function ComplaintForm({ onSubmit, onCancel }: ComplaintFormProps) {
                   className="text-orange-500 focus:ring-orange-500"
                 />
                 <span>{p}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Status*
-          </label>
-          <div className="flex space-x-4">
-            {(['Open', 'Pending', 'Solve'] as Status[]).map((s) => (
-              <label key={s} className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="status"
-                  value={s}
-                  checked={formData.status === s}
-                  onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as Status }))}
-                  className="text-orange-500 focus:ring-orange-500"
-                />
-                <span>{s}</span>
               </label>
             ))}
           </div>

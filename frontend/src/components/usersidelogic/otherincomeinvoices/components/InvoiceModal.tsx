@@ -4,6 +4,7 @@ import { X, Download } from 'lucide-react';
 type InvoiceModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onDownload: () => void;
   invoiceData: {
     invoiceId: string;
     ownerName: string;
@@ -18,7 +19,7 @@ type InvoiceModalProps = {
   };
 };
 
-export const InvoiceModal = ({ isOpen, onClose, invoiceData }: InvoiceModalProps) => {
+export const InvoiceModal = ({ isOpen, onClose, onDownload, invoiceData }: InvoiceModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -74,7 +75,10 @@ export const InvoiceModal = ({ isOpen, onClose, invoiceData }: InvoiceModalProps
           </div>
         </div>
 
-        <button className="w-full flex items-center justify-center gap-2 bg-orange-500 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors">
+        <button 
+          onClick={onDownload}
+          className="w-full flex items-center justify-center gap-2 bg-orange-500 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
+        >
           <Download className="w-4 h-4" />
           Download Invoice
         </button>

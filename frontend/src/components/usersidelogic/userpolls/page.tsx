@@ -1,9 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Bell, ChevronRight } from 'lucide-react'
 import CreatePollModal from './components/create-poll-modal'
 import PollCard from './components/poll-card'
+import { pollService } from '../../../services/pollService'
+import { toast } from 'react-hot-toast'
 
 interface Poll {
   id: number
@@ -16,26 +18,38 @@ interface Poll {
 export default function PollingDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('own')
-  const [polls, setPolls] = useState<Poll[]>([
-    {
-      id: 1,
-      question: 'Sales Deal with Toyota - Azure HF - AMS Amplify ?',
-      yesVotes: 75,
-      noVotes: 40,
-      timestamp: '01/07/2024, 10:00 AM'
-    }
-  ])
+  const [polls, setPolls] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const handleCreatePoll = (newPoll: { question: string }) => {
-    const poll: Poll = {
-      id: Date.now(),
-      question: newPoll.question,
-      yesVotes: 0,
-      noVotes: 0,
-      timestamp: new Date().toLocaleString()
+  const fetchPolls = async () => {
+    try {
+      setLoading(true)
+      console.log('Fetching polls...')
+      const data = await pollService.getPolls()
+      console.log('Fetched polls:', data)
+      setPolls(data)
+    } catch (error: any) {
+      console.error('Failed to fetch polls:', error)
+      toast.error(error.message || 'Failed to fetch polls')
+    } finally {
+      setLoading(false)
     }
-    setPolls([poll, ...polls])
-    setIsModalOpen(false)
+  }
+
+  useEffect(() => {
+    fetchPolls()
+  }, [])
+
+  const handleCreatePoll = async (newPoll: any) => {
+    try {
+      await fetchPolls()
+    } catch (error: any) {
+      console.error('Failed to refresh polls:', error)
+    }
+  }
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>
   }
 
   return (
