@@ -2,17 +2,27 @@ const { Complaint } = require('../models');
 
 exports.createComplaint = async (req, res) => {
   try {
-    const { title, description, priority, category } = req.body;
+    const { title, description, priority, wing, unit } = req.body;
 
     if (!req.user || !req.user.society) {
       return res.status(401).json({ message: 'User or society not found' });
+    }
+
+    const complaintWing = wing || req.user.wing;
+    const complaintUnit = unit || req.user.unit;
+
+    if (!complaintWing || !complaintUnit) {
+      return res.status(400).json({ 
+        message: 'Wing and unit are required. Please provide them in the request or update your profile.'
+      });
     }
 
     const complaint = new Complaint({
       title,
       description,
       priority,
-      category,
+      wing: complaintWing,
+      unit: complaintUnit,
       createdBy: req.user._id,
       society: req.user.society._id,
       status: 'Open'
@@ -24,6 +34,7 @@ exports.createComplaint = async (req, res) => {
       .populate('createdBy', 'name')
       .populate('society', 'name');
 
+    console.log('Complaint created:', populatedComplaint);
     res.status(201).json(populatedComplaint);
   } catch (error) {
     console.error('Create complaint error:', error);
@@ -45,7 +56,6 @@ exports.getComplaints = async (req, res) => {
     })
     .populate('createdBy', 'name')
     .populate('society', 'name')
-    .populate('assignedTo', 'name')
     .sort({ createdAt: -1 });
 
     res.json(complaints);

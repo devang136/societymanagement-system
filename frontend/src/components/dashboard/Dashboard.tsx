@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { FiPlus, FiBell, FiSearch } from 'react-icons/fi';
 import { StatCard } from './StatCard';
@@ -10,6 +10,8 @@ import AddImportantNumber from '../dashboardmodals/AddImportantNumber';
 import { Notification } from './Notification';
 import ProfileView from '../editprofile/ProfileView';
 import ProfileEdit from '../editprofile/ProfileEdit';
+import { dashboardService, DashboardData } from '../../services/dashboardService';
+import { toast } from 'react-hot-toast';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -30,6 +32,26 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
     state: "Gujarat",
     city: "Baroda"
   });
+
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const data = await dashboardService.getDashboardData();
+        setDashboardData(data);
+      } catch (error: any) {
+        console.error('Dashboard data error:', error);
+        toast.error(error.message || 'Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   const handleProfileClick = () => {
     setIsProfileOpen(true);
@@ -183,6 +205,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="flex-1">
       <div className="flex items-center justify-between px-6 py-4 bg-white">
@@ -250,7 +276,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
 
           {/* Stats */}
           <div className="grid grid-cols-4 gap-6 mb-8">
-            <StatCard title="Total Balance" value="₹ 2,22,520" color="orange" />
+            <StatCard 
+              title="Total Complaints" 
+              value={dashboardData?.stats.totalComplaints.toString() || '0'} 
+              color="orange" 
+            />
             <StatCard title="Total Income" value="₹ 55,000" color="green" />
             <StatCard title="Total Expense" value="₹ 20,550" color="blue" />
             <StatCard title="Total Unit" value="₹ 20,550" color="purple" />
@@ -352,7 +382,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {complaints.map((complaint) => (
+                    {dashboardData?.complaints.map((complaint) => (
                       <ComplaintRow
                         key={complaint.id}
                         complaint={complaint}

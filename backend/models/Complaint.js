@@ -3,25 +3,29 @@ const mongoose = require('mongoose');
 const complaintSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Title is required']
+    required: true
   },
   description: {
     type: String,
-    required: [true, 'Description is required']
+    required: true
   },
   priority: {
     type: String,
-    enum: ['Low', 'Medium', 'High'],
+    enum: ['High', 'Medium', 'Low'],
     default: 'Medium'
   },
   status: {
     type: String,
-    enum: ['Open', 'In Progress', 'Resolved', 'Closed'],
+    enum: ['Open', 'Pending', 'Solve'],
     default: 'Open'
   },
-  category: {
+  wing: {
     type: String,
-    required: [true, 'Category is required']
+    required: true
+  },
+  unit: {
+    type: String,
+    required: true
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,21 +37,10 @@ const complaintSchema = new mongoose.Schema({
     ref: 'Society',
     required: true
   },
-  assignedTo: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  comments: [{
-    text: String,
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now
-    }
-  }]
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 }, {
   timestamps: true
 });
