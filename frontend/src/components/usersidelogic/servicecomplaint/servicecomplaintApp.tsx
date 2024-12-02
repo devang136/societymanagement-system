@@ -56,26 +56,20 @@ function App() {
     }
   }, [activeTab]);
 
-  const handleComplaintSubmit = async (complaintData: Omit<Complaint, 'id'>) => {
+  const handleComplaintSubmit = async (complaintData: Partial<Complaint>) => {
     try {
-      const formattedData = {
-        ...complaintData,
-        status: 'Open' as Status,
-        priority: complaintData.priority || 'Medium' as Priority,
-      };
-      
-      console.log('Submitting complaint:', formattedData);
-      const newComplaint = await complaintService.createComplaint(formattedData);
+      console.log('Submitting complaint:', complaintData);
+      const newComplaint = await complaintService.createComplaint(complaintData);
       console.log('Created complaint:', newComplaint);
       
       if (newComplaint) {
-        setComplaints(prev => [...prev, newComplaint]);
+        setComplaints(prev => [newComplaint, ...prev]);
         toast.success('Complaint created successfully');
         setShowComplaintForm(false);
       }
     } catch (error: any) {
       console.error('Error creating complaint:', error);
-      toast.error(error.response?.data?.message || 'Failed to create complaint');
+      toast.error(error.message || 'Failed to create complaint');
     }
   };
 
@@ -93,10 +87,11 @@ function App() {
   const handleComplaintDelete = async (id: string) => {
     try {
       await complaintService.deleteComplaint(id);
-      setComplaints(prev => prev.filter(c => c.id !== id));
+      setComplaints(prev => prev.filter(c => (c._id || c.id) !== id));
       toast.success('Complaint deleted successfully');
-    } catch (error) {
-      toast.error('Failed to delete complaint');
+    } catch (error: any) {
+      console.error('Delete complaint error:', error);
+      toast.error(error.message || 'Failed to delete complaint');
     }
   };
 
@@ -151,7 +146,7 @@ function App() {
                   <div className="space-y-4">
                     {complaints.map(complaint => (
                       <ComplaintCard
-                        key={complaint.id}
+                        key={complaint._id || complaint.id}
                         complaint={complaint}
                         onDelete={handleComplaintDelete}
                       />

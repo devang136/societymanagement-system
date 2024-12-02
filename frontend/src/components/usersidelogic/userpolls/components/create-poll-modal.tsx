@@ -2,22 +2,54 @@
 
 import React, { useState } from 'react'
 import { ChevronDown, ListOrdered, CheckSquare, Star, Hash, AlignLeft } from 'lucide-react'
+import { pollService } from '../../../../services/pollService';
+import { toast } from 'react-hot-toast';
 
 interface CreatePollModalProps {
   onClose: () => void
-  onCreatePoll: (poll: { question: string }) => void
+  onCreatePoll: (poll: any) => void
 }
 
 export default function CreatePollModal({ onClose, onCreatePoll }: CreatePollModalProps) {
-  const [pollType, setPollType] = useState('Ranking polls')
+  const [pollType, setPollType] = useState('Multichoice polls')
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState(['', ''])
+  const [loading, setLoading] = useState(false)
 
-  const handleCreate = () => {
-    if (question.trim()) {
-      onCreatePoll({ question })
+  const handleCreate = async () => {
+    try {
+      setLoading(true)
+
+      if (!question.trim()) {
+        toast.error('Question is required');
+        return;
+      }
+
+      const validOptions = options.filter(opt => opt.trim())
+      if (validOptions.length < 2) {
+        toast.error('At least 2 options are required');
+        return;
+      }
+
+      const pollData = {
+        question: question.trim(),
+        pollType,
+        options: validOptions
+      };
+
+      console.log('Creating poll:', pollData)
+      const createdPoll = await pollService.createPoll(pollData);
+      
+      toast.success('Poll created successfully');
+      onCreatePoll(createdPoll);
+      onClose();
+    } catch (error: any) {
+      console.error('Failed to create poll:', error);
+      toast.error(error.message || 'Failed to create poll');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   const handleAddOption = () => {
     if (options.length < 3) {
