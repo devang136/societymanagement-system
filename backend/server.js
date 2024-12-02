@@ -9,6 +9,7 @@ const initializeDb = require('./utils/initDb');
 const securityProtocolRoutes = require('./routes/securityProtocolRoutes');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const personalDetailsRoutes = require('./routes/personalDetailsRoutes');
 
 // Import models
 require('./models');
@@ -45,6 +46,7 @@ app.use('/api/polls', pollRoutes);
 app.use('/api/security-protocols', securityProtocolRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/personal', personalDetailsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

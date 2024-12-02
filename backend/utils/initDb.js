@@ -1,4 +1,4 @@
-const { Society, User, Poll, SecurityProtocol, Event } = require('../models');
+const { Society, User, Poll, SecurityProtocol, Event, Member, Vehicle } = require('../models');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -207,6 +207,97 @@ const createTestEvents = async (user) => {
   }
 };
 
+const createTestMembersAndVehicles = async (user) => {
+  try {
+    // Create test members
+    const testMembers = [
+      {
+        name: 'Arlene McCoy',
+        email: 'ArleneMcCoy@gmail.com',
+        phoneNumber: '+91 99130 52231',
+        age: 22,
+        gender: 'Male',
+        relation: 'Brother',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        name: 'Jane Cooper',
+        email: 'jane.cooper@gmail.com',
+        phoneNumber: '+91 98765 43210',
+        age: 28,
+        gender: 'Female',
+        relation: 'Sister',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        name: 'Robert Fox',
+        email: 'robert.fox@gmail.com',
+        phoneNumber: '+91 95555 66666',
+        age: 45,
+        gender: 'Male',
+        relation: 'Father',
+        user: user._id,
+        society: user.society._id
+      }
+    ];
+
+    for (const memberData of testMembers) {
+      const existingMember = await Member.findOne({
+        email: memberData.email,
+        user: user._id
+      });
+
+      if (!existingMember) {
+        await Member.create(memberData);
+        console.log(`Test member created: ${memberData.name}`);
+      }
+    }
+
+    // Create test vehicles
+    const testVehicles = [
+      {
+        type: 'Two Wheelers',
+        vehicleName: 'Splendor',
+        vehicleNumber: 'GJ-5316',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        type: 'Four Wheelers',
+        vehicleName: 'Fortuner',
+        vehicleNumber: 'GJ-1234',
+        user: user._id,
+        society: user.society._id
+      },
+      {
+        type: 'Two Wheelers',
+        vehicleName: 'Honda Activa',
+        vehicleNumber: 'GJ-9876',
+        user: user._id,
+        society: user.society._id
+      }
+    ];
+
+    for (const vehicleData of testVehicles) {
+      const existingVehicle = await Vehicle.findOne({
+        vehicleNumber: vehicleData.vehicleNumber,
+        user: user._id
+      });
+
+      if (!existingVehicle) {
+        await Vehicle.create(vehicleData);
+        console.log(`Test vehicle created: ${vehicleData.vehicleName}`);
+      }
+    }
+
+    console.log('Test members and vehicles created successfully');
+  } catch (error) {
+    console.error('Error creating test members and vehicles:', error);
+  }
+};
+
 const initializeDb = async () => {
   try {
     // Drop all collections first
@@ -241,6 +332,7 @@ const initializeDb = async () => {
     await createTestPoll(user);
     await createTestProtocols(user);
     await createTestEvents(user);
+    await createTestMembersAndVehicles(user);
     
     console.log('Database initialization completed');
   } catch (error) {
