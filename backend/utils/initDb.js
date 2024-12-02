@@ -1,4 +1,4 @@
-const { Society, User, Poll, SecurityProtocol } = require('../models');
+const { Society, User, Poll, SecurityProtocol, Event } = require('../models');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -164,64 +164,46 @@ const createTestProtocols = async (user) => {
 
 const createTestEvents = async (user) => {
   try {
-    // Wait for models to be registered
-    const Event = mongoose.model('Event');
-    const Invoice = mongoose.model('Invoice');
-
     const testEvents = [
       {
-        eventName: 'Navratri Festival',
-        eventDate: new Date('2024-01-11'),
-        amount: 1000,
+        eventName: 'Annual Society Meeting',
+        description: 'Yearly meeting to discuss society matters',
+        activityTime: '10:00 AM',
+        activityDate: new Date('2024-03-15'),
+        participator: {
+          name: 'John Doe',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1'
+        },
         society: user.society._id,
-        status: 'pending'
+        status: 'upcoming'
       },
       {
-        eventName: 'Diwali Celebration',
-        eventDate: new Date('2024-02-15'),
-        amount: 1500,
+        eventName: 'Holi Celebration',
+        description: 'Festival of colors celebration',
+        activityTime: '9:00 AM',
+        activityDate: new Date('2024-03-25'),
+        participator: {
+          name: 'Jane Smith',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2'
+        },
         society: user.society._id,
-        status: 'pending'
-      },
-      {
-        eventName: 'Holi Festival',
-        eventDate: new Date('2024-03-20'),
-        amount: 800,
-        society: user.society._id,
-        status: 'pending'
+        status: 'upcoming'
       }
     ];
 
     for (const eventData of testEvents) {
-      // Check if event exists
       const existingEvent = await Event.findOne({
         eventName: eventData.eventName,
         society: user.society._id
       });
 
       if (!existingEvent) {
-        // Create event
-        const event = await Event.create(eventData);
-        console.log(`Test event created: ${event.eventName}`);
-
-        // Create invoice
-        await Invoice.create({
-          invoiceId: `INV-${Math.floor(Math.random() * 10000)}`,
-          event: event._id,
-          user: user._id,
-          society: user.society._id,
-          billDate: new Date(),
-          maintenanceAmount: event.amount * 0.1,
-          grandTotal: event.amount * 1.1,
-          status: 'pending'
-        });
-        console.log(`Test invoice created for: ${event.eventName}`);
-      } else {
-        console.log(`Test event already exists: ${eventData.eventName}`);
+        await Event.create(eventData);
+        console.log(`Test event created: ${eventData.eventName}`);
       }
     }
   } catch (error) {
-    console.error('Error creating test events and invoices:', error);
+    console.error('Error creating test events:', error);
   }
 };
 
