@@ -15,6 +15,7 @@ exports.getUser = async (req, res) => {
   });
 };
 
+// register
 exports.register = async (req, res) => {
   try {
     const { 
@@ -78,6 +79,7 @@ exports.register = async (req, res) => {
   }
 };
 
+// login
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
