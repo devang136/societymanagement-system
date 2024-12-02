@@ -12,6 +12,7 @@ exports.getUser = async (req, res) => {
   });
 };
 
+// register
 exports.register = async (req, res) => {
   try {
     const chairman = await authService.registerChairman(req.body);
@@ -23,6 +24,7 @@ exports.register = async (req, res) => {
   }
 };
 
+// login
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
