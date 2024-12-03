@@ -1,4 +1,4 @@
-const { Society, User, Poll, SecurityProtocol, Event } = require('../models');
+const { Society, User, Poll, SecurityProtocol } = require('../models');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -167,32 +167,29 @@ const createTestEvents = async (user) => {
 
     const testEvents = [
       {
-        eventName: 'Annual Society Meeting',
-        description: 'Yearly meeting to discuss society matters',
-        activityTime: '10:00 AM',
-        activityDate: new Date('2024-03-15'),
-        participator: {
-          name: 'John Doe',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1'
-        },
+        eventName: 'Navratri Festival',
+        eventDate: new Date('2024-01-11'),
+        amount: 1000,
         society: user.society._id,
         status: 'pending'
       },
       {
-        eventName: 'Holi Celebration',
-        description: 'Festival of colors celebration',
-        activityTime: '9:00 AM',
-        activityDate: new Date('2024-03-25'),
-        participator: {
-          name: 'Jane Smith',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2'
-        },
+        eventName: 'Diwali Celebration',
+        eventDate: new Date('2024-02-15'),
+        amount: 1500,
         society: user.society._id,
         status: 'pending'
+      },
+      {
+        eventName: 'Holi Festival',
+        eventDate: new Date('2024-03-20'),
+        amount: 800,
+        society: user.society._id,
       }
     ];
 
     for (const eventData of testEvents) {
+      // Check if event exists
       // Check if event exists
       const existingEvent = await Event.findOne({
         eventName: eventData.eventName,

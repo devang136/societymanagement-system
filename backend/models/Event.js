@@ -5,15 +5,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  description: {
-    type: String,
-    required: true
-  },
-  activityTime: {
-    type: String,
-    required: true
-  },
-  activityDate: {
+  eventDate: {
     type: Date,
     required: true
   },
@@ -29,10 +21,6 @@ const eventSchema = new mongoose.Schema({
     },
     avatar: String
   },
-  participants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
   society: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Society',
@@ -40,8 +28,8 @@ const eventSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['upcoming', 'ongoing', 'completed'],
-    default: 'upcoming'
+    enum: ['pending', 'paid'],
+    default: 'pending'
   }
 }, {
   timestamps: true
