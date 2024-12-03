@@ -101,6 +101,36 @@ const createTestAdmin = async (society) => {
   }
 };
 
+const createTestSecurity = async (society) => {
+  try {
+    // First, try to find the test security guard
+    let security = await User.findOne({ email: 'security@gmail.com' });
+    
+    if (!security) {
+      // Only create if it doesn't exist
+      security = new User({
+        name: 'Security Guard',
+        email: 'security@gmail.com',
+        password: 'asdasd',
+        society: society._id,
+        wing: 'Security',
+        unit: 'Gate',
+        role: 'security',
+        contactNumber: '9876543211',
+        isActive: true
+      });
+
+      await security.save();
+      console.log('Test security guard created successfully');
+    }
+
+    return security;
+  } catch (error) {
+    console.error('Error creating test security guard:', error);
+    throw error;
+  }
+};
+
 const createTestPoll = async (user) => {
   try {
     // Find or create test poll
@@ -416,7 +446,8 @@ const initializeDb = async () => {
 
     await Promise.all([
       createTestUser(society),
-      createTestAdmin(society)
+      createTestAdmin(society),
+      createTestSecurity(society)
     ]);
 
     const user = await User.findOne({ email: 'user@gmail.com' });
