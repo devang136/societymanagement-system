@@ -1,5 +1,4 @@
-const { Society, User, Poll, SecurityProtocol } = require('../models');
-const { Society, User, Poll, SecurityProtocol } = require('../models');
+const { Society, User, Poll, SecurityProtocol, Event, Invoice, Member, Vehicle } = require('../models');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -178,16 +177,6 @@ const createTestEvents = async (user) => {
         eventName: 'Diwali Celebration',
         eventDate: new Date('2024-02-15'),
         amount: 1500,
-        eventName: 'Navratri Festival',
-        eventDate: new Date('2024-01-11'),
-        amount: 1000,
-        society: user.society._id,
-        status: 'pending'
-      },
-      {
-        eventName: 'Diwali Celebration',
-        eventDate: new Date('2024-02-15'),
-        amount: 1500,
         society: user.society._id,
         status: 'pending'
       },
@@ -195,15 +184,12 @@ const createTestEvents = async (user) => {
         eventName: 'Holi Festival',
         eventDate: new Date('2024-03-20'),
         amount: 800,
-        eventName: 'Holi Festival',
-        eventDate: new Date('2024-03-20'),
-        amount: 800,
         society: user.society._id,
+        status: 'pending'
       }
     ];
 
     for (const eventData of testEvents) {
-      // Check if event exists
       // Check if event exists
       const existingEvent = await Event.findOne({
         eventName: eventData.eventName,
