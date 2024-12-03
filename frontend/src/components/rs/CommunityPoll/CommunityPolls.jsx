@@ -56,15 +56,15 @@ export default function PollingSystem() {
                 <div className="container mx-auto py-8">
                     <div className="flex">
                         <button
-                            className={`px-6 py-3 font-bold rounded-t-lg transition-colors duration-300 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white `}>
+                            className={`px-6 py-3 font-bold rounded-t-lg transition-colors duration-300 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-poppins`}>
                             Own Poll
                         </button>
                         <button
-                            className={`px-6 py-3 font-bold rounded-t-lg transition-colors duration-300 bg-white text-gray-700 border-b-2 border-orange-500`}>
+                            className={`px-6 py-3 font-bold rounded-t-lg transition-colors duration-300 bg-white text-gray-700 border-b-2 border-orange-500 font-poppins`}>
                             New Poll
                         </button>
                         <button
-                            className={`px-6 py-3 font-bold rounded-t-lg transition-colors duration-300 bg-white text-gray-700 border-b-2 border-orange-500`}>
+                            className={`px-6 py-3 font-bold rounded-t-lg transition-colors duration-300 bg-white text-gray-700 border-b-2 border-orange-500 font-poppins`}>
                             Previous Poll
                         </button>
                     </div>
