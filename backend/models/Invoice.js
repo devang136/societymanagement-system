@@ -23,11 +23,21 @@ const invoiceSchema = new mongoose.Schema({
   },
   billDate: {
     type: Date,
-    default: Date.now
+    required: true
   },
   paymentDate: Date,
-  maintenanceAmount: Number,
-  grandTotal: Number,
+  maintenanceAmount: {
+    type: Number,
+    required: true
+  },
+  penaltyAmount: {
+    type: Number,
+    default: 0
+  },
+  grandTotal: {
+    type: Number,
+    required: true
+  },
   status: {
     type: String,
     enum: ['pending', 'paid'],

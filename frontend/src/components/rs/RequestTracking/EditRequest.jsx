@@ -92,7 +92,7 @@ const EditRequestModal = ({ Request, onSave, onCancel }) => {
                     onChange={(e) => setPriority(e.target.value)}
                     className="form-radio "
                   />
-                  <span className="ml-2 text-sm text-[#202224]">{priorityOption}</span>
+                  <span className="ml-2 text-sm text-[#202224] font-poppins">{priorityOption}</span>
                 </label>
               ))}
             </div>
@@ -123,13 +123,13 @@ const EditRequestModal = ({ Request, onSave, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="w-1/2 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm  sm:text-sm"
+              className="w-1/2 inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm  sm:text-sm font-poppins"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-1/2 inline-flex justify-center rounded-md text-gray-700 px-4 py-2 text-base font-medium shadow-sm  sm:text-sm bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
+              className="w-1/2 inline-flex justify-center rounded-md text-gray-700 px-4 py-2 text-base font-medium shadow-sm  sm:text-sm bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-poppins"
               style={{
                 transition: "background 0.3s ease",
               }}

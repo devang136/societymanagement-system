@@ -1,5 +1,6 @@
 const { Invoice, Event } = require('../models');
 const PDFDocument = require('pdfkit-table');
+const mongoose = require('mongoose');
 
 exports.getEvents = async (req, res) => {
   try {
@@ -15,46 +16,70 @@ exports.getEvents = async (req, res) => {
   }
 };
 
-exports.getInvoice = async (req, res) => {
+exports.getInvoices = async (req, res) => {
   try {
-    const invoice = await Invoice.findOne({
+    const invoices = await Invoice.find({
       user: req.user._id,
       society: req.user.society._id
     })
     .populate('event')
-    .populate('user', 'name email contactNumber')
+    .populate('user', 'name email')
     .sort({ createdAt: -1 });
 
-    if (!invoice) {
-      return res.status(404).json({ message: 'Invoice not found' });
-    }
-
-    const formattedInvoice = {
-      _id: invoice._id,
-      invoiceId: invoice.invoiceId,
-      ownerName: invoice.user.name,
-      billDate: invoice.billDate.toLocaleDateString(),
-      paymentDate: invoice.paymentDate ? invoice.paymentDate.toLocaleDateString() : '-',
-      phoneNumber: invoice.user.contactNumber,
-      email: invoice.user.email,
-      eventName: invoice.event.eventName,
-      description: `Payment for ${invoice.event.eventName} event`,
-      maintenanceAmount: invoice.maintenanceAmount,
-      grandTotal: invoice.grandTotal
-    };
-
-    res.json(formattedInvoice);
+    res.json(invoices);
   } catch (error) {
-    console.error('Get invoice error:', error);
-    res.status(500).json({ message: 'Error fetching invoice' });
+    console.error('Get invoices error:', error);
+    res.status(500).json({ message: 'Error fetching invoices' });
+  }
+};
+
+exports.getMaintenanceInvoices = async (req, res) => {
+  try {
+    const invoices = await Invoice.find({
+      user: req.user._id,
+      society: req.user.society._id,
+      type: 'maintenance'
+    })
+    .populate('user', 'name email')
+    .sort({ createdAt: -1 });
+
+    res.json(invoices);
+  } catch (error) {
+    console.error('Get maintenance invoices error:', error);
+    res.status(500).json({ message: 'Error fetching maintenance invoices' });
+  }
+};
+
+exports.getEventInvoices = async (req, res) => {
+  try {
+    const invoices = await Invoice.find({
+      user: req.user._id,
+      society: req.user.society._id,
+      type: 'event'
+    })
+    .populate('event')
+    .populate('user', 'name email')
+    .sort({ createdAt: -1 });
+
+    res.json(invoices);
+  } catch (error) {
+    console.error('Get event invoices error:', error);
+    res.status(500).json({ message: 'Error fetching event invoices' });
   }
 };
 
 exports.downloadInvoice = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id)
+    const { id } = req.params;
+
+    // Validate if id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid invoice ID format' });
+    }
+
+    const invoice = await Invoice.findOne({ _id: id })
       .populate('event')
-      .populate('user', 'name email contactNumber')
+      .populate('user', 'name email')
       .populate('society', 'name');
 
     if (!invoice) {
@@ -68,43 +93,43 @@ exports.downloadInvoice = async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=invoice-${invoice.invoiceId}.pdf`);
 
-    // Pipe the PDF to the response
+    // Pipe PDF to response
     doc.pipe(res);
 
-    // Add letterhead
-    doc.fontSize(20).text('Society Management System', { align: 'center' });
-    doc.fontSize(16).text('Event Invoice', { align: 'center' });
+    // Add content to PDF
+    doc.fontSize(20).text('Invoice', { align: 'center' });
     doc.moveDown();
 
-    // Add invoice header
+    // Add invoice details
     doc.fontSize(12);
     doc.text(`Invoice No: ${invoice.invoiceId}`);
     doc.text(`Date: ${invoice.billDate.toLocaleDateString()}`);
     doc.moveDown();
 
-    // Add society details
     doc.text(`Society: ${invoice.society.name}`);
     doc.moveDown();
 
-    // Add billing details
     doc.text('Bill To:');
     doc.text(invoice.user.name);
     doc.text(invoice.user.email);
-    doc.text(invoice.user.contactNumber);
     doc.moveDown();
 
-    // Add event details in a table
+    // Add table
     const table = {
       headers: ['Description', 'Amount'],
       rows: [
         ['Event Name', invoice.event.eventName],
-        ['Event Date', invoice.event.eventDate.toLocaleDateString()],
-        ['Event Amount', `₹${invoice.event.amount.toFixed(2)}`],
-        ['Maintenance Charge', `₹${invoice.maintenanceAmount.toFixed(2)}`],
-        ['', ''],
-        ['Total Amount', `₹${invoice.grandTotal.toFixed(2)}`]
+        ['Event Date', new Date(invoice.event.eventDate).toLocaleDateString()],
+        ['Event Amount', `₹${invoice.event.amount}`],
+        ['Maintenance Amount', `₹${invoice.maintenanceAmount}`]
       ]
     };
+
+    if (invoice.penaltyAmount > 0) {
+      table.rows.push(['Penalty Amount', `₹${invoice.penaltyAmount}`]);
+    }
+
+    table.rows.push(['Grand Total', `₹${invoice.grandTotal}`]);
 
     await doc.table(table, {
       prepareHeader: () => doc.font('Helvetica-Bold'),

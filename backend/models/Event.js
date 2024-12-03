@@ -11,7 +11,15 @@ const eventSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
+  },
+  participator: {
+    name: {
+      type: String,
+      required: true
+    },
+    avatar: String
   },
   society: {
     type: mongoose.Schema.Types.ObjectId,
@@ -27,4 +35,4 @@ const eventSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Event', eventSchema); 
+module.exports = mongoose.model('Event', eventSchema);
