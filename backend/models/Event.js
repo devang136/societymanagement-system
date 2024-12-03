@@ -6,6 +6,7 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
   eventDate: {
+  eventDate: {
     type: Date,
     required: true
   },
@@ -28,6 +29,8 @@ const eventSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    enum: ['pending', 'paid'],
+    default: 'pending'
     enum: ['pending', 'paid'],
     default: 'pending'
   }
