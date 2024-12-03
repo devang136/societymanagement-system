@@ -127,7 +127,7 @@ export default function RequestManagement() {
                             </div>
 
                             <div className="rounded-t-lg">
-                                <table className="w-full divide-y ">
+                                <table className="w-full divide-y divide-gray-200">
                                     <thead className="bg-[#5678E9]/10">
                                         <tr>
                                             <th
