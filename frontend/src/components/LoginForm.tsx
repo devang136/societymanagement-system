@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { authService } from '../services/authService';
+import { toast } from 'react-hot-toast';
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -49,23 +51,25 @@ export default function LoginForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Check for admin and user credentials
-      if (formData.emailOrPhone === 'admin@gmail.com' && formData.password === 'asdasd') {
-        // Admin login
-        onLoginSuccess('admin');
-      } else if (formData.emailOrPhone === 'user@gmail.com' && formData.password === 'asdasd') {
-        // User login
-        onLoginSuccess('user');
-      } else if (formData.emailOrPhone === 'security@gmail.com' && formData.password === 'asdasd') {
-        onLoginSuccess('security');
-      } else {
+      try {
+        const response = await authService.login(formData.emailOrPhone, formData.password);
+        console.log('Login successful:', response);
+        
+        if (response.user && response.token) {
+          onLoginSuccess(response.user.role as 'admin' | 'user' | 'security');
+        } else {
+          throw new Error('Invalid response from server');
+        }
+      } catch (error: any) {
+        console.error('Login error:', error);
         setErrors({
-          emailOrPhone: 'Invalid credentials',
-          password: 'Invalid credentials',
+          emailOrPhone: error.message || 'Invalid credentials',
+          password: error.message || 'Invalid credentials',
         });
+        toast.error(error.message || 'Login failed');
       }
     }
   };

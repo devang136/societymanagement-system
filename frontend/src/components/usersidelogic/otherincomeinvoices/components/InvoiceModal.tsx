@@ -1,7 +1,9 @@
 import React from 'react';
 import { X, Download } from 'lucide-react';
+import { invoiceService } from '../../../../services/invoiceService';
+import { toast } from 'react-hot-toast';
 
-type InvoiceModalProps = {
+interface InvoiceModalProps {
   isOpen: boolean;
   onClose: () => void;
   invoiceData: {
@@ -16,10 +18,21 @@ type InvoiceModalProps = {
     maintenanceAmount: number;
     grandTotal: number;
   };
-};
+}
 
 export const InvoiceModal = ({ isOpen, onClose, invoiceData }: InvoiceModalProps) => {
   if (!isOpen) return null;
+
+  const handleDownload = async () => {
+    try {
+      console.log('Downloading invoice with ID:', invoiceData.invoiceId);
+      await invoiceService.downloadInvoice(invoiceData.invoiceId);
+      toast.success('Invoice downloaded successfully');
+    } catch (error: any) {
+      console.error('Download error:', error);
+      toast.error(error.message || 'Failed to download invoice');
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -74,7 +87,10 @@ export const InvoiceModal = ({ isOpen, onClose, invoiceData }: InvoiceModalProps
           </div>
         </div>
 
-        <button className="w-full flex items-center justify-center gap-2 bg-orange-500 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors">
+        <button 
+          onClick={handleDownload}
+          className="w-full flex items-center justify-center gap-2 bg-orange-500 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
+        >
           <Download className="w-4 h-4" />
           Download Invoice
         </button>

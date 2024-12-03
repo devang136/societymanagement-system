@@ -1,6 +1,8 @@
 import { X } from 'lucide-react';
 import type { Invoice } from '../types';
 import React from 'react';
+import { invoiceService } from '../../../../services/invoiceService';
+import { toast } from 'react-hot-toast';
 
 interface InvoiceDetailsModalProps {
   invoice: Invoice | null;
@@ -10,6 +12,17 @@ interface InvoiceDetailsModalProps {
 
 export function InvoiceDetailsModal({ invoice, isOpen, onClose }: InvoiceDetailsModalProps) {
   if (!isOpen || !invoice) return null;
+
+  const handleDownload = async () => {
+    try {
+      console.log('Downloading invoice with ID:', invoice.invoiceId);
+      await invoiceService.downloadInvoice(invoice.invoiceId);
+      toast.success('Invoice downloaded successfully');
+    } catch (error: any) {
+      console.error('Download error:', error);
+      toast.error(error.message || 'Failed to download invoice');
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -79,7 +92,10 @@ export function InvoiceDetailsModal({ invoice, isOpen, onClose }: InvoiceDetails
             <p className="text-sm">A visual representation of your spending categories visual representation.</p>
           </div>
 
-          <button className="w-full mt-4 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 flex items-center justify-center gap-2">
+          <button 
+            onClick={handleDownload}
+            className="w-full mt-4 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 flex items-center justify-center gap-2"
+          >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>

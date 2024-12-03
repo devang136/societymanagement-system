@@ -1,36 +1,81 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { userService } from '../../../services/userService';
+import { Sidebar } from '../../dashboard/Sidebar';
 import { PersonalInfo } from './components/profile/PersonalInfo';
 import { MemberCard } from './components/members/MemberCard';
 import { MaintenanceCard } from './components/maintenance/MaintenanceCard';
 import { VehicleCard } from './components/vehicles/VehicleCard';
 import { MaintenanceOverview } from './components/maintenance/MaintenanceOverview';
+import toast from 'react-hot-toast';
+
+interface PersonalDetails {
+  fullName: string;
+  phoneNumber: string;
+  emailAddress: string;
+  gender: string;
+  wing: string;
+  age: number;
+  unit: string;
+  relation: string;
+}
 
 export function PersonalDetailsApp() {
+  const [personalDetails, setPersonalDetails] = useState<PersonalDetails | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const personalInfo = isOwner ? {
-    fullName: "Arlene McCoy",
-    phoneNumber: "+91 99130 44527",
-    emailAddress: "ArleneMcCoy25@gmail.com",
-    gender: "Male",
-    wing: "A",
-    age: 28,
-    unit: "1001",
-    relation: "Father"
-  } : {
-    fullName: "John Tenant",
-    phoneNumber: "+91 99130 55527",
-    emailAddress: "john.tenant@gmail.com",
-    gender: "Male",
-    wing: "A",
-    age: 32,
-    unit: "1001",
-    relation: "Tenant"
-  };
+  useEffect(() => {
+    const controller = new AbortController();
+    let toastId: string | undefined;
+
+    const fetchPersonalDetails = async () => {
+      if (isLoading || personalDetails) return;
+      
+      setIsLoading(true);
+      toastId = toast.loading('Loading personal details...', {
+        id: 'personal-details-toast'
+      });
+      
+      try {
+        const data = await userService.getPersonalDetails();
+        setPersonalDetails(data);
+        if (toastId) {
+          toast.dismiss(toastId);
+          toast.success('Personal details loaded successfully', {
+            duration: 2000,
+            id: 'personal-details-success'
+          });
+        }
+      } catch (err) {
+        setError('Failed to load personal details');
+        if (toastId) {
+          toast.dismiss(toastId);
+          toast.error('Failed to load personal details', {
+            duration: 2000,
+            id: 'personal-details-error'
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPersonalDetails();
+
+    return () => {
+      controller.abort();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
+    };
+  }, []);
+
+  if (error) return <div>{error}</div>;
+  if (!personalDetails) return null;
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-   
       
       <main className="flex-1 p-8">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -63,7 +108,7 @@ export function PersonalDetailsApp() {
           
           {/* Personal Info */}
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <PersonalInfo {...personalInfo} />
+            <PersonalInfo {...personalDetails} />
           </div>
           
           {/* Members */}

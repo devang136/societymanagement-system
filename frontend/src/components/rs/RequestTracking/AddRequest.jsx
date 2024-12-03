@@ -98,7 +98,7 @@ const AddRequestModal = ({ onSave, onCancel }) => {
                     onChange={(e) => setPriority(e.target.value)}
                     className="form-radio "
                   />
-                  <span className="ml-2 text-sm text-[#202224]">{priorityOption}</span>
+                  <span className="ml-2 text-sm text-[#202224] text-center">{priorityOption}</span>
                 </label>
               ))}
             </div>
@@ -119,7 +119,7 @@ const AddRequestModal = ({ onSave, onCancel }) => {
                     onChange={(e) => setStatus(e.target.value)}
                     className="form-radio "
                   />
-                  <span className="text-sm text-[#202224]">{statusOption}</span>
+                  <span className="text-sm text-[#202224] text-center">{statusOption}</span>
                 </div>
               ))}
             </div>
@@ -137,7 +137,7 @@ const AddRequestModal = ({ onSave, onCancel }) => {
             </button>
             <button
               type="button"
-              className="w-1/2 inline-flex justify-center rounded-md text-gray-700 bg-[#F6F8FB] px-4 py-2 text-base font-medium shadow-sm  sm:text-sm hover:bg-gradient-to-r hover:from-[#FE512E] hover:to-[#F09619] hover:text-white"
+              className="w-1/2 inline-flex justify-center rounded-md text-gray-700 bg-[#F6F8FB] px-4 py-2 text-base font-medium shadow-sm sm:text-sm hover:bg-gradient-to-r hover:from-[#FE512E] hover:to-[#F09619] hover:text-white"
               style={{
                 transition: "background 0.3s ease",
               }}
