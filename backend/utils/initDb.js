@@ -166,6 +166,10 @@ const createTestEvents = async (user) => {
     const Event = mongoose.model('Event');
     const Invoice = mongoose.model('Invoice');
 
+    // Wait for models to be registered
+    const Event = mongoose.model('Event');
+    const Invoice = mongoose.model('Invoice');
+
     const testEvents = [
       {
         eventName: 'Navratri Festival',
@@ -182,6 +186,7 @@ const createTestEvents = async (user) => {
         eventDate: new Date('2024-01-11'),
         amount: 1000,
         society: user.society._id,
+        status: 'pending'
         status: 'pending'
       },
       {
