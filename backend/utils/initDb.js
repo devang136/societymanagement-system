@@ -161,7 +161,6 @@ const createTestProtocols = async (user) => {
 
 const createTestEvents = async (user) => {
   try {
-    // Wait for models to be registered
     const Event = mongoose.model('Event');
     const Invoice = mongoose.model('Invoice');
 
@@ -171,21 +170,36 @@ const createTestEvents = async (user) => {
         eventDate: new Date('2024-01-11'),
         amount: 1000,
         society: user.society._id,
-        status: 'pending'
+        status: 'pending',
+        participator: {
+          name: user.name,
+          email: user.email,
+          contactNumber: user.contactNumber
+        }
       },
       {
         eventName: 'Diwali Celebration',
         eventDate: new Date('2024-02-15'),
         amount: 1500,
         society: user.society._id,
-        status: 'pending'
+        status: 'pending',
+        participator: {
+          name: user.name,
+          email: user.email,
+          contactNumber: user.contactNumber
+        }
       },
       {
         eventName: 'Holi Festival',
         eventDate: new Date('2024-03-20'),
         amount: 800,
         society: user.society._id,
-        status: 'pending'
+        status: 'pending',
+        participator: {
+          name: user.name,
+          email: user.email,
+          contactNumber: user.contactNumber
+        }
       }
     ];
 

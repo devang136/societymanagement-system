@@ -70,83 +70,121 @@ exports.getEventInvoices = async (req, res) => {
 
 exports.downloadInvoice = async (req, res) => {
   try {
-    const { id } = req.params;
+    console.log('Invoice ID requested:', req.params.invoiceId);
+    
+    const invoice = await Invoice.findOne({ 
+      invoiceId: req.params.invoiceId,
+      society: req.user.society._id 
+    })
+    .populate('user', 'name email contactNumber')
+    .populate('society', 'name')
+    .populate('event');
 
-    // Validate if id is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid invoice ID format' });
-    }
-
-    const invoice = await Invoice.findOne({ _id: id })
-      .populate('event')
-      .populate('user', 'name email')
-      .populate('society', 'name');
+    console.log('Found invoice:', JSON.stringify(invoice, null, 2));
 
     if (!invoice) {
       return res.status(404).json({ message: 'Invoice not found' });
     }
 
-    // Create PDF
-    const doc = new PDFDocument({ margin: 50 });
+    // Validate required data
+    if (!invoice.user?.name || !invoice.society?.name) {
+      console.error('Missing required invoice data:', {
+        userName: invoice.user?.name,
+        societyName: invoice.society?.name,
+        maintenanceAmount: invoice.maintenanceAmount,
+        grandTotal: invoice.grandTotal
+      });
+      return res.status(400).json({ message: 'Invoice data incomplete' });
+    }
 
-    // Set response headers
+    const doc = new PDFDocument({
+      size: 'A4',
+      margin: 50,
+      info: {
+        Title: `Invoice-${invoice.invoiceId}`,
+        Author: invoice.society.name,
+      }
+    });
+
+    // Force download
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=invoice-${invoice.invoiceId}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename="invoice-${invoice.invoiceId}.pdf"`);
 
-    // Pipe PDF to response
+    // Pipe PDF directly to response
     doc.pipe(res);
 
     // Add content to PDF
-    doc.fontSize(20).text('Invoice', { align: 'center' });
+    doc.fontSize(25).text('Invoice', { align: 'center' });
     doc.moveDown();
-
-    // Add invoice details
     doc.fontSize(12);
-    doc.text(`Invoice No: ${invoice.invoiceId}`);
-    doc.text(`Date: ${invoice.billDate.toLocaleDateString()}`);
+
+    // Add invoice details in a table-like format
+    const startX = 50;
+    const startY = 150;
+    const lineHeight = 25;
+    let currentY = startY;
+
+    // Add society logo or name as header
+    doc.fontSize(18).text(invoice.society.name, { align: 'center' });
     doc.moveDown();
+    doc.fontSize(12);
 
-    doc.text(`Society: ${invoice.society.name}`);
-    doc.moveDown();
+    const details = [
+      { label: 'Invoice ID', value: invoice.invoiceId },
+      { label: 'Bill Date', value: new Date(invoice.billDate).toLocaleDateString() },
+      { label: 'Name', value: invoice.user.name },
+      { label: 'Email', value: invoice.user.email },
+      { label: 'Phone', value: invoice.user.contactNumber || 'N/A' },
+      { label: 'Society', value: invoice.society.name }
+    ];
 
-    doc.text('Bill To:');
-    doc.text(invoice.user.name);
-    doc.text(invoice.user.email);
-    doc.moveDown();
+    // Draw a light rectangle for the details section
+    doc.rect(startX - 10, currentY - 10, 500, (details.length + 1) * lineHeight)
+       .fillOpacity(0.1)
+       .fill();
 
-    // Add table
-    const table = {
-      headers: ['Description', 'Amount'],
-      rows: [
-        ['Event Name', invoice.event.eventName],
-        ['Event Date', new Date(invoice.event.eventDate).toLocaleDateString()],
-        ['Event Amount', `₹${invoice.event.amount}`],
-        ['Maintenance Amount', `₹${invoice.maintenanceAmount}`]
-      ]
-    };
+    details.forEach(({ label, value }) => {
+      // Draw in bold
+      doc.font('Helvetica-Bold').text(label, startX, currentY);
+      // Draw value in regular font
+      doc.font('Helvetica').text(': ' + value, startX + 150, currentY);
+      currentY += lineHeight;
+    });
 
-    if (invoice.penaltyAmount > 0) {
-      table.rows.push(['Penalty Amount', `₹${invoice.penaltyAmount}`]);
-    }
+    currentY += lineHeight;
+    doc.font('Helvetica-Bold').text('Amount Details', startX, currentY, { underline: true });
+    currentY += lineHeight;
 
-    table.rows.push(['Grand Total', `₹${invoice.grandTotal}`]);
+    const amounts = [
+      { label: 'Maintenance Amount', value: `₹${invoice.maintenanceAmount?.toFixed(2) || '0.00'}` },
+      { label: 'Penalty Amount', value: `₹${invoice.pendingAmount?.toFixed(2) || '0.00'}` },
+      { label: 'Grand Total', value: `₹${invoice.grandTotal?.toFixed(2) || '0.00'}` }
+    ];
 
-    await doc.table(table, {
-      prepareHeader: () => doc.font('Helvetica-Bold'),
-      prepareRow: () => doc.font('Helvetica')
+    // Draw a light rectangle for the amounts section
+    doc.rect(startX - 10, currentY - 10, 500, (amounts.length + 1) * lineHeight)
+       .fillOpacity(0.1)
+       .fill();
+
+    amounts.forEach(({ label, value }) => {
+      doc.font('Helvetica-Bold').text(label, startX, currentY);
+      doc.font('Helvetica').text(value, startX + 150, currentY);
+      currentY += lineHeight;
     });
 
     // Add footer
-    doc.moveDown();
-    doc.fontSize(10)
-      .text('This is a computer generated invoice.', { align: 'center' })
-      .text('For any queries, please contact society management.', { align: 'center' });
+    doc.fontSize(10);
+    doc.moveDown(4);
+    doc.text('Thank you for your business!', { align: 'center' });
+    doc.moveDown(0.5);
+    doc.fillColor('gray').text('This is a computer generated invoice', { align: 'center' });
+    doc.fillColor('black').text(`Generated on: ${new Date().toLocaleString()}`, { align: 'center' });
 
-    // Finalize PDF
+    // Finalize PDF file
     doc.end();
 
   } catch (error) {
     console.error('Download invoice error:', error);
-    res.status(500).json({ message: 'Error generating invoice PDF' });
+    res.status(500).json({ message: 'Error generating invoice: ' + error.message });
   }
 }; 
