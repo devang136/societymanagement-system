@@ -1,56 +1,73 @@
-const { Event } = require('../models');
+const Event = require('../models/Event');
 
-exports.getEvents = async (req, res) => {
-  try {
-    const events = await Event.find({
-      society: req.user.society._id,
-      status: { $in: ['upcoming', 'ongoing'] }
-    })
-    .sort({ activityDate: 1 });
+const eventController = {
+  createEvent: async (req, res) => {
+    try {
+      const event = new Event({
+        ...req.body,
+        society: req.user.society
+      });
+      await event.save();
+      res.status(201).json(event);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
 
-    res.json(events);
-  } catch (error) {
-    console.error('Get events error:', error);
-    res.status(500).json({ message: 'Error fetching events' });
+  getEvents: async (req, res) => {
+    try {
+      const events = await Event.find({ society: req.user.society });
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getEventById: async (req, res) => {
+    try {
+      const event = await Event.findOne({
+        _id: req.params.id,
+        society: req.user.society
+      });
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  updateEvent: async (req, res) => {
+    try {
+      const event = await Event.findOneAndUpdate(
+        { _id: req.params.id, society: req.user.society },
+        req.body,
+        { new: true }
+      );
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+      res.json(event);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
+
+  deleteEvent: async (req, res) => {
+    try {
+      const event = await Event.findOneAndDelete({
+        _id: req.params.id,
+        society: req.user.society
+      });
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+      res.json({ message: 'Event deleted' });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   }
 };
 
-exports.participateInEvent = async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const event = await Event.findById(eventId);
-
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    // Check if user is already participating
-    if (event.participants.includes(req.user._id)) {
-      return res.status(400).json({ message: 'Already participating in this event' });
-    }
-
-    // Add user to participants
-    event.participants.push(req.user._id);
-    await event.save();
-
-    res.json({ message: 'Successfully registered for event' });
-  } catch (error) {
-    console.error('Participate in event error:', error);
-    res.status(500).json({ message: 'Error registering for event' });
-  }
-};
-
-exports.getActivities = async (req, res) => {
-  try {
-    const activities = await Event.find({
-      society: req.user.society._id,
-      participants: req.user._id
-    })
-    .sort({ activityDate: -1 });
-
-    res.json(activities);
-  } catch (error) {
-    console.error('Get activities error:', error);
-    res.status(500).json({ message: 'Error fetching activities' });
-  }
-}; 
+module.exports = eventController; 
