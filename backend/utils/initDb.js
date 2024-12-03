@@ -41,7 +41,7 @@ const createTestUser = async (society) => {
     if (!user) {
       // Only create if it doesn't exist
       user = new User({
-        name: 'Test User',
+        name: 'devang',
         email: 'user@gmail.com',
         password: 'asdasd',
         society: society._id,
@@ -67,6 +67,36 @@ const createTestUser = async (society) => {
     return user;
   } catch (error) {
     console.error('Error with test user:', error);
+    throw error;
+  }
+};
+
+const createTestAdmin = async (society) => {
+  try {
+    // First, try to find the test admin
+    let admin = await User.findOne({ email: 'admin@gmail.com' });
+    
+    if (!admin) {
+      // Only create if it doesn't exist
+      admin = new User({
+        name: 'Admin',
+        email: 'admin@gmail.com',
+        password: 'asdasd',
+        society: society._id,
+        wing: 'A',
+        unit: '001',
+        role: 'admin',
+        contactNumber: '9876543210',
+        isActive: true
+      });
+
+      await admin.save();
+      console.log('Test admin created successfully');
+    }
+
+    return admin;
+  } catch (error) {
+    console.error('Error creating test admin:', error);
     throw error;
   }
 };
@@ -384,7 +414,12 @@ const initializeDb = async () => {
       throw new Error('Failed to create or find society');
     }
 
-    const user = await createTestUser(society);
+    await Promise.all([
+      createTestUser(society),
+      createTestAdmin(society)
+    ]);
+
+    const user = await User.findOne({ email: 'user@gmail.com' });
     if (!user) {
       throw new Error('Failed to create user');
     }

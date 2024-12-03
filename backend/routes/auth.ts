@@ -9,6 +9,12 @@ const MOCK_USER = {
   avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 
+const MOCK_ADMIN = {
+  name: 'Admin',
+  role: 'admin',
+  avatar: 'https://images.unsplash.com/photo-1519648023493-d82b5f8d7b8a?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+};
+
 const router = express.Router();
 
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
@@ -22,6 +28,16 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         process.env.JWT_SECRET!
       );
       res.json({ token, user: MOCK_USER });
+      return;
+    }
+
+    // For the test admin
+    if (email === 'admin@gmail.com' && password === 'asdasd') {
+      const token = jwt.sign(
+        { email, role: 'admin', name: MOCK_ADMIN.name },
+        process.env.JWT_SECRET!
+      );
+      res.json({ token, user: MOCK_ADMIN });
       return;
     }
 
