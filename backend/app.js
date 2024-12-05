@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/api/complaints', complaintRoutes);
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/society-management', {
+mongoose.connect('mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })

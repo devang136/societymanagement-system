@@ -11,6 +11,7 @@ const invoiceRoutes = require('./routes/invoiceRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const personalDetailsRoutes = require('./routes/personalDetailsRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const visitorRoutes = require('./routes/visitorRoutes');
 
 // Import models
 require('./models');
@@ -24,7 +25,7 @@ app.use(cors({
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb://127.0.0.1:27017/society-management')
+mongoose.connect('mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack')
   .then(async () => {
     console.log('Connected to MongoDB successfully');
     await initializeDb();
@@ -43,6 +44,7 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/personal', personalDetailsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/visitors', visitorRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,17 +1,25 @@
 export interface Visitor {
-  id: string;
+  id?: string;
   name: string;
-  phoneNumber: string;
-  date: string;
-  unitNumber: string;
-  time: string;
-  avatar: string;
+  phone: string;
+  hostResident: string;
+  hostUnit: {
+    building: string;
+    number: string;
+  };
+  status: 'checked_in' | 'checked_out';
+  approvedBy: string;
+  notes?: string;
+  createdAt?: Date;
+  date?: string;
+  entryTime: string;
+  purpose: string;
 }
 
 export interface VisitorFormData {
   name: string;
+  phone: string;
   wing: string;
   unit: string;
-  date: string;
-  time: string;
+  notes?: string;
 }

@@ -15,7 +15,11 @@ export function InvoiceDetailsModal({ invoice, isOpen, onClose }: InvoiceDetails
 
   const handleDownload = async () => {
     try {
-      console.log('Downloading invoice with ID:', invoice.invoiceId);
+      console.log('Invoice data before download:', invoice);
+      if (!invoice.invoiceId) {
+        toast.error('Invalid invoice data');
+        return;
+      }
       await invoiceService.downloadInvoice(invoice.invoiceId);
       toast.success('Invoice downloaded successfully');
     } catch (error: any) {

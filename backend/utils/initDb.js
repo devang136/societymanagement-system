@@ -41,7 +41,7 @@ const createTestUser = async (society) => {
     if (!user) {
       // Only create if it doesn't exist
       user = new User({
-        name: 'Test User',
+        name: 'devang',
         email: 'user@gmail.com',
         password: 'asdasd',
         society: society._id,
@@ -67,6 +67,66 @@ const createTestUser = async (society) => {
     return user;
   } catch (error) {
     console.error('Error with test user:', error);
+    throw error;
+  }
+};
+
+const createTestAdmin = async (society) => {
+  try {
+    // First, try to find the test admin
+    let admin = await User.findOne({ email: 'admin@gmail.com' });
+    
+    if (!admin) {
+      // Only create if it doesn't exist
+      admin = new User({
+        name: 'Admin',
+        email: 'admin@gmail.com',
+        password: 'asdasd',
+        society: society._id,
+        wing: 'A',
+        unit: '001',
+        role: 'admin',
+        contactNumber: '9876543210',
+        isActive: true
+      });
+
+      await admin.save();
+      console.log('Test admin created successfully');
+    }
+
+    return admin;
+  } catch (error) {
+    console.error('Error creating test admin:', error);
+    throw error;
+  }
+};
+
+const createTestSecurity = async (society) => {
+  try {
+    // First, try to find the test security guard
+    let security = await User.findOne({ email: 'security@gmail.com' });
+    
+    if (!security) {
+      // Only create if it doesn't exist
+      security = new User({
+        name: 'Security Guard',
+        email: 'security@gmail.com',
+        password: 'asdasd',
+        society: society._id,
+        wing: 'Security',
+        unit: 'Gate',
+        role: 'security',
+        contactNumber: '9876543211',
+        isActive: true
+      });
+
+      await security.save();
+      console.log('Test security guard created successfully');
+    }
+
+    return security;
+  } catch (error) {
+    console.error('Error creating test security guard:', error);
     throw error;
   }
 };
@@ -161,7 +221,6 @@ const createTestProtocols = async (user) => {
 
 const createTestEvents = async (user) => {
   try {
-    // Wait for models to be registered
     const Event = mongoose.model('Event');
     const Invoice = mongoose.model('Invoice');
 
@@ -171,21 +230,36 @@ const createTestEvents = async (user) => {
         eventDate: new Date('2024-01-11'),
         amount: 1000,
         society: user.society._id,
-        status: 'pending'
+        status: 'pending',
+        participator: {
+          name: user.name,
+          email: user.email,
+          contactNumber: user.contactNumber
+        }
       },
       {
         eventName: 'Diwali Celebration',
         eventDate: new Date('2024-02-15'),
         amount: 1500,
         society: user.society._id,
-        status: 'pending'
+        status: 'pending',
+        participator: {
+          name: user.name,
+          email: user.email,
+          contactNumber: user.contactNumber
+        }
       },
       {
         eventName: 'Holi Festival',
         eventDate: new Date('2024-03-20'),
         amount: 800,
         society: user.society._id,
-        status: 'pending'
+        status: 'pending',
+        participator: {
+          name: user.name,
+          email: user.email,
+          contactNumber: user.contactNumber
+        }
       }
     ];
 
@@ -370,7 +444,13 @@ const initializeDb = async () => {
       throw new Error('Failed to create or find society');
     }
 
-    const user = await createTestUser(society);
+    await Promise.all([
+      createTestUser(society),
+      createTestAdmin(society),
+      createTestSecurity(society)
+    ]);
+
+    const user = await User.findOne({ email: 'user@gmail.com' });
     if (!user) {
       throw new Error('Failed to create user');
     }
