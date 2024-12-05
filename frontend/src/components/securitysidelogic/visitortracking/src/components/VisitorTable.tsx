@@ -17,6 +17,7 @@ export function VisitorTable({ visitors }: VisitorTableProps) {
             <th className="py-3 px-4 text-left">Date</th>
             <th className="py-3 px-4 text-left">Unit Number</th>
             <th className="py-3 px-4 text-left">Time</th>
+            <th className="py-3 px-4 text-left">Purpose</th>
           </tr>
         </thead>
         <tbody>
@@ -30,14 +31,15 @@ export function VisitorTable({ visitors }: VisitorTableProps) {
                   <span>{visitor.name}</span>
                 </div>
               </td>
-              <td className="py-3 px-4">{visitor.phoneNumber}</td>
+              <td className="py-3 px-4">{visitor.phone}</td>
               <td className="py-3 px-4">{visitor.date}</td>
               <td className="py-3 px-4">
                 <span className="inline-flex h-6 items-center rounded-full bg-blue-50 px-2 text-xs font-medium text-blue-700">
-                  {visitor.unitNumber}
+                  {`${visitor.hostUnit.building}-${visitor.hostUnit.number}`}
                 </span>
               </td>
-              <td className="py-3 px-4">{visitor.time}</td>
+              <td className="py-3 px-4">{visitor.entryTime}</td>
+              <td className="py-3 px-4">{visitor.purpose}</td>
             </tr>
           ))}
         </tbody>

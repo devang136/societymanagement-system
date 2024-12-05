@@ -1,42 +1,101 @@
 // routes/visitorRoutes.js
 const express = require('express');
-const { body } = require('express-validator');
 const router = express.Router();
-const {
-  getVisitors,
-  createVisitor,
-  updateVisitor,
-  deleteVisitor
-} = require('../controllers/visitorController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+const Visitor = require('../models/Visitor');
+const authMiddleware = require('../middleware/authMiddleware');
+const User = require('../models/User');
 
-// Visitor Validation Middleware
-const visitorValidation = [
-  body('name').notEmpty().trim().withMessage('Visitor name is required'),
-  body('phone').matches(/^[0-9]{10}$/).withMessage('Phone number must be a valid 10-digit number'),
-  body('purpose').notEmpty().trim().withMessage('Purpose of visit is required'),
-  body('hostResident').notEmpty().withMessage('Host resident information is required'),
-  body('hostUnit.building').notEmpty().withMessage('Building name is required'),
-  body('hostUnit.number').notEmpty().withMessage('Unit number is required'),
-  body('vehicle.type').optional().isIn(['car', 'bike', 'other', 'none']).withMessage('Invalid vehicle type'),
-  body('vehicle.number').optional().notEmpty().withMessage('Vehicle number is required when vehicle type is provided'),
-  body('idProof.type').notEmpty().withMessage('ID proof type is required'),
-  body('idProof.number').notEmpty().withMessage('ID proof number is required'),
-  body('approvedBy').notEmpty().withMessage('Approval information is required'),
-];
+// Create test visitors
+const createTestVisitors = async () => {
+  try {
+    // Wait a bit to ensure test users are created
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // First get a security user to use as approvedBy
+    const security = await User.findOne({ role: 'security' });
+    const resident = await User.findOne({ role: 'resident' });
 
-// Apply authentication middleware to all routes
-router.use(protect);
+    if (!security || !resident) {
+      console.log('Waiting for security and resident users to be created...');
+      return; // Exit gracefully instead of throwing error
+    }
 
-// Routes for visitors
-router
-  .route('/')
-  .get(getVisitors)  // Get all visitors
-  .post(authorize('admin', 'security'), visitorValidation, createVisitor);  // Create a new visitor
+    const testVisitors = [
+      {
+        name: 'Evelyn Harper',
+        phone: '9785212359',
+        hostResident: resident._id,
+        hostUnit: {
+          building: 'A',
+          number: '101'
+        },
+        status: 'checked_in',
+        approvedBy: security._id,
+        notes: 'Regular visitor'
+      },
+      {
+        name: 'Wade Warren',
+        phone: '9789225893',
+        hostResident: resident._id,
+        hostUnit: {
+          building: 'B',
+          number: '202'
+        },
+        status: 'checked_in',
+        approvedBy: security._id,
+        notes: 'Maintenance work'
+      }
+    ];
 
-router
-  .route('/:id')
-  .put(authorize('admin', 'security'), visitorValidation, updateVisitor)  // Update visitor
-  .delete(authorize('admin', 'security'), deleteVisitor);  // Delete visitor
+    await Visitor.deleteMany({}); // Clear existing test data
+    await Visitor.insertMany(testVisitors);
+    console.log('Test visitors created successfully');
+  } catch (error) {
+    console.error('Error creating test visitors:', error);
+  }
+};
+
+// Create test data after a delay to ensure other test data is created first
+setTimeout(createTestVisitors, 2000);
+
+// Get all visitors
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const visitors = await Visitor.find().sort({ createdAt: -1 });
+    res.json(visitors);
+  } catch (error) {
+    console.error('Error fetching visitors:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Create a new visitor
+router.post('/', authMiddleware, async (req, res) => {
+  try {
+    const { name, phone, hostUnit, notes } = req.body;
+    const now = new Date();
+
+    const visitor = new Visitor({
+      name,
+      phone,
+      hostUnit,
+      purpose: 'General Visit',
+      status: 'checked_in',
+      notes: notes || '',
+      date: now.toLocaleDateString(),
+      entryTime: now.toLocaleTimeString(),
+      createdAt: now
+    });
+
+    const savedVisitor = await visitor.save();
+    res.status(201).json(savedVisitor);
+  } catch (error) {
+    console.error('Error creating visitor:', error);
+    res.status(400).json({ 
+      message: 'Failed to create visitor',
+      error: error.message 
+    });
+  }
+});
 
 module.exports = router;

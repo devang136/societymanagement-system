@@ -1,51 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
-
 import { VisitorTable } from './components/VisitorTable';
 import { AddVisitorDialog } from './components/AddVisitorDialog';
 import { Visitor, VisitorFormData } from './types/visitor';
-React
-const initialVisitors: Visitor[] = [
-  {
-    id: '1',
-    name: 'Evelyn Harper',
-    phoneNumber: '97852 12359',
-    date: '10/01/2024',
-    unitNumber: '1001',
-    time: '3:45 PM',
-    avatar: '',
-  },
-  {
-    id: '2',
-    name: 'Wade Warren',
-    phoneNumber: '97892 25893',
-    date: '10/01/2024',
-    unitNumber: '1002',
-    time: '2:45 AM',
-    avatar: '',
-  },
-  // Add more visitors as needed
-];
+import { visitorService } from './services/visitorService';
+import { Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 function App() {
-  const [visitors, setVisitors] = useState<Visitor[]>(initialVisitors);
+  const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleAddVisitor = (formData: VisitorFormData) => {
-    const newVisitor: Visitor = {
-      id: String(visitors.length + 1),
-      name: formData.name,
-      phoneNumber: '97XXX XXXXX',
-      date: formData.date,
-      unitNumber: `${formData.wing}${formData.unit}`,
-      time: formData.time,
-      avatar: '',
-    };
-    setVisitors([...visitors, newVisitor]);
+  useEffect(() => {
+    loadVisitors();
+  }, []);
+
+  const loadVisitors = async () => {
+    try {
+      setIsLoading(true);
+      const data = await visitorService.getAllVisitors();
+      setVisitors(data);
+    } catch (error) {
+      console.error('Error loading visitors:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddVisitor = async (formData: VisitorFormData) => {
+    try {
+      const savedVisitor = await visitorService.createVisitor(formData);
+      setVisitors(prev => [savedVisitor, ...prev]);
+      setIsDialogOpen(false);
+      toast.success('Visitor added successfully');
+    } catch (error) {
+      console.error('Error adding visitor:', error);
+      toast.error(error.response?.data?.message || 'Failed to add visitor');
+    }
   };
 
   return (
     <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
+      <Toaster position="top-right" />
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Visitor Tracking</h1>
@@ -67,7 +64,13 @@ function App() {
           </select>
         </div>
       </div>
-      <VisitorTable visitors={visitors} />
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500" />
+        </div>
+      ) : (
+        <VisitorTable visitors={visitors} />
+      )}
       <AddVisitorDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
