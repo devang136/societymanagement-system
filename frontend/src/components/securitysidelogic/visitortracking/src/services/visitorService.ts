@@ -21,6 +21,10 @@ export const visitorService = {
 
   async createVisitor(formData: VisitorFormData): Promise<Visitor> {
     try {
+      const now = new Date();
+      const date = now.toLocaleDateString();
+      const time = now.toLocaleTimeString();
+      
       const visitorData = {
         name: formData.name,
         phone: formData.phone,
@@ -29,7 +33,10 @@ export const visitorService = {
           number: formData.unit
         },
         status: 'checked_in',
-        notes: formData.notes || ''
+        notes: formData.notes || '',
+        date: date,
+        entryTime: time,
+        purpose: 'General Visit'
       };
 
       const response = await axios.post(

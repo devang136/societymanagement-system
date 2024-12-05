@@ -73,6 +73,7 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { name, phone, hostUnit, notes } = req.body;
+    const now = new Date();
 
     const visitor = new Visitor({
       name,
@@ -81,7 +82,9 @@ router.post('/', authMiddleware, async (req, res) => {
       purpose: 'General Visit',
       status: 'checked_in',
       notes: notes || '',
-      createdAt: new Date()
+      date: now.toLocaleDateString(),
+      entryTime: now.toLocaleTimeString(),
+      createdAt: now
     });
 
     const savedVisitor = await visitor.save();

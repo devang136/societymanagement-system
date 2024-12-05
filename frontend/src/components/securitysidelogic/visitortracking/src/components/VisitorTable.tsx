@@ -38,7 +38,7 @@ export function VisitorTable({ visitors }: VisitorTableProps) {
                   {`${visitor.hostUnit.building}-${visitor.hostUnit.number}`}
                 </span>
               </td>
-              <td className="py-3 px-4">{visitor.time}</td>
+              <td className="py-3 px-4">{visitor.entryTime}</td>
               <td className="py-3 px-4">{visitor.purpose}</td>
             </tr>
           ))}

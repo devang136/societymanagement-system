@@ -45,6 +45,14 @@ const visitorSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  date: {
+    type: String,
+    required: true
+  },
+  entryTime: {
+    type: String,
+    required: true
   }
 });
 

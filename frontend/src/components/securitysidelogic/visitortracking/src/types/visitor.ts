@@ -11,6 +11,9 @@ export interface Visitor {
   approvedBy: string;
   notes?: string;
   createdAt?: Date;
+  date?: string;
+  entryTime: string;
+  purpose: string;
 }
 
 export interface VisitorFormData {
