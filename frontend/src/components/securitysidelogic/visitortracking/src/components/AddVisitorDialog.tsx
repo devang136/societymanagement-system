@@ -11,10 +11,10 @@ interface AddVisitorDialogProps {
 export function AddVisitorDialog({ isOpen, onClose, onSave }: AddVisitorDialogProps) {
   const [formData, setFormData] = useState<VisitorFormData>({
     name: '',
+    phone: '',
     wing: '',
     unit: '',
-    date: '',
-    time: '',
+    notes: ''
   });
 
   if (!isOpen) return null;
@@ -41,6 +41,20 @@ export function AddVisitorDialog({ isOpen, onClose, onSave }: AddVisitorDialogPr
                 required
               />
             </div>
+
+            <div>
+              <label className="mb-1 block text-sm">Phone Number*</label>
+              <input
+                type="tel"
+                pattern="[0-9]{10}"
+                className="w-full rounded-md border p-2"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="10-digit mobile number"
+                required
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="mb-1 block text-sm">Wing*</label>
@@ -63,48 +77,31 @@ export function AddVisitorDialog({ isOpen, onClose, onSave }: AddVisitorDialogPr
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="mb-1 block text-sm">Date*</label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    className="w-full rounded-md border p-2 pr-10"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    required
-                  />
-                  <Calendar className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                </div>
-              </div>
-              <div>
-                <label className="mb-1 block text-sm">Time*</label>
-                <div className="relative">
-                  <input
-                    type="time"
-                    className="w-full rounded-md border p-2 pr-10"
-                    value={formData.time}
-                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    required
-                  />
-                  <Clock className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                </div>
-              </div>
+
+            <div>
+              <label className="mb-1 block text-sm">Notes</label>
+              <textarea
+                className="w-full rounded-md border p-2"
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                rows={3}
+              />
             </div>
           </div>
-          <div className="mt-6 flex justify-end gap-2">
+
+          <div className="mt-6 flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md px-4 py-2 text-sm text-gray-500 hover:bg-gray-100"
+              className="rounded-md border px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-md bg-orange-500 px-4 py-2 text-sm text-white hover:bg-orange-600"
+              className="rounded-md bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
             >
-              Save
+              Add Visitor
             </button>
           </div>
         </form>

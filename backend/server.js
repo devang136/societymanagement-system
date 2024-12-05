@@ -11,6 +11,7 @@ const invoiceRoutes = require('./routes/invoiceRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const personalDetailsRoutes = require('./routes/personalDetailsRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const visitorRoutes = require('./routes/visitorRoutes');
 
 // Import models
 require('./models');
@@ -43,6 +44,7 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/personal', personalDetailsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/visitors', visitorRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
