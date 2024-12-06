@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { Check, Eye, Pencil, Trash2, Sun, Moon, Upload, X } from 'lucide-react'
+import {  Upload, X } from 'lucide-react'
 import Avatar from '../assets/Avatar.jpg'
 import { MdEditSquare } from "react-icons/md";
 import { HiMiniEye } from "react-icons/hi2";
 import { RiDeleteBin5Fill } from "react-icons/ri";
-import { FaTimes } from 'react-icons/fa';
 import { FaUser } from "react-icons/fa6";
 import { MdSunny } from "react-icons/md";
 import { BiSolidMoon } from "react-icons/bi";
@@ -80,10 +79,10 @@ export default function SecurityGuardManagement() {
         <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-5">
         <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-[#202224]">Security Guard Details</h3>
+                <h3 className="text-lg font-semibold text-[#202224] font-poppins">Security Guard Details</h3>
                 <button
                 onClick={() => openModal('add')}
-                  className="text-white font-bold py-2 px-4 rounded flex items-center"
+                  className="text-white font-bold py-2 px-4 rounded flex items-center font-poppins"
                   style={{
                     background: "linear-gradient(to right, #FE512E, #F09619)",
                     transition: "background 0.3s ease",
@@ -131,24 +130,24 @@ export default function SecurityGuardManagement() {
                       <img className="h-10 w-10 rounded-full" src={Avatar} alt="" />
                     </div>
                     <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{guard.name}</div>
+                      <div className="text-sm font-medium text-gray-900 font-poppins">{guard.name}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm  text-[#4f4f4f]">{guard.phone}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm  text-[#4f4f4f] font-poppins">{guard.phone}</td>
                 
                 <td className="px-6 py-4 whitespace-nowrap text-center">
-                  <span className={`w-32 py-2 inline-flex text-xs leading-5 font-semibold rounded-full items-center justify-center ${
+                  <span className={`w-32 py-2 inline-flex text-xs leading-5 font-semibold rounded-full items-center justify-center font-poppins ${
                     guard.shift === 'Day' ? 'bg-[#f4f4f4] text-[#ff930d]' : 'bg-[#4f4f4f] text-white'
                   }`}>
                     {guard.shift === 'Day' ? <MdSunny className="w-4 h-4 mr-2" /> : <BiSolidMoon  className="w-4 h-4 mr-2" />}
                     {guard.shift}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4f4f4f] text-center">{guard.date}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4f4f4f] text-center"><span className='bg-[#f8f6fb] rounded-xl px-3 py-1'>{guard.time}</span></td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4f4f4f] text-center font-poppins">{guard.date}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4f4f4f] text-center font-poppins"><span className='bg-[#f8f6fb] rounded-xl px-3 py-1'>{guard.time}</span></td>
                 <td className="px-6 py-2 whitespace-nowrap text-center">
-                        <span className={`w-32 py-2 inline-flex text-md leading-5 font-semibold rounded-full items-center justify-center ${
+                        <span className={`w-32 py-2 inline-flex text-md leading-5 font-semibold rounded-full items-center justify-center font-poppins ${
                          guard.gender === 'Male' ? 'bg-[#FFF1F8] text-[#fe76ab]' : 'bg-[#F1F0FF] text-[#5678e9]'
                         }`}>
                           {guard.gender === 'Male' ? (
@@ -188,7 +187,7 @@ export default function SecurityGuardManagement() {
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 font-poppins" id="modal-title">
                     {modalMode === 'add' ? 'Add Security' : modalMode === 'edit' ? 'Edit Security' : 'View Security Guard Details'}
                   </h3>
                   <button onClick={closeModal} className="text-gray-400 hover:text-gray-500">
@@ -211,35 +210,35 @@ export default function SecurityGuardManagement() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Full Name*</label>
+                      <label className="block text-sm font-medium text-gray-700 font-poppins">Full Name*</label>
                       <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Phone Number*</label>
+                      <label className="block text-sm font-medium text-gray-700 font-poppins">Phone Number*</label>
                       <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3  sm:text-sm"
                         required
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">Gender*</label>
+                        <label className="block text-sm font-medium text-gray-700 font-poppins">Gender*</label>
                         <select
                           name="gender"
                           value={formData.gender}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3  sm:text-sm"
                           required
                         >
                           <option value="">Select Gender</option>
@@ -248,12 +247,12 @@ export default function SecurityGuardManagement() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">Shift*</label>
+                        <label className="block text-sm font-medium text-gray-700 font-poppins">Shift*</label>
                         <select
                           name="shift"
                           value={formData.shift}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3  sm:text-sm"
                           required
                         >
                           <option value="">Select Shift</option>
@@ -264,30 +263,30 @@ export default function SecurityGuardManagement() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">Shift Date*</label>
+                        <label className="block text-sm font-medium text-gray-700 font-poppins">Shift Date*</label>
                         <input
                           type="date"
                           name="date"
                           value={formData.date}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3  sm:text-sm"
                           required
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">Shift Time*</label>
+                        <label className="block text-sm font-medium text-gray-700 font-poppins">Shift Time*</label>
                         <input
                           type="time"
                           name="time"
                           value={formData.time}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                           required
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Upload Aadhar Card*</label>
+                      <label className="block text-sm font-medium text-gray-700 font-poppins">Upload Aadhar Card*</label>
                       <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                         <div className="space-y-1 text-center">
                           <Upload className="mx-auto h-12 w-12 text-gray-400" />
@@ -296,23 +295,23 @@ export default function SecurityGuardManagement() {
                               <span>Upload a file</span>
                               <input id="file-upload" name="file-upload" type="file" className="sr-only" />
                             </label>
-                            <p className="pl-1">or drag and drop</p>
+                            <p className="pl-1 font-poppins">or drag and drop</p>
                           </div>
-                          <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                          <p className="text-xs text-gray-500 font-poppins">PNG, JPG, GIF up to 10MB</p>
                         </div>
                       </div>
                     </div>
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                       <button
                         type="submit"
-                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:col-start-2 sm:text-sm"
+                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none  sm:col-start-2 sm:text-sm"
                       >
                         {modalMode === 'add' ? 'Create' : 'Save'}
                       </button>
                       <button
                         type="button"
                         onClick={closeModal}
-                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none  sm:mt-0 sm:col-start-1 sm:text-sm"
                       >
                         Cancel
                       </button>
@@ -328,26 +327,26 @@ export default function SecurityGuardManagement() {
                       />
                     </div>
                     <div className="text-center">
-                      <h2 className="text-lg font-semibold">{selectedGuard.name}</h2>
-                      <p className="text-sm text-gray-500">{selectedGuard.date}</p>
+                      <h2 className="text-lg font-semibold font-poppins">{selectedGuard.name}</h2>
+                      <p className="text-sm text-gray-500 font-poppins">{selectedGuard.date}</p>
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
-                        <p className="text-sm font-medium">Shift</p>
-                        <p className="text-sm text-gray-500">{selectedGuard.shift}</p>
+                        <p className="text-sm font-medium font-poppins">Shift</p>
+                        <p className="text-sm text-gray-500 font-poppins">{selectedGuard.shift}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Time</p>
-                        <p className="text-sm text-gray-500">{selectedGuard.time}</p>
+                        <p className="text-sm font-medium font-poppins">Time</p>
+                        <p className="text-sm text-gray-500 font-poppins">{selectedGuard.time}</p>
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Gender</p>
-                        <p className="text-sm text-gray-500">{selectedGuard.gender}</p>
+                        <p className="text-sm font-medium font-poppins">Gender</p>
+                        <p className="text-sm text-gray-500 font-poppins">{selectedGuard.gender}</p>
                       </div>
                     </div>
                     <button
                       onClick={closeModal}
-                      className="mt-5 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                      className="mt-5 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none  sm:text-sm"
                     >
                       Close
                     </button>
@@ -382,14 +381,14 @@ export default function SecurityGuardManagement() {
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={handleDelete}
                 >
                   Delete
                 </button>
                 <button
                   type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => setIsDeleteDialogOpen(false)}
                 >
                   Cancel
