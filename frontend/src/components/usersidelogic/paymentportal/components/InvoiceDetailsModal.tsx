@@ -20,11 +20,37 @@ export function InvoiceDetailsModal({ invoice, isOpen, onClose }: InvoiceDetails
         toast.error('Invalid invoice data');
         return;
       }
+
+      // Create the invoice first
+      await invoiceService.createInvoice({
+        invoiceId: invoice.invoiceId,
+        maintenanceAmount: invoice.maintenanceAmount,
+        penaltyAmount: invoice.pendingAmount,
+        billDate: new Date(invoice.billDate),
+        ownerName: invoice.ownerName,
+        email: invoice.email,
+        phoneNumber: invoice.phoneNumber,
+        description: `Maintenance invoice for ${invoice.ownerName}`
+      });
+
+      // Then download it
       await invoiceService.downloadInvoice(invoice.invoiceId);
       toast.success('Invoice downloaded successfully');
     } catch (error: any) {
       console.error('Download error:', error);
-      toast.error(error.message || 'Failed to download invoice');
+      // If the error is just that the invoice already exists, proceed with download
+      if (error.message?.includes('already exists')) {
+        try {
+          await invoiceService.downloadInvoice(invoice.invoiceId);
+          toast.success('Invoice downloaded successfully');
+          return;
+        } catch (downloadError) {
+          console.error('Download error after invoice exists:', downloadError);
+          toast.error('Failed to download existing invoice');
+        }
+      } else {
+        toast.error(error.message || 'Failed to download invoice');
+      }
     }
   };
 
