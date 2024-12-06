@@ -3,40 +3,35 @@ const mongoose = require('mongoose');
 const securityProtocolSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Title is required']
+    required: true
   },
   description: {
     type: String,
-    required: [true, 'Description is required']
+    required: true
   },
   category: {
     type: String,
-    enum: ['Emergency', 'Daily', 'Visitor', 'Maintenance', 'Special Event'],
-    required: [true, 'Category is required']
+    enum: ['Emergency', 'Daily', 'Visitor', 'Maintenance', 'Other'],
+    required: true
   },
   priority: {
     type: String,
     enum: ['High', 'Medium', 'Low'],
-    default: 'Medium'
+    required: true
   },
   status: {
     type: String,
-    enum: ['Active', 'Inactive', 'Under Review'],
+    enum: ['Active', 'Under Review', 'Archived'],
     default: 'Active'
   },
   society: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Society',
+    type: String,
     required: true
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  },
-  lastUpdated: {
-    type: Date,
-    default: Date.now
   }
 }, {
   timestamps: true

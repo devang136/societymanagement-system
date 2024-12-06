@@ -1,85 +1,65 @@
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
+import axiosInstance from './axiosInstance';
 
-const API_URL = 'http://localhost:8001/api';
+export interface PollOption {
+  text: string;
+  votes: number;
+}
 
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-  return {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
+export interface CreatePollData {
+  question: string;
+  pollType: 'Multichoice polls' | 'Rating polls' | 'Yes/No polls';
+  options: string[];
+}
+
+export interface Poll extends Omit<CreatePollData, 'options'> {
+  _id: string;
+  options: PollOption[];
+  createdBy: {
+    _id: string;
+    firstName: string;
+    lastName: string;
   };
-};
+  society: string;
+  status: 'active' | 'closed';
+  createdAt: string;
+  updatedAt: string;
+}
 
 export const pollService = {
-  async createPoll(pollData: any) {
+  createPoll: async (pollData: CreatePollData) => {
     try {
       console.log('Creating poll with data:', pollData);
-      const response = await axios.post(`${API_URL}/polls/create`, pollData, {
-        headers: getAuthHeaders()
-      });
+      const response = await axiosInstance.post('/polls/create', pollData);
       console.log('Poll created:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('Create poll error:', error.response?.data || error);
-      if (error.response?.status === 401) {
-        toast.error('Please log in again');
-        // Optionally redirect to login
-      }
       throw new Error(error.response?.data?.message || 'Failed to create poll');
     }
   },
 
-  async getPolls() {
+  getPolls: async () => {
     try {
       console.log('Fetching polls...');
-      const response = await axios.get(`${API_URL}/polls/all`, {
-        headers: getAuthHeaders()
-      });
+      const response = await axiosInstance.get('/polls');
       console.log('Polls fetched:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('Get polls error:', error.response?.data || error);
       if (error.response?.status === 401) {
-        toast.error('Please log in again');
-        // Optionally redirect to login
+        throw new Error('Please authenticate');
       }
       throw new Error(error.response?.data?.message || 'Failed to fetch polls');
     }
   },
 
-  async votePoll(pollId: string, optionIndex: number) {
+  votePoll: async (pollId: string, optionIndex: number) => {
     try {
-      const response = await axios.post(
-        `${API_URL}/polls/${pollId}/vote`, 
-        { optionIndex },
-        { headers: getAuthHeaders() }
-      );
+      const response = await axiosInstance.post(`/polls/${pollId}/vote`, { optionIndex });
       return response.data;
     } catch (error: any) {
       console.error('Vote poll error:', error.response?.data || error);
-      if (error.response?.status === 401) {
-        toast.error('Please log in again');
-      }
       throw new Error(error.response?.data?.message || 'Failed to vote on poll');
-    }
-  },
-
-  async getUserPolls() {
-    try {
-      const response = await axios.get(`${API_URL}/polls/user-polls`, {
-        headers: getAuthHeaders()
-      });
-      return response.data;
-    } catch (error: any) {
-      console.error('Get user polls error:', error.response?.data || error);
-      if (error.response?.status === 401) {
-        toast.error('Please log in again');
-      }
-      throw new Error(error.response?.data?.message || 'Failed to fetch user polls');
     }
   }
 }; 

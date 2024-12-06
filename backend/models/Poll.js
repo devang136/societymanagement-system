@@ -1,49 +1,41 @@
 const mongoose = require('mongoose');
 
-const optionSchema = new mongoose.Schema({
-  text: { 
-    type: String, 
-    required: [true, 'Option text is required'] 
-  },
-  votes: { 
-    type: Number, 
-    default: 0 
-  },
-  voters: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User' 
-  }]
-});
-
 const pollSchema = new mongoose.Schema({
-  question: { 
-    type: String, 
-    required: [true, 'Question is required'],
-    trim: true
+  question: {
+    type: String,
+    required: true
   },
   pollType: {
     type: String,
-    enum: ['Ranking polls', 'Multichoice polls', 'Rating polls', 'Numeric polls', 'Text polls'],
-    required: [true, 'Poll type is required']
+    enum: ['Multichoice polls', 'Rating polls', 'Yes/No polls'],
+    required: true
   },
-  options: [optionSchema],
-  createdBy: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User',
-    required: [true, 'Creator is required']
-  },
-  society: { 
+  options: [{
+    text: {
+      type: String,
+      required: true
+    },
+    votes: {
+      type: Number,
+      default: 0
+    }
+  }],
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Society',
-    required: [true, 'Society is required']
+    ref: 'User',
+    required: true
   },
-  endDate: Date,
-  isActive: { 
-    type: Boolean, 
-    default: true 
+  society: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['active', 'closed'],
+    default: 'active'
   }
-}, { 
-  timestamps: true 
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Poll', pollSchema); 

@@ -1,35 +1,38 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-  eventName: {
+  title: {
     type: String,
     required: true
   },
-  eventDate: {
-    type: Date,
+  description: {
+    type: String,
     required: true
   },
-  amount: {
-    type: Number,
-    required: true,
-    default: 0
+  date: {
+    type: String,
+    required: true
   },
-  participator: {
-    name: {
-      type: String,
-      required: true
-    },
-    avatar: String
+  time: {
+    type: String,
+    required: true
   },
-  society: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Society',
+  location: {
+    type: String,
+    required: true
+  },
+  organizer: {
+    type: String,
     required: true
   },
   status: {
     type: String,
-    enum: ['pending', 'paid'],
-    default: 'pending'
+    enum: ['upcoming', 'ongoing', 'completed'],
+    default: 'upcoming'
+  },
+  society: {
+    type: String,
+    required: true
   }
 }, {
   timestamps: true

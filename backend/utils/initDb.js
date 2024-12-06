@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Society = require('../models/Society');
+const SecurityProtocol = require('../models/SecurityProtocol');
 
 const createTestSociety = async () => {
   try {
@@ -106,21 +107,108 @@ const createInitialUsers = async (society) => {
   }
 };
 
+const createInitialSecurityProtocols = async (society, adminUser) => {
+  const protocols = [
+    {
+      title: 'Visitor Entry Protocol',
+      description: 'Standard procedures for visitor entry and verification:\n\n' +
+        '1. Check visitor ID\n' +
+        '2. Contact resident for approval\n' +
+        '3. Record entry in visitor log\n' +
+        '4. Issue visitor pass\n' +
+        '5. Guide visitor to destination',
+      category: 'Visitor',
+      priority: 'High',
+      society: society.name,
+      createdBy: adminUser._id
+    },
+    {
+      title: 'Emergency Evacuation Protocol',
+      description: 'Steps for emergency evacuation:\n\n' +
+        '1. Sound emergency alarm\n' +
+        '2. Guide residents to emergency exits\n' +
+        '3. Contact emergency services\n' +
+        '4. Perform headcount at assembly point\n' +
+        '5. Coordinate with emergency responders',
+      category: 'Emergency',
+      priority: 'High',
+      society: society.name,
+      createdBy: adminUser._id
+    },
+    {
+      title: 'Night Patrol Schedule',
+      description: 'Guidelines for night patrol:\n\n' +
+        '1. Hourly rounds of all floors\n' +
+        '2. Check all entry/exit points\n' +
+        '3. Monitor CCTV feeds\n' +
+        '4. Report suspicious activities\n' +
+        '5. Maintain patrol log',
+      category: 'Daily',
+      priority: 'Medium',
+      society: society.name,
+      createdBy: adminUser._id
+    },
+    {
+      title: 'Maintenance Worker Access',
+      description: 'Protocol for maintenance worker access:\n\n' +
+        '1. Verify work order\n' +
+        '2. Check worker IDs\n' +
+        '3. Issue temporary access cards\n' +
+        '4. Monitor work areas\n' +
+        '5. Record completion time',
+      category: 'Maintenance',
+      priority: 'Medium',
+      society: society.name,
+      createdBy: adminUser._id
+    },
+    {
+      title: 'Fire Safety Protocol',
+      description: 'Fire safety procedures:\n\n' +
+        '1. Regular fire alarm testing\n' +
+        '2. Maintain fire extinguishers\n' +
+        '3. Clear fire exits\n' +
+        '4. Conduct fire drills\n' +
+        '5. Train staff on fire response',
+      category: 'Emergency',
+      priority: 'High',
+      society: society.name,
+      createdBy: adminUser._id
+    }
+  ];
+
+  for (const protocol of protocols) {
+    try {
+      const existingProtocol = await SecurityProtocol.findOne({
+        title: protocol.title,
+        society: protocol.society
+      });
+
+      if (!existingProtocol) {
+        await SecurityProtocol.create(protocol);
+        console.log(`Created security protocol: ${protocol.title}`);
+      }
+    } catch (error) {
+      console.error(`Error creating security protocol ${protocol.title}:`, error);
+    }
+  }
+};
+
 const initializeDb = async () => {
   try {
     console.log('Starting database initialization...');
     
-    // Force clear existing data
-    console.log('Clearing existing data...');
-    await User.deleteMany({});
-    await Society.deleteMany({});
-    
+    // Create society and users
     const society = await createTestSociety();
     await createInitialUsers(society);
     
-    // Verify users were created
-    const users = await User.find({});
-    console.log('Created users:', users.map(u => ({ email: u.email, role: u.role })));
+    // Get admin user for creating protocols
+    const adminUser = await User.findOne({ role: 'admin' });
+    if (!adminUser) {
+      throw new Error('Admin user not found');
+    }
+    
+    // Create security protocols
+    await createInitialSecurityProtocols(society, adminUser);
     
     console.log('Database initialization completed successfully');
   } catch (error) {
