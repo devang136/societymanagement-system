@@ -3,8 +3,52 @@ const bcrypt = require('bcryptjs');
 
 exports.getPersonalDetails = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');
-    res.json(user);
+    const user = await User.findById(req.user._id)
+      .select('-password')
+      .lean();
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Get maintenance details
+    const maintenanceDetails = {
+      pending: [
+        {
+          billDate: '11/01/2024',
+          pendingDate: '11/01/2024',
+          maintenanceAmount: 1000.00,
+          penaltyAmount: 250.00,
+          grandTotal: 1250.00
+        },
+        // Add more pending maintenance entries
+      ],
+      due: [
+        {
+          date: '11/01/2024',
+          amount: 1000.00,
+          dueAmount: 250.00
+        },
+        // Add more due maintenance entries
+      ]
+    };
+
+    // Get announcements
+    const announcements = [
+      {
+        title: 'Community Initiatives',
+        date: '01/02/2024',
+        time: '10:15 AM',
+        description: 'The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in.'
+      },
+      // Add more announcements
+    ];
+
+    res.json({
+      ...user,
+      maintenanceDetails,
+      announcements
+    });
   } catch (error) {
     console.error('Get personal details error:', error);
     res.status(500).json({ message: 'Error fetching personal details' });

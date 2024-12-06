@@ -9,7 +9,7 @@ const invoiceSchema = new mongoose.Schema({
   event: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
-    required: true
+    required: false
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +19,27 @@ const invoiceSchema = new mongoose.Schema({
   society: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Society',
+    required: false
+  },
+  ownerName: {
+    type: String,
     required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  phoneNumber: {
+    type: String,
+    required: true
+  },
+  eventName: {
+    type: String,
+    required: false
+  },
+  description: {
+    type: String,
+    required: false
   },
   billDate: {
     type: Date,

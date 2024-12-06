@@ -25,6 +25,22 @@ export const InvoiceModal = ({ isOpen, onClose, invoiceData }: InvoiceModalProps
 
   const handleDownload = async () => {
     try {
+      console.log('Creating invoice with data:', invoiceData);
+      
+      // Create the invoice first with all required data
+      const result = await invoiceService.createInvoice({
+        invoiceId: invoiceData.invoiceId,
+        maintenanceAmount: invoiceData.maintenanceAmount,
+        penaltyAmount: invoiceData.grandTotal - invoiceData.maintenanceAmount,
+        billDate: new Date(invoiceData.billDate),
+        ownerName: invoiceData.ownerName,
+        email: invoiceData.email,
+        phoneNumber: invoiceData.phoneNumber,
+        eventName: invoiceData.eventName,
+        description: invoiceData.description
+      });
+
+      // If invoice exists or was created successfully, proceed with download
       console.log('Downloading invoice with ID:', invoiceData.invoiceId);
       await invoiceService.downloadInvoice(invoiceData.invoiceId);
       toast.success('Invoice downloaded successfully');

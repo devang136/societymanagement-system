@@ -15,7 +15,10 @@ router.get('/maintenance', auth, invoiceController.getMaintenanceInvoices);
 // Get event invoices
 router.get('/event', auth, invoiceController.getEventInvoices);
 
+// Create invoice
+router.post('/create', auth, invoiceController.createInvoice);
+
 // Download invoice
-router.get('/download/:id', auth, invoiceController.downloadInvoice);
+router.get('/download/:invoiceId', auth, invoiceController.downloadInvoice);
 
 module.exports = router; 

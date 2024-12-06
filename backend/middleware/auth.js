@@ -19,7 +19,7 @@ const auth = async (req, res, next) => {
     console.log('Authenticated user:', {
       id: user._id,
       email: user.email,
-      society: user.society,
+      society: user.society || 'Not set',
       wing: user.wing,
       unit: user.unit
     });
@@ -27,8 +27,11 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.error('Auth middleware error:', error);
-    res.status(401).json({ message: 'Please authenticate' });
+    console.error('Auth middleware error:', {
+      error: error.message,
+      stack: error.stack
+    });
+    res.status(401).json({ message: 'Please authenticate', error: error.message });
   }
 };
 

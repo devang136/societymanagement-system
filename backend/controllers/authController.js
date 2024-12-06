@@ -27,7 +27,7 @@ exports.register = async (req, res) => {
     // Hash password
     const salt = await bcrypt.hash(password, 10);
     
-    // Create new user
+    // Create new user with initialized fields
     user = new User({
       firstName,
       lastName,
@@ -40,7 +40,21 @@ exports.register = async (req, res) => {
       wing,
       unit,
       password: salt,
-      role: 'user' // Default role
+      role: 'user',
+      userType: 'owner', // Default to owner, can be changed later
+      gender: '', // Can be updated later
+      age: 0, // Can be updated later
+      documents: [], // Initialize empty documents array
+      vehicles: [], // Initialize empty vehicles array
+      familyMembers: [], // Initialize empty family members array
+      ownerDetails: null, // Will be filled if user is tenant
+      maintenanceAmount: 0,
+      penaltyAmount: 0,
+      maintenanceDetails: {
+        pending: [],
+        due: []
+      },
+      announcements: []
     });
 
     await user.save();
@@ -64,7 +78,7 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error during registration' });
+    res.status(500).json({ message: 'Server error during registration', error: error.message });
   }
 };
 
