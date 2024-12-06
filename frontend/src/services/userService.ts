@@ -1,55 +1,53 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
-const API_URL = 'http://localhost:3000/api';
-
-const getAuthHeader = () => ({
-  headers: { Authorization: `Bearer ${localStorage.getItem('user_token')}` }
-});
-
-interface PersonalDetails {
-  fullName: string;
-  phoneNumber: string;
-  emailAddress: string;
-  gender: string;
+export interface UserDetails {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  country: string;
+  state: string;
+  city: string;
+  society: string;
   wing: string;
-  age: number;
   unit: string;
-  relation: string;
+  role: 'admin' | 'user' | 'security';
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const userService = {
-  async getPersonalDetails(): Promise<PersonalDetails> {
+  getPersonalDetails: async (): Promise<UserDetails> => {
     try {
-      // First try to fetch from API
-      const response = await axios.get(`${API_URL}/personal-details`, getAuthHeader());
+      const response = await axiosInstance.get('/users/me');
       return response.data;
-    } catch (error) {
-      // Fallback to mock data if API fails
-      console.warn('Using mock data as API call failed:', error);
-      return {
-        fullName: "Arlene McCoy",
-        phoneNumber: "+91 99130 44527",
-        emailAddress: "ArleneMcCoy25@gmail.com",
-        gender: "Male",
-        wing: "A",
-        age: 28,
-        unit: "1001",
-        relation: "Owner"
-      };
+    } catch (error: any) {
+      console.error('Get personal details error:', error.response?.data || error);
+      throw new Error(error.response?.data?.message || 'Failed to fetch personal details');
     }
   },
 
-  async updatePersonalDetails(details: PersonalDetails): Promise<PersonalDetails> {
+  updatePersonalDetails: async (updates: Partial<UserDetails>) => {
     try {
-      const response = await axios.put(
-        `${API_URL}/personal-details`, 
-        details,
-        getAuthHeader()
-      );
+      const response = await axiosInstance.put('/users/me', updates);
       return response.data;
-    } catch (error) {
-      console.warn('Using mock response as API call failed:', error);
-      return details;
+    } catch (error: any) {
+      console.error('Update personal details error:', error.response?.data || error);
+      throw new Error(error.response?.data?.message || 'Failed to update personal details');
+    }
+  },
+
+  changePassword: async (currentPassword: string, newPassword: string) => {
+    try {
+      const response = await axiosInstance.post('/users/change-password', {
+        currentPassword,
+        newPassword
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error('Change password error:', error.response?.data || error);
+      throw new Error(error.response?.data?.message || 'Failed to change password');
     }
   }
 }; 

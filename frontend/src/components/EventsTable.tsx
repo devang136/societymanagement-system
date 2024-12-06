@@ -1,5 +1,5 @@
 import React from 'react';
-import { Event } from '../../../../../services/eventService';
+import { Event } from '../services/eventService';
 
 interface EventsTableProps {
   events: Event[];
@@ -37,21 +37,20 @@ export default function EventsTable({ events }: EventsTableProps) {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Organizer
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {events.map((event) => (
             <tr key={event._id}>
-              <td className="px-6 py-4">
-                <div className="flex flex-col">
-                  <div className="text-sm font-medium text-gray-900">
-                    {event.title}
-                  </div>
-                  <div className="text-sm text-gray-500 line-clamp-2">
-                    {event.description}
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="flex items-center">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {event.title}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {event.description}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -78,19 +77,11 @@ export default function EventsTable({ events }: EventsTableProps) {
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">
-                  {event.organizer.firstName} {event.organizer.lastName}
+                <div className="flex items-center">
+                  <div className="text-sm font-medium text-gray-900">
+                    {event.organizer.firstName} {event.organizer.lastName}
+                  </div>
                 </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                {event.status === 'Upcoming' && (
-                  <button
-                    className="text-indigo-600 hover:text-indigo-900"
-                    onClick={() => {/* Add join event handler */}}
-                  >
-                    Join Event
-                  </button>
-                )}
               </td>
             </tr>
           ))}
@@ -98,4 +89,4 @@ export default function EventsTable({ events }: EventsTableProps) {
       </table>
     </div>
   );
-}
+} 

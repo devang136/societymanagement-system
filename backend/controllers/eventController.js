@@ -2,8 +2,13 @@ const Event = require('../models/Event');
 
 exports.getEvents = async (req, res) => {
   try {
+    console.log('Getting events for society:', req.user.society);
+    
     const events = await Event.find({ society: req.user.society })
+      .populate('organizer', 'firstName lastName')
       .sort({ date: 1, time: 1 });
+
+    console.log(`Found ${events.length} events`);
     res.json(events);
   } catch (error) {
     console.error('Get events error:', error);
@@ -61,5 +66,37 @@ exports.deleteEvent = async (req, res) => {
   } catch (error) {
     console.error('Delete event error:', error);
     res.status(500).json({ message: 'Error deleting event' });
+  }
+};
+
+exports.joinEvent = async (req, res) => {
+  try {
+    const event = await Event.findOne({
+      _id: req.params.id,
+      society: req.user.society
+    });
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Check if user is already a participant
+    if (event.participants.includes(req.user._id)) {
+      return res.status(400).json({ message: 'Already joined this event' });
+    }
+
+    // Check if event has reached max participants
+    if (event.maxParticipants && event.participants.length >= event.maxParticipants) {
+      return res.status(400).json({ message: 'Event is full' });
+    }
+
+    // Add user to participants
+    event.participants.push(req.user._id);
+    await event.save();
+
+    res.json({ message: 'Successfully joined event' });
+  } catch (error) {
+    console.error('Join event error:', error);
+    res.status(500).json({ message: 'Error joining event' });
   }
 }; 

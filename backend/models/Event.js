@@ -10,7 +10,7 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
   date: {
-    type: String,
+    type: Date,
     required: true
   },
   time: {
@@ -21,21 +21,41 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  organizer: {
+  category: {
     type: String,
+    enum: ['Cultural', 'Sports', 'Festival', 'Meeting', 'Other'],
     required: true
   },
   status: {
     type: String,
-    enum: ['upcoming', 'ongoing', 'completed'],
-    default: 'upcoming'
+    enum: ['Upcoming', 'Ongoing', 'Completed', 'Cancelled'],
+    default: 'Upcoming'
+  },
+  organizer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   society: {
     type: String,
-    required: true
+    required: true,
+    index: true
+  },
+  participants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  maxParticipants: {
+    type: Number,
+    default: null
   }
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model('Event', eventSchema);
+// Add indexes for common queries
+eventSchema.index({ society: 1, date: 1 });
+eventSchema.index({ society: 1, status: 1 });
+
+const Event = mongoose.model('Event', eventSchema);
+module.exports = Event;

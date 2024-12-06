@@ -12,6 +12,7 @@ const eventRoutes = require('./routes/eventRoutes');
 const personalDetailsRoutes = require('./routes/personalDetailsRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const visitorRoutes = require('./routes/visitorRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Import models
 require('./models');
@@ -35,6 +36,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/personal', personalDetailsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/visitors', visitorRoutes);
+app.use('/api/users', userRoutes);
 
 const startServer = async () => {
   try {

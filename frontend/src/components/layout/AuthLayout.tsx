@@ -32,14 +32,7 @@ export function AuthLayout({ children, onLogout, userRole }: AuthLayoutProps) {
           <Route path="/services" element={<ServiceComplaintRoute />} />
           <Route path="/payment-portal" element={<PaymentPortalApp />} />
           <Route path="/payments/other" element={<OtherIncomeInvoicesApp />} />
-          <Route 
-            path="/personal" 
-            element={
-              <ProtectedRoute userRole={userRole} allowedRole="user">
-                <PersonalDetailsApp />
-              </ProtectedRoute>
-            } 
-          />
+          <Route path="/personal" element={<PersonalDetailsApp />} />
           <Route path="/community/polls" element={<PollingDashboard />} />
           <Route path="/community/discussions" element={<Page />} />
           <Route path="/community/forum" element={<ChatPage />} />

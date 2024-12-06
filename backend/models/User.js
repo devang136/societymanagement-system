@@ -3,20 +3,25 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   lastName: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    trim: true,
+    lowercase: true
   },
   phone: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   country: {
     type: String,
@@ -50,11 +55,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['admin', 'user', 'security'],
     default: 'user'
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Add index for common queries
+userSchema.index({ society: 1, role: 1 });
+userSchema.index({ email: 1 }, { unique: true });
+
+const User = mongoose.model('User', userSchema);
+module.exports = User;

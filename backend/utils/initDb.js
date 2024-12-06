@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Society = require('../models/Society');
 const SecurityProtocol = require('../models/SecurityProtocol');
+const Event = require('../models/Event');
 
 const createTestSociety = async () => {
   try {
@@ -193,6 +194,100 @@ const createInitialSecurityProtocols = async (society, adminUser) => {
   }
 };
 
+const createInitialEvents = async (society, adminUser) => {
+  try {
+    // First clear existing events
+    await Event.deleteMany({ society: society.name });
+    console.log('Cleared existing events');
+
+    const events = [
+      {
+        title: 'Annual Cultural Festival',
+        description: 'Join us for a celebration of art, music, and dance! Features performances by society members, food stalls, and fun activities for all ages.',
+        date: new Date('2024-03-15'),
+        time: '16:00',
+        location: 'Society Community Hall',
+        category: 'Cultural',
+        status: 'Upcoming',
+        organizer: adminUser._id,
+        society: society.name,
+        maxParticipants: 200
+      },
+      {
+        title: 'Society General Meeting',
+        description: 'Monthly general meeting to discuss society matters, maintenance updates, and upcoming events. All residents are encouraged to attend.',
+        date: new Date('2024-03-01'),
+        time: '18:30',
+        location: 'Meeting Room',
+        category: 'Meeting',
+        status: 'Upcoming',
+        organizer: adminUser._id,
+        society: society.name
+      },
+      {
+        title: 'Sports Tournament',
+        description: 'Annual sports tournament featuring cricket, badminton, and table tennis competitions. Register your teams and compete for exciting prizes!',
+        date: new Date('2024-03-20'),
+        time: '09:00',
+        location: 'Society Sports Complex',
+        category: 'Sports',
+        status: 'Upcoming',
+        organizer: adminUser._id,
+        society: society.name,
+        maxParticipants: 100
+      },
+      {
+        title: 'Holi Celebration',
+        description: 'Celebrate the festival of colors with your society members! Enjoy music, dance, and traditional Holi delicacies.',
+        date: new Date('2024-03-25'),
+        time: '10:00',
+        location: 'Society Garden',
+        category: 'Festival',
+        status: 'Upcoming',
+        organizer: adminUser._id,
+        society: society.name
+      },
+      {
+        title: 'Children\'s Day Event',
+        description: 'Special event for children featuring games, art competitions, magic show, and more. Bring your kids for a day of fun and learning!',
+        date: new Date('2024-03-10'),
+        time: '15:00',
+        location: 'Community Center',
+        category: 'Cultural',
+        status: 'Upcoming',
+        organizer: adminUser._id,
+        society: society.name,
+        maxParticipants: 50
+      }
+    ];
+
+    console.log('Creating events with data:', JSON.stringify(events, null, 2));
+
+    for (const eventData of events) {
+      try {
+        const event = await Event.create(eventData);
+        console.log(`Created event: ${event.title} with ID: ${event._id}`);
+      } catch (error) {
+        console.error(`Error creating event ${eventData.title}:`, error);
+      }
+    }
+
+    // Verify events were created
+    const createdEvents = await Event.find({ society: society.name });
+    console.log(`Created ${createdEvents.length} events:`, 
+      createdEvents.map(e => ({ 
+        title: e.title, 
+        date: e.date,
+        organizer: e.organizer,
+        society: e.society 
+      }))
+    );
+  } catch (error) {
+    console.error('Error in createInitialEvents:', error);
+    throw error;
+  }
+};
+
 const initializeDb = async () => {
   try {
     console.log('Starting database initialization...');
@@ -201,7 +296,7 @@ const initializeDb = async () => {
     const society = await createTestSociety();
     await createInitialUsers(society);
     
-    // Get admin user for creating protocols
+    // Get admin user for creating events
     const adminUser = await User.findOne({ role: 'admin' });
     if (!adminUser) {
       throw new Error('Admin user not found');
@@ -209,6 +304,10 @@ const initializeDb = async () => {
     
     // Create security protocols
     await createInitialSecurityProtocols(society, adminUser);
+    
+    // Create events
+    console.log('Creating events...');
+    await createInitialEvents(society, adminUser);
     
     console.log('Database initialization completed successfully');
   } catch (error) {
