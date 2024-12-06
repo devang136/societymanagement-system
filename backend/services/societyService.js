@@ -1,4 +1,4 @@
-const Society = require('../models/Society');
+const Society = require("../models/Society");
 
 exports.createSociety = async (societyData) => {
   const society = new Society(societyData);

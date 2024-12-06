@@ -25,7 +25,7 @@ app.use(cors({
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb://127.0.0.1:27017/society-management')
+mongoose.connect('mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack')
   .then(async () => {
     console.log('Connected to MongoDB successfully');
     await initializeDb();
