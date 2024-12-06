@@ -18,22 +18,12 @@ require('./models');
 
 const app = express();
 
+// Middleware
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true
 }));
 app.use(express.json());
-
-// MongoDB connection
-mongoose.connect('mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack')
-  .then(async () => {
-    console.log('Connected to MongoDB successfully');
-    await initializeDb();
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  });
 
 // Mount routes
 app.use('/api/auth', authRoutes);
@@ -46,41 +36,44 @@ app.use('/api/personal', personalDetailsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/visitors', visitorRoutes);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
-
-const PORT = process.env.PORT || 8001;
-
 const startServer = async () => {
   try {
-    const server = app.listen(PORT, () => {
+    await mongoose.connect('mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('Connected to MongoDB successfully');
+
+    try {
+      await initializeDb();
+      console.log('Database initialization completed');
+    } catch (initError) {
+      console.error('Database initialization failed:', initError);
+      // Continue running the server even if initialization fails
+    }
+
+    const PORT = process.env.PORT || 8001;
+    app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
-
-    server.on('error', (error) => {
-      if (error.code === 'EADDRINUSE') {
-        console.log(`Port ${PORT} is busy, trying ${PORT + 1}`);
-        server.close();
-        startServer(PORT + 1);
-      } else {
-        console.error('Server error:', error);
-      }
-    });
-
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
   }
 };
 
-startServer();
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+});
 
+// Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Rejection:', err);
-  process.exit(1);
+  // Don't exit the process, just log the error
 });
+
+startServer();
 
 module.exports = app;

@@ -71,6 +71,12 @@ export default function LoginForm({
       });
       
       if (response.token && response.user) {
+        // Store the token and user data
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        
+        console.log('Stored user data:', response.user);
+        
         onLoginSuccess(response.user.role as 'admin' | 'user' | 'security');
         toast.success('Login successful!');
       }

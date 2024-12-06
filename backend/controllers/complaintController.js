@@ -1,119 +1,89 @@
-const { Complaint } = require('../models');
+const Complaint = require('../models/Complaint');
 
 exports.createComplaint = async (req, res) => {
   try {
-    const { title, description, priority, wing, unit } = req.body;
+    console.log('Creating complaint with data:', req.body);
+    console.log('User data:', {
+      id: req.user._id,
+      email: req.user.email,
+      society: req.user.society,
+      wing: req.user.wing,
+      unit: req.user.unit
+    });
 
-    if (!req.user || !req.user.society) {
-      return res.status(401).json({ message: 'User or society not found' });
-    }
-
-    const complaintWing = wing || req.user.wing;
-    const complaintUnit = unit || req.user.unit;
-
-    if (!complaintWing || !complaintUnit) {
+    if (!req.user.wing || !req.user.unit) {
       return res.status(400).json({ 
-        message: 'Wing and unit are required. Please provide them in the request or update your profile.'
+        message: 'User wing and unit are required. Please update your profile.'
       });
     }
 
     const complaint = new Complaint({
-      title,
-      description,
-      priority,
-      wing: complaintWing,
-      unit: complaintUnit,
-      createdBy: req.user._id,
-      society: req.user.society._id,
+      ...req.body,
+      userId: req.user._id,
+      society: req.user.society,
+      wing: req.user.wing,
+      unit: req.user.unit,
       status: 'Open'
     });
 
     await complaint.save();
-
+    
     const populatedComplaint = await Complaint.findById(complaint._id)
-      .populate('createdBy', 'name')
-      .populate('society', 'name');
+      .populate('userId', 'firstName lastName');
 
-    console.log('Complaint created:', populatedComplaint);
+    console.log('Created complaint:', populatedComplaint);
     res.status(201).json(populatedComplaint);
   } catch (error) {
     console.error('Create complaint error:', error);
-    res.status(500).json({
+    res.status(500).json({ 
       message: 'Error creating complaint',
-      error: error.message
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };
 
-exports.getComplaints = async (req, res) => {
+exports.getAllComplaints = async (req, res) => {
   try {
-    if (!req.user || !req.user.society) {
-      return res.status(401).json({ message: 'User or society not found' });
-    }
-
-    const complaints = await Complaint.find({
-      society: req.user.society._id
-    })
-    .populate('createdBy', 'name')
-    .populate('society', 'name')
-    .sort({ createdAt: -1 });
-
+    const complaints = await Complaint.find({ society: req.user.society })
+      .populate('userId', 'firstName lastName')
+      .sort({ createdAt: -1 });
     res.json(complaints);
   } catch (error) {
     console.error('Get complaints error:', error);
-    res.status(500).json({
-      message: 'Error fetching complaints',
-      error: error.message
-    });
+    res.status(500).json({ message: 'Error fetching complaints' });
   }
 };
 
 exports.updateComplaint = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updates = req.body;
-
-    const complaint = await Complaint.findByIdAndUpdate(
-      id,
-      { $set: updates },
+    const complaint = await Complaint.findOneAndUpdate(
+      { _id: req.params.id, society: req.user.society },
+      req.body,
       { new: true }
-    )
-    .populate('createdBy', 'name')
-    .populate('society', 'name')
-    .populate('assignedTo', 'name');
-
+    );
     if (!complaint) {
       return res.status(404).json({ message: 'Complaint not found' });
     }
-
     res.json(complaint);
   } catch (error) {
     console.error('Update complaint error:', error);
-    res.status(500).json({
-      message: 'Error updating complaint',
-      error: error.message
-    });
+    res.status(500).json({ message: 'Error updating complaint' });
   }
 };
 
 exports.deleteComplaint = async (req, res) => {
   try {
-    const { id } = req.params;
     const complaint = await Complaint.findOneAndDelete({
-      _id: id,
-      society: req.user.society._id
+      _id: req.params.id,
+      society: req.user.society
     });
-
     if (!complaint) {
       return res.status(404).json({ message: 'Complaint not found' });
     }
-
     res.json({ message: 'Complaint deleted successfully' });
   } catch (error) {
     console.error('Delete complaint error:', error);
-    res.status(500).json({
-      message: 'Error deleting complaint',
-      error: error.message
-    });
+    res.status(500).json({ message: 'Error deleting complaint' });
   }
 };

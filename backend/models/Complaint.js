@@ -12,12 +12,26 @@ const complaintSchema = new mongoose.Schema({
   priority: {
     type: String,
     enum: ['High', 'Medium', 'Low'],
-    default: 'Medium'
+    required: true
+  },
+  category: {
+    type: String,
+    required: true,
+    enum: ['Maintenance', 'Security', 'Cleanliness', 'Other']
   },
   status: {
     type: String,
-    enum: ['Open', 'Pending', 'Solve'],
+    enum: ['Open', 'Pending', 'Solved'],
     default: 'Open'
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  society: {
+    type: String,
+    required: true
   },
   wing: {
     type: String,
@@ -26,20 +40,6 @@ const complaintSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true
-  },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  society: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Society',
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
 }, {
   timestamps: true

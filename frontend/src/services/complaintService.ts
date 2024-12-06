@@ -1,37 +1,35 @@
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-
-const API_URL = 'http://localhost:8001/api';
-
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-  return {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  };
-};
+import axiosInstance from './axiosInstance';
 
 export interface ComplaintData {
   title: string;
   description: string;
   priority: 'High' | 'Medium' | 'Low';
+  category?: string;
   wing: string;
   unit: string;
 }
 
+export interface Complaint extends ComplaintData {
+  _id: string;
+  status: 'Open' | 'Pending' | 'Solved';
+  userId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const complaintService = {
-  async createComplaint(complaintData: ComplaintData) {
+  createComplaint: async (complaintData: ComplaintData) => {
     try {
-      console.log('Creating complaint:', complaintData);
-      const response = await axios.post(
-        `${API_URL}/complaints/create`, 
-        complaintData,
-        { headers: getAuthHeaders() }
-      );
-      console.log('Complaint created:', response.data);
+      console.log('Sending complaint data:', complaintData);
+      
+      const response = await axiosInstance.post('/complaints/create', complaintData);
+      
+      console.log('Server response:', response.data);
+      
       return response.data;
     } catch (error: any) {
       console.error('Create complaint error:', error);
@@ -39,15 +37,33 @@ export const complaintService = {
     }
   },
 
-  async getComplaints() {
+  getComplaints: async () => {
     try {
-      const response = await axios.get(`${API_URL}/complaints/all`, {
-        headers: getAuthHeaders()
-      });
+      const response = await axiosInstance.get('/complaints/all');
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Get complaints error:', error);
-      throw new Error(error.response?.data?.message || 'Failed to fetch complaints');
+      throw new Error('Please authenticate');
+    }
+  },
+
+  updateComplaint: async (id: string, updates: Partial<ComplaintData>) => {
+    try {
+      const response = await axiosInstance.put(`/complaints/${id}`, updates);
+      return response.data;
+    } catch (error) {
+      console.error('Update complaint error:', error);
+      throw error;
+    }
+  },
+
+  deleteComplaint: async (id: string) => {
+    try {
+      const response = await axiosInstance.delete(`/complaints/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Delete complaint error:', error);
+      throw error;
     }
   }
 }; 

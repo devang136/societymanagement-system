@@ -1,50 +1,14 @@
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-
-const API_URL = 'http://localhost:8001/api';
-
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('Authentication required');
-  }
-  return {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  };
-};
-
-export interface DashboardData {
-  complaints: Array<{
-    id: string;
-    name: string;
-    complaintName: string;
-    date: string;
-    priority: 'High' | 'Medium' | 'Low';
-    status: 'Open' | 'Pending' | 'Solve';
-    description: string;
-    wing: string;
-    unit: string;
-    avatar: string;
-  }>;
-  stats: {
-    totalComplaints: number;
-    pendingComplaints: number;
-    solvedComplaints: number;
-  };
-}
+import axiosInstance from './axiosInstance';
 
 export const dashboardService = {
-  async getDashboardData() {
+  getDashboardData: async () => {
     try {
-      const response = await axios.get<DashboardData>(
-        `${API_URL}/dashboard/data`,
-        { headers: getAuthHeaders() }
-      );
+      const response = await axiosInstance.get('/dashboard/data');
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Get dashboard data error:', error);
-      throw new Error(error.response?.data?.message || 'Failed to fetch dashboard data');
+      throw new Error('Please authenticate');
     }
-  }
+  },
+  // ... other methods
 }; 

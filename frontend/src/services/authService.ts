@@ -1,60 +1,60 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
-const API_URL = 'http://localhost:8001/api';
+interface LoginCredentials {
+  emailOrPhone: string;
+  password: string;
+}
 
-interface RegisterData {
+interface RegistrationData {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  password: string;
   country: string;
   state: string;
   city: string;
   society: string;
   wing: string;
   unit: string;
+  password: string;
 }
 
 export const authService = {
-  async register(formData: Omit<RegisterData, 'confirmPassword'>) {
+  login: async (credentials: LoginCredentials) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, formData);
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        throw error;
-      }
-      throw new Error('Network error occurred');
-    }
-  },
-
-  async login(credentials: { emailOrPhone: string; password: string }) {
-    try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
-        emailOrPhone: credentials.emailOrPhone.toLowerCase(),
-        password: credentials.password
-      });
-      
+      const response = await axiosInstance.post('/auth/login', credentials);
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       return response.data;
     } catch (error) {
+      console.error('Login error:', error);
       throw error;
     }
   },
 
-  logout() {
+  register: async (data: RegistrationData) => {
+    try {
+      const response = await axiosInstance.post('/auth/register', data);
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
   },
 
-  async getSocieties() {
+  getSocieties: async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/societies/list`);
+      const response = await axiosInstance.get('/auth/societies');
       return response.data;
     } catch (error) {
+      console.error('Error fetching societies:', error);
       throw error;
     }
   }
