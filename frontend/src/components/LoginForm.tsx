@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { authService } from '../services/authService';
 import { toast } from 'react-hot-toast';
@@ -28,6 +28,14 @@ export default function LoginForm({
     rememberMe: false,
   });
 
+  useEffect(() => {
+    const registeredEmail = sessionStorage.getItem('registeredEmail');
+    if (registeredEmail) {
+      setFormData(prev => ({ ...prev, emailOrPhone: registeredEmail }));
+      sessionStorage.removeItem('registeredEmail');
+    }
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -53,24 +61,23 @@ export default function LoginForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        const response = await authService.login(formData.emailOrPhone, formData.password);
-        console.log('Login successful:', response);
-        
-        if (response.user && response.token) {
-          onLoginSuccess(response.user.role as 'admin' | 'user' | 'security');
-        } else {
-          throw new Error('Invalid response from server');
-        }
-      } catch (error: any) {
-        console.error('Login error:', error);
-        setErrors({
-          emailOrPhone: error.message || 'Invalid credentials',
-          password: error.message || 'Invalid credentials',
-        });
-        toast.error(error.message || 'Login failed');
+    
+    if (!validateForm()) return;
+
+    try {
+      const response = await authService.login({
+        emailOrPhone: formData.emailOrPhone.trim(),
+        password: formData.password
+      });
+      
+      if (response.token && response.user) {
+        onLoginSuccess(response.user.role as 'admin' | 'user' | 'security');
+        toast.success('Login successful!');
       }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Login failed';
+      toast.error(errorMessage);
+      console.error('Login error:', error);
     }
   };
 

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import CreateSocietyModal from './CreateSocietyModal';
+import { authService } from '../services/authService';
+import { toast } from 'react-hot-toast';
 
 interface RegistrationFormProps {
   onBackToLogin: () => void;
@@ -15,6 +17,8 @@ interface FormData {
   state: string;
   city: string;
   society: string;
+  wing: string;
+  unit: string;
   password: string;
   confirmPassword: string;
 }
@@ -34,20 +38,30 @@ export default function RegistrationForm({
     state: '',
     city: '',
     society: '',
+    wing: '',
+    unit: '',
     password: '',
     confirmPassword: '',
   });
+  const [societies, setSocieties] = useState<string[]>([
+    'Red & White Society',
+    'Green Valley',
+    'Blue Heights'
+  ]);
 
-  const societies = [
-    'Shantigram residency',
-    'Russell House Park',
-    'Suarya residency',
-    'Shantisudh Avenyu',
-    'Ubon society',
-    'MylaKher',
-    'Shree Shashnam',
-    'vasanthnagar township',
-  ];
+  useEffect(() => {
+    const fetchSocieties = async () => {
+      try {
+        const response = await authService.getSocieties();
+        setSocieties(response.data);
+      } catch (error) {
+        console.error('Error fetching societies:', error);
+        toast.error('Failed to load societies');
+      }
+    };
+
+    fetchSocieties();
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -56,9 +70,37 @@ export default function RegistrationForm({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    
+    try {
+      // Basic validation
+      if (!formData.wing || !formData.unit || !formData.phone) {
+        toast.error('Wing, unit and phone number are required fields');
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("Passwords don't match");
+        return;
+      }
+
+      // Remove confirmPassword before sending to API
+      const { confirmPassword, ...registrationData } = formData;
+      
+      const response = await authService.register(registrationData);
+      
+      if (response.token) {
+        toast.success('Registration successful! Please login with your credentials.');
+        // Store email temporarily for login form
+        sessionStorage.setItem('registeredEmail', formData.email);
+        onBackToLogin();
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Registration failed';
+      toast.error(errorMessage);
+      console.error('Registration error:', error.response?.data);
+    }
   };
 
   return (
@@ -74,7 +116,7 @@ export default function RegistrationForm({
 
             <div className="relative">
               <img
-                src="https://raw.githubusercontent.com/stackblitz/stackblitz-images/main/society-management.png"
+                src=""
                 alt="Society Management"
                 className="w-full"
               />
@@ -226,6 +268,35 @@ export default function RegistrationForm({
                   >
                     Create Society
                   </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Wing*
+                    </label>
+                    <input
+                      type="text"
+                      name="wing"
+                      value={formData.wing}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-[#FF5733] focus:outline-none focus:ring-1 focus:ring-[#FF5733]"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Unit Number*
+                    </label>
+                    <input
+                      type="text"
+                      name="unit"
+                      value={formData.unit}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-[#FF5733] focus:outline-none focus:ring-1 focus:ring-[#FF5733]"
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>

@@ -14,34 +14,37 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
+  contactNumber: {
+    type: String,
+    required: true
+  },
   password: { 
     type: String, 
     required: true,
     minlength: 6
+  },
+  address: {
+    type: String,
+    required: true
   },
   society: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Society',
     required: true 
   },
-  wing: { 
-    type: String, 
-    required: true 
+  wing: {
+    type: String,
+    required: true
   },
-  unit: { 
-    type: String, 
-    required: true 
+  unit: {
+    type: String,
+    required: true
   },
   role: {
     type: String,
     enum: ['admin', 'user', 'security'],
     default: 'user'
   },
-  contactNumber: {
-    type: String,
-    required: true
-  },
-  address: String,
   isActive: {
     type: Boolean,
     default: true

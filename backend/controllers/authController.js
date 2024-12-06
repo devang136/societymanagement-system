@@ -2,6 +2,7 @@ const authService = require('../services/authService');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Society = require('../models/Society');
 
 
 // get user 
@@ -32,22 +33,57 @@ exports.register = async (req, res) => {
       city 
     } = req.body;
 
+    // Validate required fields
+    if (!wing || !unit || !phone) {
+      return res.status(400).json({ 
+        message: 'Wing, unit and phone number are required fields' 
+      });
+    }
+
     // Check if user exists
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Find or create society
+    let societyDoc = await Society.findOne({ name: society });
+    if (!societyDoc) {
+      // Initialize with default wings array including the user's wing
+      const defaultWings = ['A', 'B', 'C'];
+      const wings = wing && !defaultWings.includes(wing) 
+        ? [...defaultWings, wing].filter(Boolean) 
+        : defaultWings;
+      
+      societyDoc = new Society({
+        name: society,
+        address: `${city}, ${state}, ${country}`,
+        wings: wings,
+        totalUnits: 100 // Default value
+      });
+      await societyDoc.save();
+    } else {
+      // If society exists but wing doesn't, add it
+      if (wing && !societyDoc.wings.includes(wing)) {
+        societyDoc.wings = [...societyDoc.wings, wing].filter(Boolean);
+        await societyDoc.save();
+      }
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     // Create new user
     user = new User({
       name: `${firstName} ${lastName}`,
       email,
-      password,
-      society,
-      wing,
-      unit,
+      password: hashedPassword,  // Store hashed password
       contactNumber: phone,
       address: `${city}, ${state}, ${country}`,
+      society: societyDoc._id,
+      wing,
+      unit,
       role: 'user'
     });
 
@@ -67,7 +103,7 @@ exports.register = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        society: user.society,
+        society: societyDoc.name,
         wing: user.wing,
         unit: user.unit
       }
@@ -82,55 +118,75 @@ exports.register = async (req, res) => {
 // login
 exports.loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    console.log('Login attempt for:', email);
+    const { emailOrPhone, password } = req.body;
+    
+    if (!emailOrPhone || !password) {
+      return res.status(400).json({ message: 'Email/Phone and password are required' });
+    }
 
-    // Find user
-    const user = await User.findOne({ 
-      email: email.toLowerCase().trim(),
-      isActive: true 
+    // For test users
+    if (emailOrPhone === 'user@gmail.com' && password === 'asdasd') {
+      const token = jwt.sign(
+        { email: emailOrPhone, role: 'user', name: 'Test User' },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+      return res.json({
+        token,
+        user: {
+          id: 'test-user-id',
+          name: 'Test User',
+          email: emailOrPhone,
+          role: 'user',
+          society: 'Test Society',
+          wing: 'A',
+          unit: '101'
+        }
+      });
+    }
+
+    // Find real user by email or phone
+    const user = await User.findOne({
+      $or: [
+        { email: emailOrPhone.toLowerCase() },
+        { contactNumber: emailOrPhone }
+      ]
     }).populate('society');
 
     if (!user) {
-      console.log('User not found:', email);
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      console.log('Invalid password for user:', email);
+    // Verify password
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
 
     // Generate token
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // Send response
+    // Return user data in consistent format
     res.json({
       token,
       user: {
         id: user._id,
-        name: user.name,
+        name: user.name,  // Use the name field directly since we store it during registration
         email: user.email,
         role: user.role,
-        society: user.society.name,
+        society: user.society?.name || '',
         wing: user.wing,
-        unit: user.unit
+        unit: user.unit,
+        contactNumber: user.contactNumber
       }
     });
-
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+    res.status(500).json({ message: 'Error during login' });
   }
 };
 
@@ -320,6 +376,79 @@ exports.resetPassword = async (req, res) => {
       res.status(200).json({ message: 'Password reset successful' });
   } catch (error) {
       res.status(500).json({ message: error.message });
+  }
+};
+
+exports.registerUser = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      phone,
+      password,
+      country,
+      state,
+      city,
+      society
+    } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ 
+      $or: [
+        { email: email.toLowerCase() },
+        { phone }
+      ]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: 'User with this email or phone already exists'
+      });
+    }
+
+    // Find society by name
+    const societyDoc = await Society.findOne({ name: society });
+    if (!societyDoc) {
+      return res.status(400).json({
+        message: 'Invalid society selected'
+      });
+    }
+
+    // Create new user
+    const user = new User({
+      name,
+      email: email.toLowerCase(),
+      phone,
+      password,
+      country,
+      state,
+      city,
+      society: societyDoc._id,
+      role: 'user'
+    });
+
+    await user.save();
+
+    res.status(201).json({
+      message: 'Registration successful'
+    });
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({
+      message: 'Server error during registration'
+    });
+  }
+};
+
+exports.getSocieties = async (req, res) => {
+  try {
+    const societies = await Society.find({}, 'name');
+    const societyNames = societies.map(society => society.name);
+    res.json({ data: societyNames });
+  } catch (error) {
+    console.error('Error fetching societies:', error);
+    res.status(500).json({ message: 'Error fetching societies' });
   }
 };
 

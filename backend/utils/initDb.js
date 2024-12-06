@@ -35,20 +35,19 @@ const createTestSociety = async () => {
 
 const createTestUser = async (society) => {
   try {
-    // First, try to find the test user
     let user = await User.findOne({ email: 'user@gmail.com' });
     
     if (!user) {
-      // Only create if it doesn't exist
       user = new User({
         name: 'devang',
         email: 'user@gmail.com',
         password: 'asdasd',
+        contactNumber: '1234567890',
+        address: 'Test Address, Test City, Test Country',
         society: society._id,
         wing: 'A',
         unit: '101',
         role: 'user',
-        contactNumber: '1234567890',
         isActive: true
       });
 
@@ -56,12 +55,6 @@ const createTestUser = async (society) => {
       console.log('Test user created successfully');
     } else {
       console.log('Using existing test user');
-      // Update society reference if needed
-      if (!user.society.equals(society._id)) {
-        user.society = society._id;
-        await user.save();
-        console.log('Updated test user society reference');
-      }
     }
     
     return user;
@@ -73,11 +66,9 @@ const createTestUser = async (society) => {
 
 const createTestAdmin = async (society) => {
   try {
-    // First, try to find the test admin
     let admin = await User.findOne({ email: 'admin@gmail.com' });
     
     if (!admin) {
-      // Only create if it doesn't exist
       admin = new User({
         name: 'Admin',
         email: 'admin@gmail.com',
@@ -87,13 +78,14 @@ const createTestAdmin = async (society) => {
         unit: '001',
         role: 'admin',
         contactNumber: '9876543210',
+        address: 'Admin Office, Test Society',
         isActive: true
       });
 
       await admin.save();
       console.log('Test admin created successfully');
     }
-
+    
     return admin;
   } catch (error) {
     console.error('Error creating test admin:', error);
@@ -103,11 +95,9 @@ const createTestAdmin = async (society) => {
 
 const createTestSecurity = async (society) => {
   try {
-    // First, try to find the test security guard
     let security = await User.findOne({ email: 'security@gmail.com' });
     
     if (!security) {
-      // Only create if it doesn't exist
       security = new User({
         name: 'Security Guard',
         email: 'security@gmail.com',
@@ -117,6 +107,7 @@ const createTestSecurity = async (society) => {
         unit: 'Gate',
         role: 'security',
         contactNumber: '9876543211',
+        address: 'Security Gate, Test Society',
         isActive: true
       });
 
