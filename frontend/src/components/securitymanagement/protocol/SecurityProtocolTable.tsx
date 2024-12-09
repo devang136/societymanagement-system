@@ -1,4 +1,3 @@
-import React from 'react';
 import { Check, Eye, Trash2 } from 'lucide-react';
 
 interface Protocol {

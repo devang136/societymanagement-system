@@ -1,5 +1,5 @@
 import React from 'react';
-import { OtherIncome } from '../data/mockData';
+import { OtherIncome } from './incomedata/mockData';
 import { OtherIncomeCard } from './OtherIncomeCard';
 
 interface OtherIncomeSectionProps {

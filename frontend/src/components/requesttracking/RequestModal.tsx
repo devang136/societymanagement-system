@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Request, RequestFormData } from '../../types';
+import type { RequestFormData } from '../../types';
 import { X } from 'lucide-react';
 
 interface RequestModalProps {

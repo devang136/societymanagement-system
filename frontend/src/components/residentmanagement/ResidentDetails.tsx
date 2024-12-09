@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronLeft, Download } from 'lucide-react';
 
 interface Document {

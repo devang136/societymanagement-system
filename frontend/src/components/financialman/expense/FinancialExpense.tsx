@@ -1,19 +1,8 @@
-import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from './ui/button';
 import { ExpenseDialog } from './ExpenseDialog';
-import { Edit, Trash2 } from "lucide-react";
 import { useExpense } from './hooks/useExpense';
 import { ExpenseTable } from './ExpenseTable';
-
-interface ExpenseType {
-  id: string;
-  title: string;
-  amount: number;
-  date: string;
-  category: string;
-  description: string;
-}
 
 export function FinancialExpense() {
   const {

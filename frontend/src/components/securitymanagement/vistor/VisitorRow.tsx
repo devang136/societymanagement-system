@@ -1,4 +1,3 @@
-import React from 'react';
 import { Clock, Home } from 'lucide-react';
 
 interface VisitorRowProps {

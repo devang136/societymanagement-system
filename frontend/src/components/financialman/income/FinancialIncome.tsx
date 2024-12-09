@@ -1,6 +1,4 @@
-
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Header } from './Header';
 import { TabNavigation } from './TabNavigation';
 import { MaintenanceTable } from './MaintenanceTable';
@@ -24,7 +22,7 @@ export function FinancialIncome() {
   const [penaltyAmount, setPenaltyAmount] = useState(0);
   const [otherIncomes, setOtherIncomes] = useState(MOCK_OTHER_INCOME);
   const [selectedMaintenanceDetails, setSelectedMaintenanceDetails] = useState<any>(null);
-  const [residents, setResidents] = useState(MOCK_RESIDENTS);
+  const [residents] = useState(MOCK_RESIDENTS);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -153,7 +151,6 @@ export function FinancialIncome() {
                 <MaintenanceTable
                   residents={currentItems}
                   onViewMaintenance={handleViewMaintenance}
-                  onSetMaintenance={handleSetMaintenance}
                 />
                 <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200">
                   <div className="flex-1 flex justify-between sm:hidden">

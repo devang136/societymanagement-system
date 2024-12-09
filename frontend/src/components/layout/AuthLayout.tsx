@@ -12,7 +12,6 @@ import { PersonalDetailsApp } from '../usersidelogic/personaldetails/personaldet
 import  PollingDashboard  from '../usersidelogic/userpolls/page';
 import Page from '../usersidelogic/community-chat/app/page';
 import ChatPage from '../usersidelogic/access-forum/pages/ChatPage';
-import { ProtectedRoute } from '../ProtectedRoute';
 
 interface AuthLayoutProps {
   children: React.ReactNode;

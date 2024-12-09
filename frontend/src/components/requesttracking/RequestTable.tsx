@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Request } from '../../types';
 
 interface RequestTableProps {

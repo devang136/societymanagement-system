@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 interface DropdownChildProps {
   isOpen?: boolean;
@@ -30,13 +30,9 @@ export const DropdownMenu = ({
 };
 
 export const DropdownMenuTrigger = ({ 
-  children, 
-  asChild,
-  isOpen 
+  children 
 }: { 
   children: React.ReactNode; 
-  asChild?: boolean;
-  isOpen?: boolean;
 }) => {
   return <div className="cursor-pointer">{children}</div>;
 };

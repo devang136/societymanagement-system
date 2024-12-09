@@ -6,7 +6,6 @@ import { SecurityModal } from './SecurityModal';
 import { DeleteModal } from './DeleteModal';
 import { ViewModal } from './ViewModal';
 import { SecurityGuard } from './types';
-import React from 'react';
 
 const MOCK_USER = {
   name: 'Moni Roy',

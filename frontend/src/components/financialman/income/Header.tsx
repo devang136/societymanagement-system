@@ -1,13 +1,6 @@
 import React from 'react';
 import { BellIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-interface SidebarProps {
-  activeMenuItem: string;
-  activeSubMenuItem?: string;
-  onLogout: () => void;
-  onMenuChange: (menuItem: string, subMenuItem?: string) => void;
-}
-
 export const Header: React.FC = () => {
   return (
     <header className="bg-white shadow-sm">

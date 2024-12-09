@@ -1,6 +1,5 @@
 import { Edit2, Trash2, MessageCircle, Eye } from 'lucide-react';
 import { SecurityGuard } from './types';
-import React from 'react';
 interface SecurityTableProps {
   guards: SecurityGuard[];
   onEdit: (guard: SecurityGuard) => void;

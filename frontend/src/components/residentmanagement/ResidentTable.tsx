@@ -1,4 +1,3 @@
-import React from 'react';
 import { Check, Info } from 'lucide-react';
 
 interface Resident {
@@ -29,7 +28,6 @@ interface Resident {
 interface ResidentTableProps {
   onResidentClick: (resident: Resident) => void;
   onStatusChange: () => void;
-  onDelete: () => void;
 }
 
 const sampleResidents: Resident[] = [
@@ -72,7 +70,7 @@ const sampleResidents: Resident[] = [
   // Add more sample data as needed
 ];
 
-export function ResidentTable({ onResidentClick, onStatusChange, onDelete }: ResidentTableProps) {
+export function ResidentTable({ onResidentClick, onStatusChange }: ResidentTableProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="overflow-x-auto">

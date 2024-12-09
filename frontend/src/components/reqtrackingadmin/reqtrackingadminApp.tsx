@@ -4,7 +4,6 @@ import RequestTable from './component/RequestTable';
 import RequestForm from './component/RequestForm';
 import ViewRequest from './component/ViewRequest';
 import DeleteConfirmation from './component/DeleteConfirmation';
-import React from 'react';
 
 interface Request {
   id: string;

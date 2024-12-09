@@ -1,4 +1,3 @@
-import React from 'react';
 import ProtocolApp from './protocolapp';
 
 const SecurityProtocol = () => {

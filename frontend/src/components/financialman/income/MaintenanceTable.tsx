@@ -20,13 +20,11 @@ interface Resident {
 interface MaintenanceTableProps {
   residents: Resident[];
   onViewMaintenance: (id: string) => void;
-  onSetMaintenance: () => void;
 }
 
 export const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ 
   residents, 
-  onViewMaintenance,
-  onSetMaintenance 
+  onViewMaintenance
 }) => {
   return (
     <div className="overflow-x-auto">

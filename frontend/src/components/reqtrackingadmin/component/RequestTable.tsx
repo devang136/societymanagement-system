@@ -1,5 +1,4 @@
 import { Edit2, Eye, Trash2 } from 'lucide-react';
-import React from 'react';
 interface Request {
   id: string;
   requesterName: string;

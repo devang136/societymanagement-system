@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { RequestTable } from './RequestTable';
 import { RequestModal } from './RequestModal';
 import { DeleteModal } from '../shared/DeleteModal';

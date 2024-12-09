@@ -1,5 +1,4 @@
 import { X } from 'lucide-react';
-import React from 'react';
 interface ViewRequestProps {
   request: {
     requesterName: string;

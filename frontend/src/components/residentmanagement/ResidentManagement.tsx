@@ -1,5 +1,5 @@
 // ResidentManagement.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Header } from '../residentmanagement/Header';
 import { ResidentTable } from '../residentmanagement/ResidentTable';
 import { ResidentForm } from '../residentmanagement/ResidentForm';
@@ -62,7 +62,6 @@ const ResidentManagement = () => {
           <ResidentTable
             onResidentClick={handleResidentClick}
             onStatusChange={() => setShowStatusModal(true)}
-            onDelete={() => setShowDeleteModal(true)}
           />
         )}
       </main>

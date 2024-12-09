@@ -1,6 +1,3 @@
-import React from 'react';
-import ProfileEdit from './ProfileEdit';
-
 interface ProfileData {
   firstName: string;
   lastName: string;

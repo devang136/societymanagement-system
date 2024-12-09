@@ -8,7 +8,7 @@ interface Toast {
 }
 
 export function useToast() {
-  const [toasts, setToasts] = useState<Toast[]>([])
+  const [toasts] = useState<Toast[]>([])
 
   return {
     toasts,

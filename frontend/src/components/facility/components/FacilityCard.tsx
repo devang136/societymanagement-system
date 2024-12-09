@@ -1,4 +1,3 @@
-import React from 'react';
 import { Calendar, ChevronRight, Pencil } from 'lucide-react';
 import { Facility } from '../types/facility';
 

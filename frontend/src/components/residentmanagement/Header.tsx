@@ -1,19 +1,17 @@
-import React from 'react';
 import { Bell, ChevronRight } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
-  onAddNew?: () => void;
 }
 
-export function Header({ title, onAddNew }: HeaderProps) {
+export function Header({ title }: HeaderProps) {
   return (
     <div className="bg-white shadow-sm">
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center space-x-2 text-sm text-gray-600">
           <span>Home</span>
           <ChevronRight size={16} />
-          <span className="text-gray-900">Resident Management</span>
+          <span className="text-gray-900">{title}</span>
         </div>
         
         <div className="flex items-center space-x-4">

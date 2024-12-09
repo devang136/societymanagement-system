@@ -1,6 +1,5 @@
 import { Shield, Users, LogOut } from "lucide-react";
 import { cn } from "../lib/utils";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 interface SidebarProps {

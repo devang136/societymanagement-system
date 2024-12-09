@@ -10,8 +10,17 @@ type Toast = {
 export function useToast() {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
+  const addToast = (toast: Omit<Toast, "id">) => {
+    setToasts((prev) => [...prev, { ...toast, id: Math.random().toString() }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
   return {
     toasts,
-    // Add other toast methods as needed
+    addToast,
+    removeToast,
   };
 } 
