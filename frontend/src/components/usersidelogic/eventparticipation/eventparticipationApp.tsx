@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/layout/Header';
 import EventsTabs from './components/events/EventsTabs';
 import EventsTable from './components/events/EventsTable';
-import { eventsService, Event, Activity } from '../../../services/eventsService';
+import { Event } from '../../../services/eventService';
+import { eventsService } from '../../../services/eventsService';
 import toast from 'react-hot-toast';
+
+interface Activity extends Event {
+  participantCount: number;
+}
 
 const MOCK_USER = {
   name: 'Moni Roy',
@@ -23,9 +28,25 @@ function App() {
         setLoading(true);
         if (activeTab === 'events') {
           const eventsData = await eventsService.getEvents();
-          setEvents(eventsData);
+          setEvents(eventsData.map((event: any) => ({
+            ...event,
+            category: event.category || 'General',
+            maxParticipants: event.maxParticipants || 100,
+            participants: event.participants || [],
+            createdAt: event.createdAt || new Date().toISOString(),
+            updatedAt: event.updatedAt || new Date().toISOString()
+          })));
         } else {
-          const activitiesData = await eventsService.getActivities();
+          const eventsData = await eventsService.getEvents();
+          const activitiesData = eventsData.map((event: any) => ({
+            ...event,
+            category: event.category || 'General',
+            maxParticipants: event.maxParticipants || 100,
+            participants: event.participants || [],
+            createdAt: event.createdAt || new Date().toISOString(),
+            updatedAt: event.updatedAt || new Date().toISOString(),
+            participantCount: 0
+          }));
           setActivities(activitiesData);
         }
       } catch (error) {
@@ -37,15 +58,6 @@ function App() {
 
     fetchData();
   }, [activeTab]);
-
-  const handleParticipate = async (eventId: string) => {
-    try {
-      await eventsService.participateInEvent(eventId);
-      toast.success('Successfully registered for the event!');
-    } catch (error) {
-      toast.error('Failed to register for the event');
-    }
-  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -72,7 +84,6 @@ function App() {
             ) : (
               <EventsTable 
                 events={activeTab === 'events' ? events : activities}
-                onParticipate={handleParticipate}
               />
             )}
           </div>

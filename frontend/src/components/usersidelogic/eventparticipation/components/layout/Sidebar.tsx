@@ -1,4 +1,3 @@
-import React from 'react';
 import { LayoutDashboard, Users, FileSpreadsheet, MessagesSquare, Wallet, Shield, LogOut } from 'lucide-react';
 import NavLink from './NavLink';
 

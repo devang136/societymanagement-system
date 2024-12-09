@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserDetails, userService } from '../../../../../services/userService';
 import { toast } from 'react-hot-toast';
 
@@ -241,7 +241,7 @@ export default function PersonalInfo() {
           <h4 className="font-medium">Pending Maintenance</h4>
           <div className="grid grid-cols-3 gap-6">
             {userDetails.maintenanceDetails?.pending?.length > 0 ? (
-              userDetails.maintenanceDetails.pending.map((item, index) => (
+              userDetails.maintenanceDetails.pending.map((_, index) => (
                 <div key={index} className="bg-white shadow rounded-lg overflow-hidden">
                   <div className="bg-blue-500 text-white px-4 py-2 flex justify-between items-center">
                     <span>Maintenance</span>
@@ -285,7 +285,7 @@ export default function PersonalInfo() {
           <h4 className="font-medium">Due Maintenance</h4>
           <div className="grid grid-cols-3 gap-6">
             {userDetails.maintenanceDetails?.due?.length > 0 ? (
-              userDetails.maintenanceDetails.due.map((item, index) => (
+              userDetails.maintenanceDetails.due.map((_, index) => (
                 <div key={index} className="bg-white shadow rounded-lg overflow-hidden">
                   <div className="bg-blue-500 text-white px-4 py-2 flex justify-between items-center">
                     <span>Maintenance</span>
@@ -321,7 +321,7 @@ export default function PersonalInfo() {
           <h4 className="font-medium">Announcement Details</h4>
           <div className="grid grid-cols-4 gap-6">
             {userDetails.announcements?.length > 0 ? (
-              userDetails.announcements.map((announcement, index) => (
+              userDetails.announcements.map((_, index) => (
                 <div key={index} className="bg-white shadow rounded-lg overflow-hidden">
                   <div className="bg-blue-500 text-white px-4 py-2">
                     <span>Community Initiatives</span>
