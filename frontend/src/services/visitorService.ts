@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 
 interface Visitor {
@@ -19,7 +19,7 @@ interface VisitorFormData {
   flatNumber: string;
 }
 
-const API_URL = 'https://societymanagement-system-backend.onrender.com/api';
+const API_URL = 'https://societymanagement-system.onrender.com';
 
 export const visitorService = {
   async getAllVisitors(): Promise<Visitor[]> {
@@ -31,8 +31,9 @@ export const visitorService = {
       });
       return response.data;
     } catch (error) {
+      const axiosError = error as AxiosError;
       toast.error('Failed to fetch visitors');
-      throw error;
+      throw axiosError;
     }
   },
 
@@ -50,9 +51,10 @@ export const visitorService = {
       toast.success('Visitor added successfully');
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to add visitor';
+      const axiosError = error as AxiosError<{ message: string }>;
+      const errorMessage = axiosError.response?.data?.message || 'Failed to add visitor';
       toast.error(errorMessage);
-      throw error;
+      throw axiosError;
     }
   }
 }; 

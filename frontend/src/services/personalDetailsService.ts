@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 
 const API_URL = 'https://societymanagement-system.onrender.com';
@@ -6,6 +6,7 @@ const API_URL = 'https://societymanagement-system.onrender.com';
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   if (!token) {
+    toast.error('Authentication required');
     throw new Error('Authentication required');
   }
   return {
@@ -48,9 +49,11 @@ export const personalDetailsService = {
         { headers: getAuthHeaders() }
       );
       return response.data;
-    } catch (error: any) {
-      console.error('Get personal details error:', error);
-      throw new Error(error.response?.data?.message || 'Failed to fetch personal details');
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      const errorMessage = axiosError.response?.data?.message || 'Failed to fetch personal details';
+      toast.error(errorMessage);
+      throw axiosError;
     }
   }
 }; 
