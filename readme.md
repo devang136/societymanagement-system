@@ -2,6 +2,15 @@
 
 A comprehensive web application for managing residential facilities, built with React (Frontend) and Node.js/Express (Backend).
 
+
+test Admin side login 
+admin@example.com   
+admin123
+
+ test user side login 
+user@example.com   
+user123  
+
 ## 🚀 Features
 
 - Security Management (Guards, Protocols)
