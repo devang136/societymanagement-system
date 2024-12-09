@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PaymentCard } from './components/PaymentCard';
 import { PaymentModal } from './components/PaymentModal';
 import { InvoiceModal } from './components/InvoiceModal';
@@ -26,7 +26,7 @@ const mockInvoiceData = {
 function App() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [, setSelectedEventId] = useState<number | null>(null);
 
   const handlePayNow = (eventId: number) => {
     setSelectedEventId(eventId);

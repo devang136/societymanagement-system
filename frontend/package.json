@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.2.0",
     "@radix-ui/react-accordion": "^1.2.1",
@@ -38,6 +40,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tanstack/react-query": "^5.61.4",
+    "@types/emoji-mart": "^3.0.14",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.7.8",
     "class-variance-authority": "^0.7.0",

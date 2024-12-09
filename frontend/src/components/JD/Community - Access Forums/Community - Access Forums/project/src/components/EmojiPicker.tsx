@@ -1,4 +1,3 @@
-import React from 'react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 
@@ -7,7 +6,7 @@ interface EmojiPickerProps {
   onClose: () => void;
 }
 
-export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
+export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps): JSX.Element {
   return (
     <div className="absolute bottom-full mb-2">
       <div className="relative">

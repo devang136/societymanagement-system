@@ -1,4 +1,3 @@
-import React from 'react';
 import { Phone, Video, MoreVertical } from 'lucide-react';
 import { useChatContext } from '../context/ChatContext';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Dashboard } from './components/dashboard/Dashboard';
@@ -14,9 +13,6 @@ import { RequestTracking } from './components/requesttracking/RequestTracking';
 import VisitorApp from './components/securitymanagement/vistor/visitorapp';
 import SecurityGuardApp from './components/securityguard/securityguardapp';
 import AnnouncementApp from './components/announcement/announcementapp';
-import CommunityForum from './components/community/forum/CommunityForum';
-import CommunityPolls from './components/community/polls/CommunityPolls';
-import CommunityDiscussions from './components/community/discussions/CommunityDiscussions';
 import { MaintenanceInvoices } from './components/financialman/payments/maintenance/MaintenanceInvoices';
 import { OtherInvoices } from './components/financialman/payments/other/OtherInvoices';
 import SecurityProtocol from './components/securitymanagement/protocol/SecurityProtocol';
