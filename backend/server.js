@@ -21,7 +21,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['https://societymanagement-system-backend.onrender.com', process.env.FRONTEND_URL],
   credentials: true
 }));
 app.use(express.json());
