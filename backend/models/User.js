@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, trim: true, lowercase: true },
   phone: { type: String, required: true, trim: true },
-  gender: { type: String, required: true },
+  gender: { type: String },
   age: { type: Number, required: true },
   
   // Address & Society Details

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const complaintRoutes = require('./routes/complaintRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/complaints', complaintRoutes);
+app.use('/api/auth', authRoutes);
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack', {
