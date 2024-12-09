@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://societymanagement-system.onrender.com'
+  baseURL: process.env.NODE_ENV === 'development' 
+    ? 'http://localhost:8001' // Local backend URL
+    : 'https://societymanagement-system.onrender.com' // Production backend URL
 });
-
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {

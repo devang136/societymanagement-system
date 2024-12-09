@@ -14,7 +14,7 @@ const createTestSociety = async () => {
     }
 
     society = new Society({
-      name: 'Test Society',
+      name: 'Test Society1',
       address: '123 Test Street',
       city: 'Test City',
       state: 'Test State',
