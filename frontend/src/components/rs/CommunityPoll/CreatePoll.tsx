@@ -5,7 +5,6 @@ import Rating from "../../components/assets/ranking1.png";
 import Text from "../../components/assets/Group (1).png";
 import Numeric from "../../components/assets/Group.png";
 import { FaAngleDown } from "react-icons/fa6";
-import React from "react";
 
 interface CreatePollProps {
   isOpen: boolean;
