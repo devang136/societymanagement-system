@@ -14,10 +14,7 @@ interface LoginFormData {
   password: string;
   rememberMe: boolean;
 }
-interface LoginCredentials {
-  emailOrPhone: string;
-  password: string;
-}
+
 
 export default function LoginForm({
   onForgotPassword,
