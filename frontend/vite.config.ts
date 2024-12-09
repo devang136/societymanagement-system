@@ -1,9 +1,27 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx']
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    },
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css']
+  },
+  css: {
+    modules: {
+      localsConvention: 'camelCase'
+    }
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html')
+      }
+    }
   }
 }) 
