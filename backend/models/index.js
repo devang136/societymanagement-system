@@ -10,6 +10,7 @@ require('./Event');
 require('./Invoice');
 require('./Member');
 require('./Vehicle');
+require('./Visitor');
 
 // Export models
 module.exports = {
@@ -21,5 +22,6 @@ module.exports = {
   Event: mongoose.model('Event'),
   Invoice: mongoose.model('Invoice'),
   Member: mongoose.model('Member'),
-  Vehicle: mongoose.model('Vehicle')
+  Vehicle: mongoose.model('Vehicle'),
+  Visitor: mongoose.model('Visitor')
 }; 
