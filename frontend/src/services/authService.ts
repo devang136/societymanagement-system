@@ -1,3 +1,4 @@
+import axios from 'axios';
 import axiosInstance from './axiosInstance';
 
 interface LoginCredentials {
@@ -19,17 +20,28 @@ interface RegistrationData {
   unit: string;
   password: string;
 }
-
+axios
 export const authService = {
-  login: async (credentials: LoginCredentials) => {
-    try {
-      const response = await axiosInstance.post('/auth/login', credentials);
-      return response.data;
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+ // frontend/src/services/authService.ts - Update the login method
+login: async (credentials: LoginCredentials) => {
+  try {
+    const response = await axiosInstance.post('/auth/login', credentials);
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
     }
-  },
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED') {
+        throw new Error('Connection timeout - please try again');
+      }
+      throw new Error(error.response?.data?.message || 'Login failed');
+    }
+    throw error;
+  }
+},
+
 
   register: async (data: RegistrationData) => {
     try {
