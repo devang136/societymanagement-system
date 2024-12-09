@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
-const API_URL = 'http://localhost:8001/api';
+const API_URL = 'https://societymanagement-system.onrender.com';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');

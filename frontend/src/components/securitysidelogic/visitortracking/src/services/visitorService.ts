@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Visitor, VisitorFormData } from '../types/visitor';
 import { toast } from 'react-hot-toast';
 
-const API_URL = 'http://localhost:8001/api';
+const API_URL = 'https://societymanagement-system.onrender.com';
 
 export const visitorService = {
   async getAllVisitors(): Promise<Visitor[]> {
