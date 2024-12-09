@@ -14,6 +14,10 @@ interface LoginFormData {
   password: string;
   rememberMe: boolean;
 }
+interface LoginCredentials {
+  emailOrPhone: string;
+  password: string;
+}
 
 export default function LoginForm({
   onForgotPassword,
@@ -67,7 +71,7 @@ export default function LoginForm({
     try {
       const response = await authService.login({
         emailOrPhone: formData.emailOrPhone.trim(),
-        password: formData.password
+        email: formData.emailOrPhone.trim(), // or username
       });
       
       if (response.token && response.user) {
