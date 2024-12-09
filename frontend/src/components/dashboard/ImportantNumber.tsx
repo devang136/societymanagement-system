@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FiTrash2, FiEdit2 } from 'react-icons/fi';
 import { EditImportantNumber } from '../dashboardmodals/EditImportantNumber';
 import { DeleteConfirmation } from '../dashboardmodals/DeleteConfirmation';

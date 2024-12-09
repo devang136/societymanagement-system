@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -8,7 +7,6 @@ import {
   FileText,
   DollarSign,
   LogOut,
-  UserCheck,
   UserCog,
   Bell,
   ChevronDown,
@@ -19,20 +17,21 @@ import {
   Users2,
   Shield
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-interface MenuItem {
+interface BaseMenuItem {
   id: string;
   label: string;
-  icon?: any; // or LucideIcon if you want to be more specific
+  icon: LucideIcon;
+}
+
+interface MenuItem extends BaseMenuItem {
   path?: string;
   subItems?: SubMenuItem[];
 }
 
-interface SubMenuItem {
-  id: string;
-  label: string;
+interface SubMenuItem extends BaseMenuItem {
   path: string;
-  icon?: any; // Made icon optional with '?'
 }
 
 interface SidebarProps {
@@ -46,36 +45,43 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
   const currentPath = location.pathname;
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
-  const adminMenuItems = [
+  const adminMenuItems: MenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-   
-    
     { id: 'residents', label: 'Resident Management', icon: Users, path: '/residents' },
-    { id: 'financial', label: 'Financial Management', icon: DollarSign, subItems: [
-      { id: 'income', label: 'Income', path: '/financial/income', icon: DollarSign },
-      { id: 'expense', label: 'Expense', path: '/financial/expense', icon: DollarSign },
-      { id: 'note', label: 'Note', path: '/financial/note', icon: FileText },
-    ]},
+    { 
+      id: 'financial', 
+      label: 'Financial Management', 
+      icon: DollarSign, 
+      subItems: [
+        { id: 'income', label: 'Income', path: '/financial/income', icon: DollarSign },
+        { id: 'expense', label: 'Expense', path: '/financial/expense', icon: DollarSign },
+        { id: 'note', label: 'Note', path: '/financial/note', icon: FileText }
+      ]
+    },
     { id: 'facility', label: 'Facility Management', icon: Building2, path: '/facility' },
-    { id: 'complaints', label: 'Complaint Tracking', icon: FileText, subItems: [
-      { id: 'create-complaint', label: 'Create Complaint', path: '/complaints/create' },
-      { id: 'request-tracking', label: 'Request Tracking', path: '/complaints/admin-requests' },
-    ]},
+    { 
+      id: 'complaints', 
+      label: 'Complaint Tracking', 
+      icon: FileText, 
+      subItems: [
+        { id: 'create-complaint', label: 'Create Complaint', path: '/complaints/create', icon: FileText },
+        { id: 'request-tracking', label: 'Request Tracking', path: '/complaints/admin-requests', icon: FileText }
+      ]
+    },
     { 
       id: 'security',
       icon: UserCog, 
       label: 'Security Management',
       subItems: [
-        { id: 'visitors', label: 'Visitor Logs', path: '/security/visitors' },
-        { id: 'protocols', label: 'Security Protocols', path: '/security/protocol' },
-       
+        { id: 'visitors', label: 'Visitor Logs', path: '/security/visitors', icon: Users },
+        { id: 'protocols', label: 'Security Protocols', path: '/security/protocol', icon: Shield }
       ]
     },
     { id: 'security-guard', label: 'Security Guard', icon: Shield, path: '/security-guard' },
-    { id: 'announcement', label: 'Announcement', icon: Bell, path: '/announcement' },
+    { id: 'announcement', label: 'Announcement', icon: Bell, path: '/announcement' }
   ];
 
-  const userMenuItems = [
+  const userMenuItems: MenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { id: 'personal', label: 'Personal Details', icon: UserCircle, path: '/personal' },
     { id: 'services', label: 'Services & Complaints', icon: Wrench, path: '/services' },
@@ -85,9 +91,9 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
       label: 'Community',
       icon: Users2,
       subItems: [
-        { id: 'access-forum', label: 'Access Forum', path: '/community/forum' },
-        { id: 'polls', label: 'Polls', path: '/community/polls' },
-        { id: 'discussions', label: 'Community Discussions', path: '/community/discussions' }
+        { id: 'access-forum', label: 'Access Forum', path: '/community/forum', icon: Users2 },
+        { id: 'polls', label: 'Polls', path: '/community/polls', icon: Users2 },
+        { id: 'discussions', label: 'Community Discussions', path: '/community/discussions', icon: Users2 }
       ]
     },
     { 
@@ -99,10 +105,10 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
         { id: 'other-invoices', label: 'Other Income Invoices', path: '/payments/other', icon: FileText }
       ]
     },
-    { id: 'security', label: 'Security Protocol', icon: Shield, path: '/security-protocol' },
+    { id: 'security', label: 'Security Protocol', icon: Shield, path: '/security-protocol' }
   ];
 
-  const securityMenuItems = [
+  const securityMenuItems: MenuItem[] = [
     { 
       id: 'security',
       icon: Shield, 
@@ -121,13 +127,13 @@ export function Sidebar({ onLogout, userRole }: SidebarProps) {
         ? securityMenuItems
         : userMenuItems;
 
-  const handleItemClick = (item: any) => {
+  const handleItemClick = (item: MenuItem) => {
     if (item.path) {
       navigate(item.path);
       setExpandedItem(null);
     } else if (item.subItems) {
       setExpandedItem(expandedItem === item.id ? null : item.id);
-      if (expandedItem !== item.id) {
+      if (expandedItem !== item.id && item.subItems.length > 0) {
         navigate(item.subItems[0].path);
       }
     }

@@ -18,11 +18,36 @@ interface DashboardProps {
   userRole: 'admin' | 'user' | 'security' | null;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
-  const [activeMenuItem, setActiveMenuItem] = useState('dashboard');
+interface ImportantNumberType {
+  id: number;
+  name: string;
+  phoneNumber: string;
+  work: string;
+}
+
+interface PendingMaintenanceType {
+  id: number;
+  name: string;
+  amount: number;
+  avatar: string;
+  date: string;
+}
+
+interface UpcomingActivityType {
+  id: number;
+  title: string;
+  type: 'society' | 'holi' | 'ganesh' | 'navratri';
+  timeRange: string;
+  date: string;
+}
+
+export const Dashboard: React.FC<DashboardProps> = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
+  const [isAddNumberOpen, setIsAddNumberOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  
+  const [profileData] = useState({
     firstName: "Moni",
     lastName: "Roy",
     phoneNumber: "+91 99130 44537",
@@ -33,42 +58,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
     city: "Baroda"
   });
 
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData>({
+    stats: {
+      totalComplaints: 0,
+      resolvedComplaints: 0,
+      pendingPayments: 0,
+      totalResidents: 0
+    },
+    recentActivity: [],
+    notifications: [],
+    complaints: []
+  });
+
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
-        const data = await dashboardService.getDashboardData();
-        setDashboardData(data);
-      } catch (error: any) {
-        console.error('Dashboard data error:', error);
-        toast.error(error.message || 'Failed to load dashboard data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, []);
-
-  const handleProfileClick = () => {
-    setIsProfileOpen(true);
-    setActiveMenuItem('profile');
-  };
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleUpdateProfile = () => {
-    setIsEditing(false);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-  };
 
   const data = [
     { name: 'Jan', value: 10000 },
@@ -80,9 +82,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
     { name: 'Jul', value: 55000 },
   ];
 
-  const [isAddNumberOpen, setIsAddNumberOpen] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [importantNumbers] = useState([
+  const [importantNumbers] = useState<ImportantNumberType[]>([
     {
       id: 1,
       name: 'Hamna Darin',
@@ -103,7 +103,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
     }
   ]);
 
-  const [pendingMaintenances] = useState([
+  const [pendingMaintenances] = useState<PendingMaintenanceType[]>([
     {
       id: 1,
       name: 'Roger Lubin',
@@ -127,13 +127,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
     }
   ]);
 
-  const [upcomingActivities] = useState<Array<{
-    id: number;
-    title: string;
-    type: 'society' | 'holi' | 'ganesh' | 'navratri';
-    timeRange: string;
-    date: string;
-  }>>([
+  const [upcomingActivities] = useState<UpcomingActivityType[]>([
     {
       id: 1,
       title: 'Society Meeting',
@@ -164,45 +158,41 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
     }
   ]);
 
-  const [complaints] = useState([
-    {
-      id: 1,
-      name: 'Evelyn Harper',
-      complaintName: 'Unethical Behavior',
-      date: '01/02/2024',
-      priority: 'Medium' as const,
-      status: 'Open' as const,
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1'
-    },
-    {
-      id: 2,
-      name: 'Evelyn Harper',
-      complaintName: 'Unethical Behavior',
-      date: '01/02/2024',
-      priority: 'Low' as const,
-      status: 'Pending' as const,
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2'
-    },
-    {
-      id: 3,
-      name: 'Evelyn Harper',
-      complaintName: 'Unethical Behavior',
-      date: '01/02/2024',
-      priority: 'High' as const,
-      status: 'Solve' as const,
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3'
-    }
-  ]);
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const data = await dashboardService.getDashboardData();
+        setDashboardData(data);
+      } catch (error: any) {
+        console.error('Dashboard data error:', error);
+        toast.error(error.message || 'Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const handleProfileClick = () => {
+    setIsProfileOpen(true);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleUpdateProfile = () => {
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
 
   const handleAddNumber = (data: any) => {
     console.log('Adding number:', data);
-  };
-
-  const handleSidebarMenuChange = (menuItem: string) => {
-    setActiveMenuItem(menuItem);
-    if (menuItem === 'dashboard') {
-      setIsProfileOpen(false);
-    }
   };
 
   if (loading) {
@@ -278,7 +268,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
           <div className="grid grid-cols-4 gap-6 mb-8">
             <StatCard 
               title="Total Complaints" 
-              value={dashboardData?.stats.totalComplaints.toString() || '0'} 
+              value={dashboardData.stats.totalComplaints.toString()} 
               color="orange" 
             />
             <StatCard title="Total Income" value="₹ 55,000" color="green" />
@@ -382,12 +372,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout, userRole }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {dashboardData?.complaints.map((complaint) => (
+                    {dashboardData.complaints.map((complaint) => ({
+                      ...complaint,
+                      id: complaint.id.toString()
+                    })).map((complaint) => (
                       <ComplaintRow
                         key={complaint.id}
                         complaint={complaint}
-                        onEdit={(id, data) => console.log('Edit', id, data)}
-                        onDelete={(id) => console.log('Delete', id)}
                       />
                     ))}
                   </tbody>

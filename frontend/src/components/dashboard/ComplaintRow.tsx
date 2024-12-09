@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ViewComplaint } from '../dashboardmodals/ViewComplaint';
 import { EditComplaint } from '../dashboardmodals/EditComplaint';
 import { DeleteConfirmation } from '../dashboardmodals/DeleteConfirmation';

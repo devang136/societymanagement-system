@@ -1,4 +1,3 @@
-import React from 'react';
 import { X } from 'lucide-react';
 import { Announcement } from './announcement';
 import { format } from 'date-fns';

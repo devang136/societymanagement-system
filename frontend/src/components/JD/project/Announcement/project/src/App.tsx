@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AnnouncementCard } from './components/announcements/AnnouncementCard';
 import { AnnouncementForm } from './components/announcements/AnnouncementForm';
 import { Button } from './components/ui/Button';

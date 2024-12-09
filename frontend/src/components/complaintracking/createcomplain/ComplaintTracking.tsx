@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ComplaintTable } from './ComplaintTable';
 import { ComplaintModal } from './ComplaintModal';
 import { DeleteModal } from './DeleteModal';
@@ -21,12 +21,6 @@ export function ComplaintTracking() {
     isOpen: false
   });
 
-  const handleCreateComplaint = () => {
-    setModalState({
-      isOpen: true,
-      mode: 'create'
-    });
-  };
 
   const handleViewComplaint = (complaint: Complaint) => {
     setModalState({

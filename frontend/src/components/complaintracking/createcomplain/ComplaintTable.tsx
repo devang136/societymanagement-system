@@ -1,4 +1,3 @@
-import React from 'react';
 import { Edit2, Eye, Trash2 } from 'lucide-react';
 import type { Complaint } from '../../../types';
 

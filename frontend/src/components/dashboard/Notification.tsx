@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { FiX } from 'react-icons/fi';
 

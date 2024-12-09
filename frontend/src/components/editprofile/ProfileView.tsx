@@ -79,8 +79,6 @@ const ProfileView = ({ profileData, onEditClick }: ProfileViewProps) => {
           <p className="font-medium">{profileData.city}</p>
         </div>
       </div>
-
-      
     </div>
   );
 };

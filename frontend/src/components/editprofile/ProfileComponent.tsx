@@ -1,11 +1,11 @@
 // ProfileComponent.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ProfileView from './ProfileView';
 import ProfileEdit from './ProfileEdit';
 
 const ProfileComponent = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
+  const [profileData] = useState({
     firstName: "Arlene",
     lastName: "McCoy",
     phoneNumber: "+91 99130 44537",
