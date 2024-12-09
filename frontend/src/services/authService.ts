@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
 
 interface LoginCredentials {
-  emailOrPhone: string;
+  email: string;
   password: string;
 }
 
@@ -23,10 +23,6 @@ export const authService = {
   login: async (credentials: LoginCredentials) => {
     try {
       const response = await axiosInstance.post('/auth/login', credentials);
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
       return response.data;
     } catch (error) {
       console.error('Login error:', error);

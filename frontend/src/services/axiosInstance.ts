@@ -2,8 +2,12 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: process.env.NODE_ENV === 'development' 
-    ? 'http://localhost:8001' // Local backend URL
-    : 'https://societymanagement-system.onrender.com' // Production backend URL
+    ? 'http://localhost:8001/api' // Local backend URL with API prefix
+    : 'https://societymanagement-system.onrender.com/api', // Production backend URL with API prefix
+  timeout: 5000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
@@ -33,4 +37,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance; 
+export default axiosInstance;
