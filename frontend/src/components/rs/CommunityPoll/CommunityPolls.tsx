@@ -1,5 +1,5 @@
 import Avatar from '../../components/assets/Avatar.jpg'
-import React, { useState } from "react";
+import  React, { useState } from "react";
 import CircleImg from '../../components/assets/Frame 1000005288.png';
 import image1 from '../../components/assets/Frame1.png'
 import image2 from '../../components/assets/frame2.png'

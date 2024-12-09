@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import Multipoll from "../../components/assets/Multichoice polls.png";
 import Ranking from "../../components/assets/ranking.png";
 import Rating from "../../components/assets/ranking1.png";
 import Text from "../../components/assets/Group (1).png";
 import Numeric from "../../components/assets/Group.png";
 import { FaAngleDown } from "react-icons/fa6";
+import React from "react";
 
 interface CreatePollProps {
   isOpen: boolean;
