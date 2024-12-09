@@ -1,7 +1,6 @@
 import { X, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { SecurityGuard } from './types';
-import React from 'react';
 
 interface SecurityModalProps {
   isOpen: boolean;

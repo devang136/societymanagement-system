@@ -1,4 +1,3 @@
-import React from 'react';
 import { Invoice } from '../types';
 import { MoreHorizontal } from 'lucide-react';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { MaintenanceCard as MaintenanceCardType } from '../types';
 
 interface MaintenanceCardProps {

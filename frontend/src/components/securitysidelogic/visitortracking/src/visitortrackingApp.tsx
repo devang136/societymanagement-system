@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Header } from './components/Header';
+import { useState, useEffect } from 'react';
 import { VisitorTable } from './components/VisitorTable';
 import { AddVisitorDialog } from './components/AddVisitorDialog';
 import { Visitor, VisitorFormData } from './types/visitor';
@@ -23,6 +22,7 @@ function App() {
       setVisitors(data);
     } catch (error) {
       console.error('Error loading visitors:', error);
+      toast.error('Failed to load visitors');
     } finally {
       setIsLoading(false);
     }
@@ -36,7 +36,11 @@ function App() {
       toast.success('Visitor added successfully');
     } catch (error) {
       console.error('Error adding visitor:', error);
-      toast.error(error.response?.data?.message || 'Failed to add visitor');
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('Failed to add visitor');
+      }
     }
   };
 

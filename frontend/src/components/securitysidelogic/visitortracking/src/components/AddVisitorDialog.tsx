@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Calendar, Clock } from 'lucide-react';
 import { VisitorFormData } from '../types/visitor';
 
 interface AddVisitorDialogProps {

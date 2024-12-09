@@ -1,5 +1,4 @@
-import { Bell, User } from 'lucide-react';
-import React from 'react';
+import { Bell } from 'lucide-react';
 
 interface HeaderProps {
   user: {

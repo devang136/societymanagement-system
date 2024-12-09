@@ -1,4 +1,3 @@
-import React from "react";
 
 const ChatMessage = ({ message }: { message: any }) => {
     return (

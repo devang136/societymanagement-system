@@ -1,5 +1,4 @@
 import { Bell, Search, Menu } from 'lucide-react';
-import React from 'react';
 
 interface HeaderProps {
   user: {

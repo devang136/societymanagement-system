@@ -1,4 +1,3 @@
-import React from 'react';
 import { Visitor } from '../types/visitor';
 import { User } from 'lucide-react';
 

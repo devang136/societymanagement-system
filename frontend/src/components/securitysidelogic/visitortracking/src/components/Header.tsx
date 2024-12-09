@@ -1,6 +1,5 @@
 import { Shield } from 'lucide-react';
 import { UserNav } from './UserNav';
-import React from 'react';
 
 export function Header() {
   return (

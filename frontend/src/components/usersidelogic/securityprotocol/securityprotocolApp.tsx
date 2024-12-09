@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Header } from './components/Header';
+import { useState, useEffect } from 'react';
 import { ProtocolTable } from './components/ProtocolTable';
 import { securityProtocolService } from '../../../services/securityProtocolService';
 import { toast } from 'react-hot-toast';

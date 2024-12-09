@@ -1,6 +1,5 @@
 import { Home, User, MessageSquare, Calendar, Users, FileText, LogOut } from 'lucide-react';
 import { Link } from './ui/Link';
-import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 

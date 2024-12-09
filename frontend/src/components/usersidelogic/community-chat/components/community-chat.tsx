@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from "../../../securitysidelogic/components/ui/avatar"
 import { Button } from "../../../securitysidelogic/components/ui/button"
 import { Card, CardContent } from "../../../securitysidelogic/components/ui/card"
 import { Input } from "../../../securitysidelogic/components/ui/input"
 import { MoreHorizontal } from 'lucide-react'
-import type { Question, Answer } from "../types/chat"
+import type { Question } from "../types/chat"
 
 interface CommunityChatProps {
   questions: Question[]

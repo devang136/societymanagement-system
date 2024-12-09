@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PaymentMethod } from '../types';
 import { X } from 'lucide-react';
 

@@ -1,6 +1,4 @@
 import { Bell, ChevronDown } from 'lucide-react';
-import { Link } from './ui/Link';
-import React from 'react';
 
 interface HeaderProps {
   user: {

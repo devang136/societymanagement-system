@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import ServiceComplaintApp from './servicecomplaintApp';
 import { ErrorBoundary } from '../../ErrorBoundary';
 

@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Complaint, Request, Status, Priority } from './types';
-import { Header } from './components/Layout/Header';
+import { useState, useEffect } from 'react';
+import { Complaint, Request } from './types';
 import { ComplaintCard } from './components/Complaints/ComplaintCard';
 import { ComplaintForm } from './components/Complaints/ComplaintForm';
 import { RequestCard } from './components/Requests/RequestCard';
 import { RequestForm } from './components/Requests/RequestForm';
 import { Tabs } from './components/Tabs';
-import { complaintService } from '../../../services/complaintService';
+import { ComplaintData, complaintService } from '../../../services/complaintService';
 import { requestService } from '../../../services/requestService';
 import { toast } from 'react-hot-toast';
 
@@ -59,7 +58,12 @@ function App() {
   const handleComplaintSubmit = async (complaintData: Partial<Complaint>) => {
     try {
       console.log('Submitting complaint:', complaintData);
-      const newComplaint = await complaintService.createComplaint(complaintData);
+      const complaintDataWithRequired = {
+        ...complaintData,
+        wing: 'A', // Default wing value
+        unit: '101', // Default unit value
+      } as ComplaintData;
+      const newComplaint = await complaintService.createComplaint(complaintDataWithRequired);
       console.log('Created complaint:', newComplaint);
       
       if (newComplaint) {
@@ -103,12 +107,6 @@ function App() {
     } catch (error) {
       toast.error('Failed to delete request');
     }
-  };
-
-  const user = {
-    name: 'Moni Roy',
-    role: 'Admin',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
   };
 
   return (

@@ -1,6 +1,5 @@
 import { X } from 'lucide-react';
 import type { Invoice } from '../types';
-import React from 'react';
 import { invoiceService } from '../../../../services/invoiceService';
 import { toast } from 'react-hot-toast';
 

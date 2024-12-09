@@ -1,19 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Bell, ChevronRight } from 'lucide-react'
 import CreatePollModal from './components/create-poll-modal'
 import PollCard from './components/poll-card'
 import { pollService } from '../../../services/pollService'
 import { toast } from 'react-hot-toast'
-
-interface Poll {
-  id: number
-  question: string
-  yesVotes: number
-  noVotes: number
-  timestamp: string
-}
 
 export default function PollingDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -42,7 +34,7 @@ export default function PollingDashboard() {
 
   const handleCreatePoll = async (newPoll: any) => {
     try {
-      await fetchPolls()
+      setPolls(prevPolls => [newPoll, ...prevPolls])
     } catch (error: any) {
       console.error('Failed to refresh polls:', error)
     }

@@ -47,7 +47,7 @@ const AlertForm = () => {
             Alert Type<span className="text-red-500">*</span>
           </label>
           <DropdownMenu onOpenChange={setIsOpen}>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button 
                 type="button"
                 variant="outline" 

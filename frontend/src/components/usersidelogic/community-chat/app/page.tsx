@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from "react"
+import { useState } from "react"
 import { ChatSidebar } from "../components/chat-sidebar"
 import { CommunityChat } from "../components/community-chat"
 import { AskQuestion } from "../components/ask-question"

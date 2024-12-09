@@ -1,8 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../../../securitysidelogic/components/ui/avatar"
 import { Input } from "../../../securitysidelogic/components/ui/input"
 import { Search } from 'lucide-react'
-import type { Message, Question, User } from "../types/chat"
-import React from "react"
+import type { Question, User } from "../types/chat"
 
 interface ChatSidebarProps {
   users: User[]

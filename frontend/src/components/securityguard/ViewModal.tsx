@@ -1,6 +1,5 @@
 import { X } from 'lucide-react';
 import { SecurityGuard } from './types';
-import React from 'react';
 interface ViewModalProps {
   isOpen: boolean;
   onClose: () => void;

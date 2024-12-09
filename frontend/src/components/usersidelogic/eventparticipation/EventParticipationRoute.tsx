@@ -1,4 +1,3 @@
-import React from 'react';
 import EventParticipationApp from './eventparticipationApp';
 
 export function EventParticipationRoute() {

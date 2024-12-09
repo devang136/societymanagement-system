@@ -1,4 +1,3 @@
-import React from 'react';
 import { X, Download } from 'lucide-react';
 import { invoiceService } from '../../../../services/invoiceService';
 import { toast } from 'react-hot-toast';
@@ -28,7 +27,7 @@ export const InvoiceModal = ({ isOpen, onClose, invoiceData }: InvoiceModalProps
       console.log('Creating invoice with data:', invoiceData);
       
       // Create the invoice first with all required data
-      const result = await invoiceService.createInvoice({
+      await invoiceService.createInvoice({
         invoiceId: invoiceData.invoiceId,
         maintenanceAmount: invoiceData.maintenanceAmount,
         penaltyAmount: invoiceData.grandTotal - invoiceData.maintenanceAmount,

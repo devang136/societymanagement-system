@@ -1,6 +1,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from "../../../securitysidelogic/components/ui/avatar"
 import { Button } from "../../../securitysidelogic/components/ui/button"
-import { Card, CardContent, CardHeader } from "../../../securitysidelogic/components/ui/card"
+import { Card, CardContent } from "../../../securitysidelogic/components/ui/card"
 import { Input } from "../../../securitysidelogic/components/ui/input"
 import { MoreVertical } from 'lucide-react'
 import type { Thread } from "../types/chat"

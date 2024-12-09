@@ -1,5 +1,4 @@
 import { Shield, LogOut } from 'lucide-react';
-import React from 'react';
 
 export function Sidebar() {
   return (

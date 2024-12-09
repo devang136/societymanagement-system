@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ComplaintTable } from '../complaintracking/createcomplain/ComplaintTable';
 import { ComplaintModal } from '../complaintracking/createcomplain/ComplaintModal';
 import { DeleteModal } from '../complaintracking/createcomplain/DeleteModal';
