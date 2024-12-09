@@ -1,5 +1,5 @@
 // services/visitorService.js
-const Visitor = require('../models/Visitor');
+const Visitor = require('../models/visitor');
 const AppError = require('../utils/errorHelper').AppError;
 
 // Get all visitors
