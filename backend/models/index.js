@@ -10,7 +10,7 @@ require('./Event');
 require('./Invoice');
 require('./Member');
 require('./Vehicle');
-require('./Visitor');
+require('./visitor');
 
 // Export models
 module.exports = {

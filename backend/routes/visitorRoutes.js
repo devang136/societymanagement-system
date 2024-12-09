@@ -1,7 +1,7 @@
 // routes/visitorRoutes.js
 const express = require('express');
 const router = express.Router();
-const Visitor = require('../models/Visitor');
+const Visitor = require('../models/visitor');
 const authMiddleware = require('../middleware/authMiddleware');
 const User = require('../models/User');
 

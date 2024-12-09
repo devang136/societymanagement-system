@@ -53,7 +53,16 @@ const visitorSchema = new mongoose.Schema({
   entryTime: {
     type: String,
     required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
+
+// Clear any existing model to prevent schema conflicts
+if (mongoose.models.Visitor) {
+  delete mongoose.models.Visitor;
+}
 
 module.exports = mongoose.model('Visitor', visitorSchema);
