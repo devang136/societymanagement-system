@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
 
 interface LoginCredentials {
-  email: string;
+  emailOrPhone: string;
   password: string;
 }
 
