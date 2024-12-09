@@ -68,7 +68,8 @@ export default function LoginForm({
     try {
       const response = await authService.login({
         emailOrPhone: formData.emailOrPhone.trim(),
-        email: formData.emailOrPhone.trim(), // or username
+        email: formData.emailOrPhone.trim(),
+        password: formData.password
       });
       
       if (response.token && response.user) {
