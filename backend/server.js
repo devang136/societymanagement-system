@@ -41,7 +41,9 @@ app.use('/api/expenses', require('./routes/expenses'));
 
 const startServer = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/yourdbname', {
+    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack';
+    
+    await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

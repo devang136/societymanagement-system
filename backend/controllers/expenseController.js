@@ -1,7 +1,7 @@
 const expenseService = require('../services/expenseService');
 
 // Create Expense
-exports.createExpense = async (req, res) => {
+const createExpense = async (req, res) => {
     try {
         const { title, description, date, amount } = req.body;
         const billFile = req.file ? req.file.filename : null;
@@ -22,7 +22,7 @@ exports.createExpense = async (req, res) => {
 };
 
 // Get All Expenses
-exports.getExpenses = async (req, res) => {
+const getExpenses = async (req, res) => {
     try {
         const expenses = await expenseService.getExpenses(req.user.id);
         res.status(200).json(expenses);
@@ -32,7 +32,7 @@ exports.getExpenses = async (req, res) => {
 };
 
 // Update Expense
-exports.updateExpense = async (req, res) => {
+const updateExpense = async (req, res) => {
     try {
         const { title, description, date, amount } = req.body;
         const billFile = req.file ? req.file.filename : null;
@@ -56,7 +56,7 @@ exports.updateExpense = async (req, res) => {
 };
 
 // Delete Expense
-exports.deleteExpense = async (req, res) => {
+const deleteExpense = async (req, res) => {
     try {
         const success = await expenseService.deleteExpense(req.params.id);
         if (!success) {
@@ -70,7 +70,7 @@ exports.deleteExpense = async (req, res) => {
 };
 
 // View Single Expense
-exports.viewExpense = async (req, res) => {
+const viewExpense = async (req, res) => {
     try {
         const expense = await expenseService.viewExpense(req.params.id);
         if (!expense) {
@@ -81,4 +81,12 @@ exports.viewExpense = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Failed to view expense' });
     }
+};
+
+module.exports = {
+    createExpense,
+    getExpenses,
+    deleteExpense,
+    updateExpense,
+    viewExpense
 };
