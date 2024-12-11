@@ -37,14 +37,15 @@ app.use('/api/personal', personalDetailsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/visitors', visitorRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/expenses', require('./routes/expenses'));
 
 const startServer = async () => {
   try {
-    await mongoose.connect('mongodb+srv://parth160:123@cluster0.54rkf.mongodb.net/DashStack', {
+    await mongoose.connect('mongodb://localhost:27017/yourdbname', {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
-    console.log('Connected to MongoDB successfully');
+    console.log('MongoDB connected');
 
     try {
       await initializeDb();

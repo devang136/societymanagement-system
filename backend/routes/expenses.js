@@ -10,7 +10,7 @@ router.post(
     upload.single('bill'), // Ensure 'bill' matches the frontend form's field name
     createExpense
 );
-router.get('/', protect,  getExpenses);
+router.get('/', protect, getExpenses);
 router.put('/update/:id', protect, upload.single('bill'), updateExpense);
 router.delete('/delete/:id', protect, deleteExpense);
 router.get('/:id', protect,  viewExpense);

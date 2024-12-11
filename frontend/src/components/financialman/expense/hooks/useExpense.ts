@@ -1,43 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Expense } from '../types/expense';
 
-const MOCK_EXPENSES: Expense[] = [
-  {
-    id: '1',
-    title: 'Office Rent',
-    description: 'Monthly office space rental payment',
-    date: '2024-03-15',
-    amount: 25000,
-    billFormat: 'PDF'
-  },
-  {
-    id: '2',
-    title: 'Utilities',
-    description: 'Electricity and water bills for March',
-    date: '2024-03-10',
-    amount: 5000,
-    billFormat: 'JPG'
-  },
-  {
-    id: '3',
-    title: 'Internet Service',
-    description: 'Monthly broadband subscription',
-    date: '2024-03-05',
-    amount: 1500,
-    billFormat: 'PDF'
-  },
-  {
-    id: '4',
-    title: 'Office Supplies',
-    description: 'Stationery and printer cartridges',
-    date: '2024-03-01',
-    amount: 3000,
-    billFormat: 'JPG'
-  }
-];
-
 export function useExpense() {
-  const [expenses, setExpenses] = useState<Expense[]>(MOCK_EXPENSES);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [dialogState, setDialogState] = useState<{
     open: boolean;
     mode: 'add' | 'edit' | 'view';
@@ -47,11 +12,29 @@ export function useExpense() {
     mode: 'add',
   });
 
+  // Fetch expenses from the backend
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const response = await fetch('/api/expenses');
+        if (!response.ok) {
+          throw new Error('Failed to fetch expenses');
+        }
+        const data = await response.json();
+        setExpenses(data);
+      } catch (error) {
+        console.error('Error fetching expenses:', error);
+      }
+    };
+
+    fetchExpenses();
+  }, []);
+
   const handleSubmit = (expenseData: Partial<Expense>) => {
     if (dialogState.mode === 'add') {
       const newExpense = {
         ...expenseData,
-        id: Math.random().toString(36).slice(2),
+        id: Math.random().toString(36).slice(2), // This will be replaced by the ID from the backend
       } as Expense;
       setExpenses([newExpense, ...expenses]);
     } else if (dialogState.mode === 'edit' && dialogState.expense) {
@@ -75,6 +58,6 @@ export function useExpense() {
     dialogState,
     setDialogState,
     handleSubmit,
-    handleDelete
+    handleDelete,
   };
 } 
